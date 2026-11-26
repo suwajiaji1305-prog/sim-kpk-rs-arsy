@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f766e" />
+  <title>SIM-KPK RS ARSY — Keamanan, Parkir & Kendaraan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6 border border-slate-200">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-700 text-white font-bold text-lg mb-2">RS</div>
+        <h1 class="text-xl font-bold text-slate-900">SIM-KPK RS ARSY</h1>
+        <p class="text-xs text-slate-500 mt-1">Sistem Monitoring Keamanan, Parkir & Kendaraan</p>
+      </div>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Username</label>
+          <input id="loginUser" type="text" required placeholder="Contoh: suwaji / johan / fyghur / sumintri" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+          <input id="loginPass" type="password" required placeholder="Masukkan password" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <p id="loginError" class="text-xs text-red-600 hidden">Username atau password tidak sesuai.</p>
+        <button type="submit" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg text-sm transition">Masuk ke Sistem</button>
+      </form>
+      <div class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-600 space-y-1">
+        <p class="font-semibold text-slate-800">Akun Demo (Password: arsy2026):</p>
+        <p>• Ka. Unit / Operator: <span class="font-mono font-semibold">suwaji</span> (Akses penuh & ekspor)</p>
+        <p>• Keamanan: <span class="font-mono">johan</span>, <span class="font-mono">agos</span>, <span class="font-mono">afif</span>, <span class="font-mono">rofii</span>, <span class="font-mono">yeni</span>, <span class="font-mono">adi</span></p>
+        <p>• Parkir: <span class="font-mono">fyghur</span>, <span class="font-mono">arry</span>, <span class="font-mono">ahmad</span></p>
+        <p>• Driver: <span class="font-mono">sumintri</span>, <span class="font-mono">sidik</span>, <span class="font-mono">zainal</span>, <span class="font-mono">dimas</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="appShell" class="hidden min-h-screen flex flex-col">
+    <header class="bg-teal-800 text-white px-4 py-3 shadow flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <h2 class="font-bold text-base">SIM-KPK RS ARSY</h2>
+        <p id="userBadge" class="text-xs text-teal-100">Login sebagai...</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnExportXlsx" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-semibold">Excel (.xlsx)</button>
+        <button id="btnExportDoc" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-semibold">Word (.doc)</button>
+        <button id="btnExportPpt" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 rounded-lg text-xs font-semibold">PPT (.pptx)</button>
+        <button id="btnLogout" class="px-3 py-1.5 bg-slate-900/40 hover:bg-slate-900/60 rounded-lg text-xs font-semibold">Keluar</button>
+      </div>
+    </header>
+
+    <nav class="bg-white border-b border-slate-200 px-4 flex gap-2 overflow-x-auto">
+      <button data-tab="dashboard" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-teal-700 text-teal-800 whitespace-nowrap">Dashboard & Grafik</button>
+      <button data-tab="keamanan" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Keamanan</button>
+      <button data-tab="parkir" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Parkir</button>
+      <button data-tab="driver" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Driver</button>
+    </nav>
+
+    <main class="flex-1 p-4 max-w-7xl w-full mx-auto space-y-4">
+      <section id="tab-dashboard" class="tab-panel space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Log Patroli Keamanan</p>
+            <p id="kpiSecCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Log Shift Parkir</p>
+            <p id="kpiParkCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Log Trip Driver</p>
+            <p id="kpiDrvCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <p class="text-xs text-slate-500">Total Jarak Driver (KM)</p>
+            <p id="kpiKmTotal" class="text-2xl font-bold text-teal-700 mt-1">0</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Ringkasan Aktivitas Per Unit</h3>
+            <canvas id="unitChart" height="160"></canvas>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-slate-200">
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Jarak Tempuh Per Driver (KM)</h3>
+            <canvas id="driverChart" height="160"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-keamanan" class="tab-panel hidden space-y-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200">
+          <h3 class="font-bold text-sm mb-3">Input Laporan Patroli Keamanan</h3>
+          <form id="formSec" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold mb-1">Tanggal</label>
+              <input name="tanggal" type="text" required value="26/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Status Dinas</label>
+              <select name="dinas" class="w-full px-2.5 py-1.5 border rounded-lg">
+                <option>PAGI</option><option>SIANG</option><option>MALAM</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Status Patroli</label>
+              <select name="statusPatroli" class="w-full px-2.5 py-1.5 border rounded-lg">
+                <option>Patroli</option><option>Tidak Patroli</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Jam Patroli</label>
+              <input name="jam" type="text" value="14:00:00" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Petugas</label>
+              <input name="petugas" type="text" required class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Status Kondisi</label>
+              <select name="kondisi" class="w-full px-2.5 py-1.5 border rounded-lg">
+                <option>Tidak Ada Temuan</option><option>Ada Temuan</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block font-semibold mb-1">Temuan / Keterangan</label>
+              <input name="temuan" type="text" value="Aman / tidak ada temuan" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-4">
+              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Keamanan</button>
+            </div>
+          </form>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-100 border-b">
+                <th class="p-2">Tanggal</th><th class="p-2">Dinas</th><th class="p-2">Status</th><th class="p-2">Jam</th><th class="p-2">Petugas</th><th class="p-2">Kondisi</th><th class="p-2">Temuan</th>
+              </tr>
+            </thead>
+            <tbody id="tableSec"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-parkir" class="tab-panel hidden space-y-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200">
+          <h3 class="font-bold text-sm mb-3">Input Laporan Shift Parkir</h3>
+          <form id="formPark" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold mb-1">Petugas Jaga</label>
+              <input name="petugas" type="text" required class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Tanggal</label>
+              <input name="tanggal" type="text" required value="26/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Waktu Shift</label>
+              <input name="shift" type="text" value="Siang ( 14:00 - 21:00 )" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Lokasi Jaga</label>
+              <select name="lokasi" class="w-full px-2.5 py-1.5 border rounded-lg">
+                <option>Pos Parkir</option><option>Menata Area Parkir</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Motor</label>
+              <input name="motor" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Mobil</label>
+              <input name="mobil" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Total Storan (Rp)</label>
+              <input name="storan" type="text" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Kendala / Catatan</label>
+              <input name="kendala" type="text" value="Normal" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-4">
+              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Parkir</button>
+            </div>
+          </form>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-100 border-b">
+                <th class="p-2">Tanggal</th><th class="p-2">Petugas</th><th class="p-2">Shift</th><th class="p-2">Motor</th><th class="p-2">Mobil</th><th class="p-2">Storan</th><th class="p-2">Kendala</th>
+              </tr>
+            </thead>
+            <tbody id="tablePark"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-driver" class="tab-panel hidden space-y-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200">
+          <h3 class="font-bold text-sm mb-3">Input Laporan Kegiatan Driver</h3>
+          <form id="formDrv" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold mb-1">Tanggal</label>
+              <input name="tanggal" type="text" required value="26/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Driver</label>
+              <input name="driver" type="text" required class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Jenis Permintaan</label>
+              <input name="jenis" type="text" value="Antar / Jemput Dokter" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Kendaraan</label>
+              <input name="kendaraan" type="text" value="Mobil Dinas RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">Jarak Tempuh (KM)</label>
+              <input name="km" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div>
+              <label class="block font-semibold mb-1">BBM Terpakai (L)</label>
+              <input name="bbm" type="number" step="0.01" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block font-semibold mb-1">Tujuan / Keterangan</label>
+              <input name="tujuan" type="text" value="Operasional RS" class="w-full px-2.5 py-1.5 border rounded-lg" />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-4">
+              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Driver</button>
+            </div>
+          </form>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-100 border-b">
+                <th class="p-2">Tanggal</th><th class="p-2">Driver</th><th class="p-2">Permintaan</th><th class="p-2">Kendaraan</th><th class="p-2">KM</th><th class="p-2">BBM (L)</th><th class="p-2">Tujuan</th>
+              </tr>
+            </thead>
+            <tbody id="tableDrv"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const ACCOUNTS = {
+      suwaji: { name: "Suwaji (Ka. Unit)", role: "admin", unit: "all" },
+      johan: { name: "Johan", role: "staff", unit: "keamanan" },
+      agos: { name: "Agos", role: "staff", unit: "keamanan" },
+      afif: { name: "Afif", role: "staff", unit: "keamanan" },
+      rofii: { name: "Rofi'i", role: "staff", unit: "keamanan" },
+      yeni: { name: "Yeni", role: "staff", unit: "keamanan" },
+      adi: { name: "Adi", role: "staff", unit: "keamanan" },
+      fyghur: { name: "Fyghur Nanda", role: "staff", unit: "parkir" },
+      arry: { name: "Arry Adhi A.", role: "staff", unit: "parkir" },
+      ahmad: { name: "Ahmad Roisul", role: "staff", unit: "parkir" },
+      sumintri: { name: "Sumintri", role: "staff", unit: "driver" },
+      sidik: { name: "Sidik", role: "staff", unit: "driver" },
+      zainal: { name: "Zainal Arifin", role: "staff", unit: "driver" },
+      dimas: { name: "Dimas", role: "staff", unit: "driver" }
+    };
+
+    const STORAGE_KEY = "sim_kpk_rs_arsy_v1";
+    const initialData = {
+      keamanan: [
+        { tanggal: "01/11/2026", dinas: "PAGI", statusPatroli: "Patroli", jam: "10:00:00", petugas: "Johan / Tim", kondisi: "Tidak Ada Temuan", temuan: "tidak ada temuan" },
+        { tanggal: "09/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "20:30:00", petugas: "Tim Siang", kondisi: "Tidak Ada Temuan", temuan: "lampu poli mati metengi" },
+        { tanggal: "16/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "15:24:00", petugas: "Tim Siang", kondisi: "Tidak Ada Temuan", temuan: "Ac Khodijah 3 rusak" },
+        { tanggal: "17/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "20:30:00", petugas: "Tim Siang", kondisi: "Ada Temuan", temuan: "Ruang wadir ac+lampu nyala" },
+        { tanggal: "22/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "16:30:00", petugas: "Tim Siang", kondisi: "Tidak Ada Temuan", temuan: "Listrik Ibrahim 3 sak ngalor ngidul mati" }
+      ],
+      parkir: [
+        { tanggal: "01/09/2026", petugas: "Fyghur Nanda Priya Admaja", shift: "Pagi ( 07:00 - 14:00 )", lokasi: "Pos Parkir", motor: 206, mobil: 17, storan: "268.000", kendala: "Kendaraan Mundur/Menerobos" },
+        { tanggal: "01/09/2026", petugas: "Arry Adhi A.", shift: "Siang ( 14:00 - 21:00 )", lokasi: "Pos Parkir", motor: 302, mobil: 29, storan: "653", kendala: "Pengendara Kehilangan Tiket/Kartu" },
+        { tanggal: "07/09/2026", petugas: "Fyghur Nanda Priya Admaja", shift: "Siang ( 14:00 - 21:00 )", lokasi: "Pos Parkir", motor: 357, mobil: 34, storan: "565.000", kendala: "Temuan: Kartu pertamina" },
+        { tanggal: "30/09/2026", petugas: "Fyghur Nanda Priya Admaja", shift: "Malam ( 21:00 - 07:00 )", lokasi: "Pos Parkir", motor: 102, mobil: 3, storan: "102.000", kendala: "Kabel monitor goyah/macet" }
+      ],
+      driver: [
+        { tanggal: "01/11/2026", driver: "Sumintri / Tim", jenis: "Antar / Jemput Dokter", kendaraan: "Mobil Dinas RS ARSY", km: 115, bbm: 13, tujuan: "Jemput dr wijdhan di icon mall gresik" },
+        { tanggal: "01/11/2026", driver: "Sidik / Tim", jenis: "Rujuk", kendaraan: "Ambulan Pregio RS ARSY", km: 93, bbm: 14, tujuan: "Antar ke RSML" },
+        { tanggal: "03/11/2026", driver: "Zainal Arifin / Tim", jenis: "Antar / Jemput Dokter", kendaraan: "Mobil Dinas RS ARSY", km: 209, bbm: 17, tujuan: "Antar dr anik ke sidoarjo" },
+        { tanggal: "14/11/2026", driver: "Dimas / Tim", jenis: "Rujuk", kendaraan: "Ambulan APV RS ARSY", km: 160, bbm: 20, tujuan: "RSUD Soetomo Surabaya" },
+        { tanggal: "24/11/2026", driver: "Tim Driver", jenis: "Antar / Jemput Dokter", kendaraan: "Mobil Dinas RS ARSY", km: 192, bbm: 16, tujuan: "Antar dr anik ke sidoarjo (Catatan parkir plat putih/hitam)" }
+      ]
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(initialData);
+        const parsed = JSON.parse(raw);
+        return {
+          keamanan: Array.isArray(parsed.keamanan) ? parsed.keamanan : structuredClone(initialData.keamanan),
+          parkir: Array.isArray(parsed.parkir) ? parsed.parkir : structuredClone(initialData.parkir),
+          driver: Array.isArray(parsed.driver) ? parsed.driver : structuredClone(initialData.driver)
+        };
+      } catch {
+        return structuredClone(initialData);
+      }
+    }
+
+    let stateData = loadState();
+    let currentUser = null;
+    let unitChartInstance = null;
+    let driverChartInstance = null;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateData));
+    }
+
+    function applyRoleAccess() {
+      const isAdmin = currentUser.role === "admin";
+      const tabs = document.querySelectorAll(".tab-btn");
+      tabs.forEach(btn => {
+        const t = btn.dataset.tab;
+        const allowed = isAdmin || t === currentUser.unit;
+        btn.classList.toggle("hidden", !allowed);
+      });
+      document.getElementById("btnExportXlsx").classList.toggle("hidden", !isAdmin);
+      document.getElementById("btnExportDoc").classList.toggle("hidden", !isAdmin);
+      document.getElementById("btnExportPpt").classList.toggle("hidden", !isAdmin);
+
+      const defaultTab = isAdmin ? "dashboard" : currentUser.unit;
+      switchTab(defaultTab);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+      document.getElementById("tab-" + tabName)?.classList.remove("hidden");
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.classList.toggle("border-teal-700", active);
+        btn.classList.toggle("text-teal-800", active);
+        btn.classList.toggle("border-transparent", !active);
+        btn.classList.toggle("text-slate-600", !active);
+      });
+      if (tabName === "dashboard") renderCharts();
+    }
+
+    function renderTablesAndKPIs() {
+      document.getElementById("kpiSecCount").textContent = stateData.keamanan.length;
+      document.getElementById("kpiParkCount").textContent = stateData.parkir.length;
+      document.getElementById("kpiDrvCount").textContent = stateData.driver.length;
+      const totalKm = stateData.driver.reduce((acc, r) => acc + (Number(r.km) || 0), 0);
+      document.getElementById("kpiKmTotal").textContent = totalKm.toLocaleString("id-ID");
+
+      document.getElementById("tableSec").innerHTML = stateData.keamanan.map(r => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-2">${r.tanggal}</td><td class="p-2">${r.dinas}</td><td class="p-2">${r.statusPatroli}</td>
+          <td class="p-2">${r.jam}</td><td class="p-2">${r.petugas}</td><td class="p-2">${r.kondisi}</td><td class="p-2">${r.temuan}</td>
+        </tr>`).join("");
+
+      document.getElementById("tablePark").innerHTML = stateData.parkir.map(r => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-2">${r.tanggal}</td><td class="p-2">${r.petugas}</td><td class="p-2">${r.shift}</td>
+          <td class="p-2">${r.motor}</td><td class="p-2">${r.mobil}</td><td class="p-2">${r.storan}</td><td class="p-2">${r.kendala}</td>
+        </tr>`).join("");
+
+      document.getElementById("tableDrv").innerHTML = stateData.driver.map(r => `
+        <tr class="border-b hover:bg-slate-50">
+          <td class="p-2">${r.tanggal}</td><td class="p-2">${r.driver}</td><td class="p-2">${r.jenis}</td>
+          <td class="p-2">${r.kendaraan}</td><td class="p-2">${r.km}</td><td class="p-2">${r.bbm}</td><td class="p-2">${r.tujuan}</td>
+        </tr>`).join("");
+    }
+
+    function renderCharts() {
+      const ctx1 = document.getElementById("unitChart");
+      const ctx2 = document.getElementById("driverChart");
+      if (!ctx1 || !ctx2 || typeof Chart === "undefined") return;
+
+      if (unitChartInstance) unitChartInstance.destroy();
+      unitChartInstance = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels: ["Keamanan", "Parkir", "Driver"],
+          datasets: [{
+            label: "Jumlah Laporan",
+            data: [stateData.keamanan.length, stateData.parkir.length, stateData.driver.length],
+            backgroundColor: ["#0f766e", "#0284c7", "#d97706"]
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      const byDriver = {};
+      stateData.driver.forEach(d => {
+        const key = d.driver || "Driver";
+        byDriver[key] = (byDriver[key] || 0) + (Number(d.km) || 0);
+      });
+
+      if (driverChartInstance) driverChartInstance.destroy();
+      driverChartInstance = new Chart(ctx2, {
+        type: "bar",
+        data: {
+          labels: Object.keys(byDriver),
+          datasets: [{
+            label: "KM Tempuh",
+            data: Object.values(byDriver),
+            backgroundColor: "#0d9488"
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const u = document.getElementById("loginUser").value.trim().toLowerCase();
+      const p = document.getElementById("loginPass").value;
+      if (ACCOUNTS[u] && p === "arsy2026") {
+        currentUser = ACCOUNTS[u];
+        document.getElementById("loginError").classList.add("hidden");
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("appShell").classList.remove("hidden");
+        document.getElementById("userBadge").textContent = `${currentUser.name} • Akses: ${currentUser.role === "admin" ? "Semua Unit" : currentUser.unit.toUpperCase()}`;
+        renderTablesAndKPIs();
+        applyRoleAccess();
+      } else {
+        document.getElementById("loginError").classList.remove("hidden");
+      }
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", () => {
+      currentUser = null;
+      document.getElementById("appShell").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("loginForm").reset();
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    });
+
+    document.getElementById("formSec").addEventListener("submit", e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      stateData.keamanan.unshift(Object.fromEntries(fd.entries()));
+      saveState(); renderTablesAndKPIs(); e.target.reset();
+    });
+
+    document.getElementById("formPark").addEventListener("submit", e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      stateData.parkir.unshift(Object.fromEntries(fd.entries()));
+      saveState(); renderTablesAndKPIs(); e.target.reset();
+    });
+
+    document.getElementById("formDrv").addEventListener("submit", e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      stateData.driver.unshift(Object.fromEntries(fd.entries()));
+      saveState(); renderTablesAndKPIs(); e.target.reset();
+    });
+
+    document.getElementById("btnExportXlsx").addEventListener("click", () => {
+      if (typeof XLSX === "undefined") return;
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.keamanan), "Keamanan");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.parkir), "Parkir");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.driver), "Driver");
+      XLSX.writeFile(wb, "Laporan_SIM_KPK_RS_ARSY.xlsx");
+    });
+
+    document.getElementById("btnExportDoc").addEventListener("click", () => {
+      const html = `<html><head><meta charset="utf-8"><title>Laporan SIM-KPK RS ARSY</title></head><body>
+        <h2>LAPORAN UNIT KEAMANAN, PARKIR & KENDARAAN — RS ARSY</h2>
+        <p>Kepala Unit: Suwaji</p>
+        <p>Total Keamanan: ${stateData.keamanan.length} | Parkir: ${stateData.parkir.length} | Driver: ${stateData.driver.length}</p>
+      </body></html>`;
+      const blob = new Blob([html], { type: "application/msword" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Laporan_SIM_KPK_RS_ARSY.doc";
+      a.click();
+    });
+
+    document.getElementById("btnExportPpt").addEventListener("click", () => {
+      if (typeof PptxGenJS === "undefined") return;
+      const pptx = new PptxGenJS();
+      const slide = pptx.addSlide();
+      slide.addText("SIM-KPK RS ARSY", { x: 0.5, y: 0.5, fontSize: 24, bold: true, color: "0F766E" });
+      slide.addText(`Keamanan: ${stateData.keamanan.length} laporan\nParkir: ${stateData.parkir.length} laporan\nDriver: ${stateData.driver.length} laporan`, { x: 0.5, y: 1.4, fontSize: 16 });
+      pptx.writeFile({ fileName: "Presentasi_SIM_KPK_RS_ARSY.pptx" });
+    });
+  </script>
+</body>
+</html>
