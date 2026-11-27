@@ -3,1161 +3,748 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f766e" />
-  <title>SIM-KPK RS ARSY — Keamanan, Parkir & Kendaraan</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <title>SIM-KPK RS ARSY - Modul Laporan & Rekap Terpisah</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <style>
+    :root {
+      --bg: #f1f5f9; --card: #ffffff; --ink: #0f172a; --muted: #64748b;
+      --primary: #0f766e; --primary-dark: #115e59; --accent: #0284c7;
+      --warn: #d97706; --danger: #dc2626; --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--primary); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; font-size: 1.1rem; }
+    header small { opacity: .9; display: block; }
+    .container { max-width: 1320px; margin: 14px auto; padding: 0 14px 36px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .tab-btn { border: 1px solid var(--border); background: #fff; color: var(--ink); padding: 9px 13px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+    .card h2, .card h3 { margin: 0 0 10px; font-size: 1rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: #334155; }
+    input, select, textarea { width: 100%; padding: 8px 9px; border: 1px solid var(--border); border-radius: 7px; font-size: .86rem; background: #fff; }
+    textarea { min-height: 64px; resize: vertical; }
+    .areas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 10px 0; }
+    .hours-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; margin: 10px 0; }
+    .btn { border: none; border-radius: 8px; padding: 9px 14px; font-weight: 700; cursor: pointer; font-size: .85rem; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-export { background: var(--accent); color: #fff; }
+    .btn-warn { background: var(--warn); color: #fff; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .kpi .val { font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); }
+    .kpi .lbl { font-size: .76rem; color: var(--muted); }
+    .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
+    th { background: #f8fafc; position: sticky; top: 0; z-index: 1; }
+    .hidden { display: none; }
+    .badge { padding: 2px 7px; border-radius: 999px; font-size: .74rem; font-weight: 700; }
+    .b-ok { background: #dcfce7; color: #166534; }
+    .b-no { background: #fee2e2; color: #991b1b; }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased">
-  <!-- LAYAR LOGIN EMAIL & PASSWORD -->
-  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6 border border-slate-200">
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-700 text-white font-bold text-lg mb-2">RS</div>
-        <h1 class="text-xl font-bold text-slate-900">SIM-KPK RS ARSY</h1>
-        <p class="text-xs text-slate-500 mt-1">Monitoring Operasional Keamanan, Parkir & Driver</p>
+<body>
+<header>
+  <div>
+    <h1>SIM-KPK RS ARSY — Sistem Laporan Terpisah, Rekap & Ekspor</h1>
+    <small>Patroli Keliling (2x/Shift) • Harian Satpam (1x/Shift) • Adzan Subuh • Parkir • Driver</small>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-export" onclick="exportExcel()">Ekspor Excel (.xlsx)</button>
+    <button class="btn btn-export" onclick="exportWord()">Ekspor Word (.doc)</button>
+    <button class="btn btn-warn" onclick="exportPPT()">Ekspor PPT (.pptx)</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs" id="mainTabs">
+    <button class="tab-btn active" data-tab="patroli">1. Patroli Keliling (2x/Shift)</button>
+    <button class="tab-btn" data-tab="harian">2. Laporan Harian Satpam (1x/Shift)</button>
+    <button class="tab-btn" data-tab="adzan">3. Laporan Adzan Subuh</button>
+    <button class="tab-btn" data-tab="parkir">4. Unit Parkir</button>
+    <button class="tab-btn" data-tab="driver">5. Unit Driver</button>
+  </div>
+
+  <!-- FILTER REKAP & GRAFIK -->
+  <div class="card">
+    <div class="toolbar">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <label style="flex-direction:row;align-items:center;gap:6px;">
+          Periode Rekap:
+          <select id="periodeMode" onchange="refreshView()" style="width:auto;">
+            <option value="harian">Harian (Per Tanggal)</option>
+            <option value="mingguan">Mingguan (Per Pekan)</option>
+            <option value="bulanan" selected>Bulanan (Per Bulan)</option>
+          </select>
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:6px;">
+          Tanggal / Bulan Acuan:
+          <input type="date" id="refDate" onchange="refreshView()" style="width:auto;" />
+        </label>
       </div>
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Email Anggota</label>
-          <input id="loginEmail" type="email" required placeholder="contoh: suwaji.kpk@rsarsy.id" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-          <input id="loginPass" type="password" required placeholder="Masukkan password" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
-        </div>
-        <p id="loginError" class="text-xs text-red-600 hidden"></p>
-        <button type="submit" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg text-sm transition">Masuk ke Sistem</button>
-      </form>
-      <div class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-600 space-y-1">
-        <p class="font-semibold text-slate-800">Akun Ka. Unit / Operator:</p>
-        <p>• Email: <span class="font-mono">suwaji.kpk@rsarsy.id</span> | Password: <span class="font-mono">Suwaji#2026</span></p>
-        <p class="text-[11px] text-slate-500 pt-1">Anggota unit masuk setelah emailnya diaktivasi oleh Ka. Unit / Operator.</p>
-      </div>
+      <div id="activeUnitTitle" style="font-weight:700;color:var(--primary-dark);">Unit Aktif: Patroli Keliling</div>
+    </div>
+    <div class="kpis" id="kpiBox"></div>
+    <div class="grid-2">
+      <div style="height:260px;"><canvas id="chartMain"></canvas></div>
+      <div style="height:260px;"><canvas id="chartPct"></canvas></div>
     </div>
   </div>
 
-  <!-- APLIKASI UTAMA -->
-  <div id="appShell" class="hidden min-h-screen flex flex-col">
-    <header class="bg-teal-800 text-white px-4 py-3 shadow flex flex-wrap items-center justify-between gap-2">
-      <div>
-        <h2 class="font-bold text-base">SIM-KPK RS ARSY</h2>
-        <p id="userBadge" class="text-xs text-teal-100">Login sebagai...</p>
+  <!-- FORM 1: PATROLI KELILING -->
+  <section id="panel-patroli" class="panel card">
+    <h2>Input Laporan Mutu Patroli Keliling (Target 2x / Shift)</h2>
+    <form id="form-patroli" onsubmit="savePatroli(event)">
+      <div class="form-grid">
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Status Dinas
+          <select name="dinas">
+            <option value="PAGI">PAGI</option>
+            <option value="SIANG">SIANG</option>
+            <option value="MALAM">MALAM</option>
+          </select>
+        </label>
+        <label>Status Patroli
+          <select name="status">
+            <option value="Patroli">Patroli</option>
+            <option value="Tidak Patroli">Tidak Patroli</option>
+          </select>
+        </label>
+        <label>Jam Patroli <input type="time" name="jam" value="08:00" required /></label>
+        <label>Petugas Patroli
+          <select name="petugas">
+            <option>SUWAJI</option><option>JOHAN</option><option>AGOS</option>
+            <option>AFIF</option><option>ROFI'I</option><option>YENI</option><option>ADI</option>
+          </select>
+        </label>
+        <label>Status Kondisi
+          <select name="kondisi">
+            <option value="Tidak Ada Temuan">Tidak Ada Temuan</option>
+            <option value="Ada Temuan">Ada Temuan</option>
+          </select>
+        </label>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <button id="btnExportXlsx" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-xs font-semibold">Excel (.xlsx)</button>
-        <button id="btnExportDoc" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-semibold">Word (.doc)</button>
-        <button id="btnExportPpt" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 rounded-lg text-xs font-semibold">PPT (.pptx)</button>
-        <button id="btnLogout" class="px-3 py-1.5 bg-slate-900/40 hover:bg-slate-900/60 rounded-lg text-xs font-semibold">Keluar</button>
+      <div class="areas-grid" id="patroliAreasBox"></div>
+      <label>Temuan Ketika Patroli / Alasan Tidak Patroli
+        <textarea name="temuan" placeholder="Contoh: Tidak ada temuan / aman"></textarea>
+      </label>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Patroli Keliling</button></div>
+    </form>
+  </section>
+
+  <!-- FORM 2: HARIAN SATPAM -->
+  <section id="panel-harian" class="panel card hidden">
+    <h2>Input Laporan Kegiatan Harian Satpam (Target 1x / Shift)</h2>
+    <form id="form-harian" onsubmit="saveHarian(event)">
+      <div class="form-grid">
+        <label>Nama Satpam Jaga <input type="text" name="nama" required placeholder="Nama petugas" /></label>
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Shift
+          <select name="shift">
+            <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
+            <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
+            <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
+            <option value="Sabtu Siang Poli ( 12:00 - 17:00 )">Sabtu Siang Poli ( 12:00 - 17:00 )</option>
+          </select>
+        </label>
+        <label>Lokasi Penugasan
+          <select name="lokasi">
+            <option>Pos Informasi</option>
+            <option>Gedung Poli</option>
+          </select>
+        </label>
+        <label>Ada Insiden?
+          <select name="insiden">
+            <option value="Tidak Ada Insiden">Tidak Ada Insiden</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </label>
+        <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" placeholder="Nama petugas berikut" /></label>
       </div>
-    </header>
+      <div class="hours-grid" id="harianHoursBox"></div>
+      <div class="form-grid">
+        <label>Komputer <input type="text" name="komputer" value="Ada, Berfungsi Baik" /></label>
+        <label>Kipas Angin <input type="text" name="kipas" value="Ada, Berfungsi Baik" /></label>
+        <label>Monitor CCTV <input type="text" name="cctv" value="Ada, Berfungsi Baik" /></label>
+        <label>Ampli <input type="text" name="ampli" value="Ada, Berfungsi Baik" /></label>
+        <label>Telepon Duduk <input type="text" name="telpon" value="Ada, Berfungsi Baik" /></label>
+        <label>Kunci Ruangan/Mobil/Motor <input type="text" name="kunci" value="Lengkap dan Aman" /></label>
+        <label>APAR, Helm, Kursi, Meja, Sound <input type="text" name="apar" value="Lengkap dan Aman" /></label>
+        <label>Keterangan Insiden <input type="text" name="ket_insiden" value="Tidak ada insiden" /></label>
+      </div>
+      <div class="form-grid" style="margin-top:8px;">
+        <label>Catatan Inventaris <input type="text" name="cat_inv" value="Aman" /></label>
+        <label>Instruksi Shift Sebelumnya <input type="text" name="info_prev" value="Aman" /></label>
+        <label>Instruksi Shift Berikutnya <input type="text" name="info_next" value="Aman" /></label>
+        <label>Catatan / Saran Lainnya <input type="text" name="saran" value="Tidak ada" /></label>
+      </div>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Harian</button></div>
+    </form>
+  </section>
 
-    <nav class="bg-white border-b border-slate-200 px-4 flex gap-2 overflow-x-auto">
-      <button data-tab="dashboard" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-teal-700 text-teal-800 whitespace-nowrap">Dashboard Monitoring</button>
-      <button data-tab="pelaksana" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Input Laporan Saya</button>
-      <button data-tab="keamanan" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Keamanan</button>
-      <button data-tab="parkir" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Parkir</button>
-      <button data-tab="driver" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Driver</button>
-      <button data-tab="operator" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Kontrol Operator</button>
-    </nav>
+  <!-- FORM 3: ADZAN SUBUH -->
+  <section id="panel-adzan" class="panel card hidden">
+    <h2>Input Laporan Adzan Subuh</h2>
+    <form id="form-adzan" onsubmit="saveAdzan(event)">
+      <div class="form-grid">
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Waktu Adzan Subuh <input type="time" name="waktu" value="04:00" required /></label>
+        <label>Status Adzan Subuh
+          <select name="status">
+            <option value="Adzan Sudah Dilaksanakan">Adzan Sudah Dilaksanakan</option>
+            <option value="Tidak Dilaksanakan">Tidak Dilaksanakan</option>
+          </select>
+        </label>
+        <label>Nama Petugas <input type="text" name="petugas" required placeholder="Nama petugas" /></label>
+      </div>
+      <label style="margin-top:8px;">Keterangan (Kendala / Catatan / Bukti Foto WA)
+        <input type="text" name="keterangan" placeholder="Contoh: Aman / bukti foto di grup WA" />
+      </label>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Adzan</button></div>
+    </form>
+  </section>
 
-    <main class="flex-1 p-4 max-w-7xl w-full mx-auto space-y-4">
-      <!-- TAB 1: DASHBOARD MONITORING DETAIL (KHUSUS KA. UNIT / OPERATOR) -->
-      <section id="tab-dashboard" class="tab-panel space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-wrap items-end gap-3 text-xs">
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Unit</label>
-            <select id="filterUnit" class="px-2.5 py-1.5 border rounded-lg">
-              <option value="all">Semua Unit</option>
-              <option value="keamanan">Keamanan</option>
-              <option value="parkir">Parkir</option>
-              <option value="driver">Driver</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Fokus Monitoring</label>
-            <select id="filterFocus" class="px-2.5 py-1.5 border rounded-lg">
-              <option value="all">Semua Laporan</option>
-              <option value="temuan_sec">Keamanan: Ada Temuan</option>
-              <option value="kendala_park">Parkir: Ada Kendala/Catatan</option>
-              <option value="trip_drv">Driver: Perjalanan Rujuk / Dokter</option>
-            </select>
-          </div>
-          <div>
-            <label class="block font-semibold text-slate-700 mb-1">Cari Anggota / Lokasi / Rute</label>
-            <input id="filterKeyword" type="text" placeholder="Contoh: Rofi'i, Fyghur, Sidik, RSML..." class="px-3 py-1.5 border rounded-lg w-60" />
-          </div>
-          <button id="btnResetFilter" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-lg">Reset</button>
-        </div>
+  <!-- FORM 4: PARKIR -->
+  <section id="panel-parkir" class="panel card hidden">
+    <h2>Input Laporan Kegiatan Petugas Parkir</h2>
+    <form id="form-parkir" onsubmit="saveParkir(event)">
+      <div class="form-grid">
+        <label>Nama Petugas Jaga <input type="text" name="nama" required /></label>
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Waktu Shift
+          <select name="shift">
+            <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
+            <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
+            <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
+          </select>
+        </label>
+        <label>Lokasi Jaga
+          <select name="lokasi">
+            <option value="Pos Parkir">Pos Parkir</option>
+            <option value="Menata Area Parkir">Menata Area Parkir</option>
+          </select>
+        </label>
+        <label>Status Sistem Parkir Otomatis
+          <select name="status_sistem">
+            <option value="Berfungsi Normal Sepanjang Shift">Berfungsi Normal Sepanjang Shift</option>
+            <option value="Mengalami Gangguan Sesekali">Mengalami Gangguan Sesekali</option>
+            <option value="Sering Mengalami Gangguan">Sering Mengalami Gangguan</option>
+          </select>
+        </label>
+        <label>Peralatan Tidak Normal
+          <select name="alat">
+            <option value="Normal">Normal</option>
+            <option value="Palang Otomatis (Masuk/Keluar)">Palang Otomatis (Masuk/Keluar)</option>
+            <option value="Pembaca Tiket/Kartu Keluar">Pembaca Tiket/Kartu Keluar</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </label>
+        <label>Jumlah Motor <input type="number" name="motor" min="0" value="0" required /></label>
+        <label>Jumlah Mobil <input type="number" name="mobil" min="0" value="0" required /></label>
+        <label>Intervensi Manual
+          <select name="manual">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </label>
+        <label>Jenis Kendala
+          <select name="kendala">
+            <option value="Tidak Ada Kendala">Tidak Ada Kendala</option>
+            <option value="Pengendara Kehilangan Tiket/Kartu">Pengendara Kehilangan Tiket/Kartu</option>
+            <option value="Kendaraan Mundur/Menerobos">Kendaraan Mundur/Menerobos</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </label>
+        <label>Ganti Kertas
+          <select name="ganti_kertas">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </label>
+        <label>Total Storan (Rp) <input type="number" name="storan" min="0" value="0" required /></label>
+        <label>Temuan Ketika Jaga <input type="text" name="temuan" value="-" /></label>
+        <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" /></label>
+      </div>
+      <label style="margin-top:8px;">Keterangan Gangguan / Catatan Tambahan
+        <input type="text" name="catatan" placeholder="Detail gangguan alat atau observasi" />
+      </label>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Parkir</button></div>
+    </form>
+  </section>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Patroli & Ibadah Keamanan</p>
-            <p id="kpiSecCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
-            <p id="kpiSecFinding" class="text-[11px] text-amber-700 font-medium mt-1">Ada Temuan: 0</p>
-          </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Operasional Parkir</p>
-            <p id="kpiParkCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
-            <p id="kpiParkVehicles" class="text-[11px] text-sky-700 font-medium mt-1">Motor: 0 | Mobil: 0</p>
-          </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Perjalanan Driver</p>
-            <p id="kpiDrvCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
-            <p id="kpiDrvFuel" class="text-[11px] text-teal-700 font-medium mt-1">BBM: 0 L</p>
-          </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Total Jarak Driver (KM)</p>
-            <p id="kpiKmTotal" class="text-2xl font-bold text-teal-700 mt-1">0</p>
-            <p id="kpiActiveStaff" class="text-[11px] text-slate-500 mt-1">Anggota terdata: 0</p>
-          </div>
-        </div>
+  <!-- FORM 5: DRIVER -->
+  <section id="panel-driver" class="panel card hidden">
+    <h2>Input Laporan Kegiatan Driver</h2>
+    <form id="form-driver" onsubmit="saveDriver(event)">
+      <div class="form-grid">
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Jam Berangkat <input type="time" name="jam_berangkat" required /></label>
+        <label>Jam Kembali <input type="time" name="jam_kembali" required /></label>
+        <label>Jenis Permintaan
+          <select name="jenis_permintaan">
+            <option>Antar / Jemput Dokter</option>
+            <option>Rujuk</option>
+            <option>Antar Pasien Gon</option>
+            <option>Antar / Jemput Kantor</option>
+            <option>Ngantar Pasien Pulang</option>
+            <option>Lainnya</option>
+          </select>
+        </label>
+        <label>Jenis Kendaraan
+          <select name="kendaraan">
+            <option>Mobil Dinas RS ARSY</option>
+            <option>Ambulan Pregio RS ARSY</option>
+            <option>Ambulan APV RS ARSY</option>
+            <option>Kendaraan Mobil Luar / Rental</option>
+            <option>Ambulan Luar ( Sewa )</option>
+          </select>
+        </label>
+        <label>KM Awal <input type="number" name="km_awal" min="0" required /></label>
+        <label>KM Akhir <input type="number" name="km_akhir" min="0" required /></label>
+        <label>BBM Dibeli (Liter) <input type="number" step="0.01" name="bbm_beli" value="0" /></label>
+        <label>BBM Terpakai (Liter) <input type="number" step="0.01" name="bbm_pakai" value="0" /></label>
+        <label>Harga BBM (Rp) <input type="number" name="harga_bbm" value="0" /></label>
+        <label>Isi E-Toll (Rp) <input type="number" name="etoll" value="0" /></label>
+        <label>Keterangan Unit/Poli <input type="text" name="ket_unit" placeholder="POLI / IGD / KANTOR" /></label>
+        <label>Tujuan <input type="text" name="tujuan" required placeholder="Kota / RS / Alamat" /></label>
+        <label>Status Driver
+          <select name="driver_status">
+            <option value="Dinas">Dinas</option>
+            <option value="On Call">On Call</option>
+          </select>
+        </label>
+        <label>Nama Driver
+          <select name="driver_nama">
+            <option>SUMINTRI</option><option>SIDIK</option><option>ZAINAL ARIFIN</option><option>DIMAS</option>
+          </select>
+        </label>
+        <label>Insiden di Jalan
+          <select name="insiden">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </label>
+      </div>
+      <label style="margin-top:8px;">Keterangan Hambatan / Kendala
+        <input type="text" name="hambatan" value="tidak ada" />
+      </label>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Driver</button></div>
+    </form>
+  </section>
 
-        <!-- PANEL PERHATIAN / TEMUAN & KENDALA TERBARU -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div class="bg-white p-4 rounded-xl border border-amber-200">
-            <h3 class="text-xs font-bold uppercase tracking-wide text-amber-800 mb-2">Perlu Perhatian — Keamanan</h3>
-            <ul id="listAlertSec" class="space-y-2 text-xs"></ul>
-          </div>
-          <div class="bg-white p-4 rounded-xl border border-sky-200">
-            <h3 class="text-xs font-bold uppercase tracking-wide text-sky-800 mb-2">Catatan Shift — Parkir</h3>
-            <ul id="listAlertPark" class="space-y-2 text-xs"></ul>
-          </div>
-          <div class="bg-white p-4 rounded-xl border border-teal-200">
-            <h3 class="text-xs font-bold uppercase tracking-wide text-teal-800 mb-2">Rute & Jarak — Driver</h3>
-            <ul id="listAlertDrv" class="space-y-2 text-xs"></ul>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <h3 class="text-sm font-bold text-slate-800 mb-3">Jumlah Laporan Per Unit</h3>
-            <canvas id="unitChart" height="150"></canvas>
-          </div>
-          <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <h3 class="text-sm font-bold text-slate-800 mb-3">Jarak Tempuh Per Driver (KM)</h3>
-            <canvas id="driverChart" height="150"></canvas>
-          </div>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h3 class="text-sm font-bold text-slate-800 mb-3">Rekap Kinerja & Akun Per Anggota</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-100 border-b">
-                  <th class="p-2">Anggota</th>
-                  <th class="p-2">Email</th>
-                  <th class="p-2">Unit</th>
-                  <th class="p-2">Status Akun</th>
-                  <th class="p-2">Jumlah Laporan</th>
-                  <th class="p-2">Ringkasan Capaian</th>
-                </tr>
-              </thead>
-              <tbody id="tablePelaksanaRekap"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 2: INPUT LAPORAN SAYA / PELAKSANA -->
-      <section id="tab-pelaksana" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4 text-xs">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
-            <div>
-              <h3 class="font-bold text-sm text-slate-900">Template Form Laporan Unit</h3>
-              <p class="text-slate-500">Anggota mengisi laporan sesuai template unitnya; Ka. Unit dapat memilih unit dan anggota manapun.</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <label class="font-semibold">Unit:</label>
-              <select id="execUnitSelect" class="px-2.5 py-1.5 border rounded-lg font-semibold">
-                <option value="keamanan">Keamanan</option>
-                <option value="parkir">Parkir</option>
-                <option value="driver">Driver</option>
-              </select>
-              <label class="font-semibold">Anggota:</label>
-              <select id="execStaffSelect" class="px-2.5 py-1.5 border rounded-lg font-semibold"></select>
-              <button type="button" id="btnFillTemplate" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border rounded-lg font-semibold">Isi Template Standar</button>
-            </div>
-          </div>
-
-          <p id="execLockNotice" class="hidden p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 font-medium"></p>
-
-          <form id="execFormSec" class="exec-form grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
-              <label class="block font-semibold mb-1">Tanggal</label>
-              <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jenis Dinas</label>
-              <select name="dinas" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>PAGI</option><option>SIANG</option><option>MALAM</option><option>SUBUH (ADZAN)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Kegiatan</label>
-              <select name="statusPatroli" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Patroli</option><option>Adzan Subuh & Patroli</option><option>Tidak Patroli</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jam Pelaksanaan</label>
-              <input name="jam" type="text" value="04:30:00" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Area / Lokasi Pantau</label>
-              <input name="area" type="text" value="Masjid & Seluruh Area RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Kondisi</label>
-              <select name="kondisi" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Tidak Ada Temuan</option><option>Ada Temuan</option>
-              </select>
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block font-semibold mb-1">Temuan / Keterangan / Adzan Subuh</label>
-              <input name="temuan" type="text" value="Terlaksana tepat waktu, area aman" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Kirim Laporan Keamanan</button>
-            </div>
-          </form>
-
-          <form id="execFormPark" class="exec-form hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
-              <label class="block font-semibold mb-1">Tanggal</label>
-              <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Waktu Shift</label>
-              <select name="shift" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Pagi ( 07:00 - 14:00 )</option>
-                <option>Siang ( 14:00 - 21:00 )</option>
-                <option>Malam ( 21:00 - 07:00 )</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Lokasi Jaga</label>
-              <select name="lokasi" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Pos Parkir</option><option>Menata Area Parkir</option><option>Gate Masuk / Keluar</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Total Storan (Rp)</label>
-              <input name="storan" type="text" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jumlah Motor</label>
-              <input name="motor" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jumlah Mobil</label>
-              <input name="mobil" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block font-semibold mb-1">Kendala / Catatan Shift</label>
-              <input name="kendala" type="text" value="Normal / lancar" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Kirim Laporan Parkir</button>
-            </div>
-          </form>
-
-          <form id="execFormDrv" class="exec-form hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
-              <label class="block font-semibold mb-1">Tanggal</label>
-              <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jenis Permintaan</label>
-              <select name="jenis" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Antar / Jemput Dokter</option>
-                <option>Rujuk Pasien</option>
-                <option>Logistik / PMI / Administrasi</option>
-                <option>Operasional RS</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Kendaraan</label>
-              <input name="kendaraan" type="text" value="Mobil Dinas RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Perjalanan</label>
-              <select name="statusTrip" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Selesai</option><option>Dalam Perjalanan</option><option>Standby</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jarak Tempuh (KM)</label>
-              <input name="km" type="number" step="0.1" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">BBM Terpakai (L)</label>
-              <input name="bbm" type="number" step="0.01" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block font-semibold mb-1">Tujuan / Rute / Keterangan</label>
-              <input name="tujuan" type="text" value="Operasional RS" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Kirim Laporan Driver</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h4 class="font-bold text-xs text-slate-800 mb-2">Riwayat Laporan Terkirim</h4>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-100 border-b">
-                  <th class="p-2">Tanggal</th><th class="p-2">Pelaksana</th><th class="p-2">Email</th><th class="p-2">Unit</th><th class="p-2">Rincian</th>
-                </tr>
-              </thead>
-              <tbody id="tableExecHistory"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 3: LAPORAN KEAMANAN -->
-      <section id="tab-keamanan" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
-          <h3 class="font-bold text-sm mb-3">Rekap Laporan Unit Keamanan</h3>
-          <table class="w-full text-xs text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-100 border-b">
-                <th class="p-2">Tanggal</th><th class="p-2">Dinas</th><th class="p-2">Kegiatan</th><th class="p-2">Jam</th><th class="p-2">Petugas</th><th class="p-2">Area</th><th class="p-2">Kondisi</th><th class="p-2">Keterangan</th><th class="p-2">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tableSec"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- TAB 4: LAPORAN PARKIR -->
-      <section id="tab-parkir" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
-          <h3 class="font-bold text-sm mb-3">Rekap Laporan Unit Parkir</h3>
-          <table class="w-full text-xs text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-100 border-b">
-                <th class="p-2">Tanggal</th><th class="p-2">Petugas</th><th class="p-2">Shift</th><th class="p-2">Lokasi</th><th class="p-2">Motor</th><th class="p-2">Mobil</th><th class="p-2">Storan</th><th class="p-2">Kendala</th><th class="p-2">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tablePark"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- TAB 5: LAPORAN DRIVER -->
-      <section id="tab-driver" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
-          <h3 class="font-bold text-sm mb-3">Rekap Laporan Unit Driver</h3>
-          <table class="w-full text-xs text-left border-collapse">
-            <thead>
-              <tr class="bg-slate-100 border-b">
-                <th class="p-2">Tanggal</th><th class="p-2">Driver</th><th class="p-2">Permintaan</th><th class="p-2">Kendaraan</th><th class="p-2">KM</th><th class="p-2">BBM (L)</th><th class="p-2">Status</th><th class="p-2">Tujuan</th><th class="p-2">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tableDrv"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- TAB 6: KONTROL OPERATOR (KHUSUS KA. UNIT) -->
-      <section id="tab-operator" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4 text-xs">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="font-bold text-sm text-slate-900">Kontrol Operator — Aktivasi Email, Password & Hak Akses</h3>
-              <p class="text-slate-500">Siapkan pesan aktivasi untuk dikirim ke email anggota (via Gmail/WA/email kantor), lalu aktifkan akunnya di tabel bawah.</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <button id="btnBackupJson" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg">Backup (.json)</button>
-              <label class="px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg cursor-pointer">
-                Restore (.json)
-                <input id="inputRestoreJson" type="file" accept=".json" class="hidden" />
-              </label>
-              <button id="btnResetDemoData" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg">Reset Awal</button>
-            </div>
-          </div>
-
-          <!-- KOTAK PESAN AKTIVASI SIAP KIRIM (TANPA MAILTO YANG SERING GAGAL) -->
-          <div id="activationBox" class="hidden p-3.5 rounded-xl bg-sky-50 border border-sky-200 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <p id="activationTargetLabel" class="font-bold text-sky-950">Pesan Aktivasi Anggota</p>
-              <div class="flex flex-wrap gap-2">
-                <button type="button" id="btnCopyActivationMsg" class="px-3 py-1 bg-sky-700 hover:bg-sky-800 text-white rounded-lg font-semibold">Salin Pesan Aktivasi</button>
-                <a id="linkGmailCompose" href="https://mail.google.com/mail/?view=cm&fs=1" target="_blank" rel="noopener noreferrer" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold">Buka Gmail Web</a>
-                <button type="button" id="btnConfirmActivateNow" class="px-3 py-1 bg-teal-800 hover:bg-teal-900 text-white rounded-lg font-semibold">Tandai Sudah Teraktivasi</button>
-              </div>
-            </div>
-            <textarea id="activationMessageArea" rows="6" readonly class="w-full p-2.5 bg-white border border-sky-200 rounded-lg font-mono text-[11px] text-slate-800"></textarea>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-slate-50 rounded-xl border">
-            <label class="flex items-center justify-between bg-white p-3 rounded-lg border">
-              <span class="font-semibold">Buka Input Unit Keamanan</span>
-              <input id="permSecInput" type="checkbox" checked class="w-4 h-4 accent-teal-700" />
-            </label>
-            <label class="flex items-center justify-between bg-white p-3 rounded-lg border">
-              <span class="font-semibold">Buka Input Unit Parkir</span>
-              <input id="permParkInput" type="checkbox" checked class="w-4 h-4 accent-teal-700" />
-            </label>
-            <label class="flex items-center justify-between bg-white p-3 rounded-lg border">
-              <span class="font-semibold">Buka Input Unit Driver</span>
-              <input id="permDrvInput" type="checkbox" checked class="w-4 h-4 accent-teal-700" />
-            </label>
-          </div>
-
-          <form id="formAddAccount" class="grid grid-cols-1 sm:grid-cols-5 gap-3 p-3 bg-teal-50/60 rounded-xl border border-teal-200">
-            <div>
-              <label class="block font-semibold mb-1">Email Anggota</label>
-              <input name="email" type="email" required placeholder="nama.unit@rsarsy.id" class="w-full px-2.5 py-1.5 border rounded-lg bg-white" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Nama Lengkap</label>
-              <input name="name" type="text" required placeholder="Nama Anggota" class="w-full px-2.5 py-1.5 border rounded-lg bg-white" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Unit</label>
-              <select name="unit" class="w-full px-2.5 py-1.5 border rounded-lg bg-white">
-                <option value="keamanan">Keamanan</option>
-                <option value="parkir">Parkir</option>
-                <option value="driver">Driver</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Password Awal</label>
-              <input name="password" type="text" required value="Arsy#2026" class="w-full px-2.5 py-1.5 border rounded-lg bg-white font-mono" />
-            </div>
-            <div class="flex items-end">
-              <button type="submit" class="w-full px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">+ Tambah & Buat Aktivasi</button>
-            </div>
-          </form>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-100 border-b">
-                  <th class="p-2">Email Anggota</th>
-                  <th class="p-2">Nama</th>
-                  <th class="p-2">Unit</th>
-                  <th class="p-2">Password</th>
-                  <th class="p-2">Status</th>
-                  <th class="p-2">Aktivasi & Akses</th>
-                </tr>
-              </thead>
-              <tbody id="tableAccounts"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
+  <!-- TABEL REKAP -->
+  <div class="card">
+    <h3 id="rekapTableTitle">Rekap Data Tersimpan</h3>
+    <div class="table-wrap">
+      <table id="rekapTable"></table>
+    </div>
   </div>
+</div>
 
-  <script>
-    const APP_URL = "https://suwajiaji1305-prog.github.io/sim-kpk-rs-arsy/";
+<script>
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V2';
+const AREAS = [
+  'AREA PARKIR','DEPAN IGD','DEPAN POLI','RUANG IGD','RUANG PONEK',
+  'GEDUNG POLI LANTAI 1','GEDUNG POLI LANTAI 2','GEDUNG KANTOR LANTAI 3',
+  'GEDUNG MUSA LANTAI 2','GEDUNG KHADIJAH LANTAI 2','GEDUNG IBRAHIM LANTAI 3',
+  'AREA BELAKANG RS, GIZI , OKSIGEN , TABUNG LIQUID'
+];
+const HOURS = [
+  '07:00 - 08:00','08:00 - 09:00','09:00 - 10:00','10:00 - 11:00','11:00 - 12:00','12:00 - 13:00','13:00 - 14:00',
+  '14:00 - 15:00','15:00 - 16:00','16:00 - 17:00','17:00 - 18:00','18:00 - 19:00','19:00 - 20:00','20:00 - 21:00',
+  '21:00 - 22:00','22:00 - 23:00','23:00 - 00:00','00:00 - 01:00','01:00 - 02:00','02:00 - 03:00','03:00 - 04:00',
+  '04:00 - 05:00','05:00 - 06:00','06:00 - 07:00'
+];
 
-    const DEFAULT_ACCOUNTS = {
-      "suwaji.kpk@rsarsy.id": { name: "Suwaji (Ka. Unit / Operator)", role: "admin", unit: "all", password: "Suwaji#2026", status: "active" },
-      "johan.sec@rsarsy.id": { name: "Johan", role: "staff", unit: "keamanan", password: "Johan#2026", status: "pending" },
-      "agos.sec@rsarsy.id": { name: "Agos", role: "staff", unit: "keamanan", password: "Agos#2026", status: "pending" },
-      "afif.sec@rsarsy.id": { name: "Afif", role: "staff", unit: "keamanan", password: "Afif#2026", status: "pending" },
-      "rofii.sec@rsarsy.id": { name: "Rofi'i", role: "staff", unit: "keamanan", password: "Rofii#2026", status: "pending" },
-      "yeni.sec@rsarsy.id": { name: "Yeni", role: "staff", unit: "keamanan", password: "Yeni#2026", status: "pending" },
-      "adi.sec@rsarsy.id": { name: "Adi", role: "staff", unit: "keamanan", password: "Adi#2026", status: "pending" },
-      "fyghur.park@rsarsy.id": { name: "Fyghur Nanda", role: "staff", unit: "parkir", password: "Fyghur#2026", status: "pending" },
-      "arry.park@rsarsy.id": { name: "Arry Adhi A.", role: "staff", unit: "parkir", password: "Arry#2026", status: "pending" },
-      "ahmad.park@rsarsy.id": { name: "Ahmad Roisul", role: "staff", unit: "parkir", password: "Ahmad#2026", status: "pending" },
-      "sumintri.drv@rsarsy.id": { name: "Sumintri", role: "staff", unit: "driver", password: "Sumintri#2026", status: "pending" },
-      "sidik.drv@rsarsy.id": { name: "Sidik", role: "staff", unit: "driver", password: "Sidik#2026", status: "pending" },
-      "zainal.drv@rsarsy.id": { name: "Zainal Arifin", role: "staff", unit: "driver", password: "Zainal#2026", status: "pending" },
-      "dimas.drv@rsarsy.id": { name: "Dimas", role: "staff", unit: "driver", password: "Dimas#2026", status: "pending" }
-    };
+let currentTab = 'patroli';
+let chartMain = null, chartPct = null;
 
-    const STORAGE_KEY = "sim_kpk_rs_arsy_v4";
-    const initialData = {
-      accounts: structuredClone(DEFAULT_ACCOUNTS),
-      permissions: { keamanan: true, parkir: true, driver: true },
-      keamanan: [
-        { tanggal: "01/11/2026", dinas: "PAGI", statusPatroli: "Patroli", jam: "10:00:00", petugas: "Johan", email: "johan.sec@rsarsy.id", area: "Seluruh Area RS", kondisi: "Tidak Ada Temuan", temuan: "tidak ada temuan" },
-        { tanggal: "09/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "20:30:00", petugas: "Agos", email: "agos.sec@rsarsy.id", area: "Poliklinik", kondisi: "Tidak Ada Temuan", temuan: "lampu poli mati metengi" },
-        { tanggal: "16/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "15:24:00", petugas: "Afif", email: "afif.sec@rsarsy.id", area: "Ruang Khodijah 3", kondisi: "Tidak Ada Temuan", temuan: "Ac Khodijah 3 rusak" },
-        { tanggal: "17/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "20:30:00", petugas: "Rofi'i", email: "rofii.sec@rsarsy.id", area: "Ruang Wadir", kondisi: "Ada Temuan", temuan: "Ruang wadir ac+lampu nyala" },
-        { tanggal: "22/11/2026", dinas: "SIANG", statusPatroli: "Patroli", jam: "16:30:00", petugas: "Yeni", email: "yeni.sec@rsarsy.id", area: "Ruang Ibrahim 3", kondisi: "Tidak Ada Temuan", temuan: "Listrik Ibrahim 3 sak ngalor ngidul mati" }
-      ],
-      parkir: [
-        { tanggal: "01/09/2026", petugas: "Fyghur Nanda", email: "fyghur.park@rsarsy.id", shift: "Pagi ( 07:00 - 14:00 )", lokasi: "Pos Parkir", motor: 206, mobil: 17, storan: "268.000", kendala: "Kendaraan Mundur/Menerobos" },
-        { tanggal: "01/09/2026", petugas: "Arry Adhi A.", email: "arry.park@rsarsy.id", shift: "Siang ( 14:00 - 21:00 )", lokasi: "Pos Parkir", motor: 302, mobil: 29, storan: "653", kendala: "Pengendara Kehilangan Tiket/Kartu" },
-        { tanggal: "07/09/2026", petugas: "Fyghur Nanda", email: "fyghur.park@rsarsy.id", shift: "Siang ( 14:00 - 21:00 )", lokasi: "Pos Parkir", motor: 357, mobil: 34, storan: "565.000", kendala: "Temuan: Kartu pertamina" },
-        { tanggal: "30/09/2026", petugas: "Ahmad Roisul", email: "ahmad.park@rsarsy.id", shift: "Malam ( 21:00 - 07:00 )", lokasi: "Pos Parkir", motor: 102, mobil: 3, storan: "102.000", kendala: "Kabel monitor goyah/macet" }
-      ],
-      driver: [
-        { tanggal: "01/11/2026", driver: "Sumintri", email: "sumintri.drv@rsarsy.id", jenis: "Antar / Jemput Dokter", kendaraan: "Mobil Dinas RS ARSY", km: 115, bbm: 13, statusTrip: "Selesai", tujuan: "Jemput dr wijdhan di icon mall gresik" },
-        { tanggal: "01/11/2026", driver: "Sidik", email: "sidik.drv@rsarsy.id", jenis: "Rujuk", kendaraan: "Ambulan Pregio RS ARSY", km: 93, bbm: 14, statusTrip: "Selesai", tujuan: "Antar ke RSML" },
-        { tanggal: "03/11/2026", driver: "Zainal Arifin", email: "zainal.drv@rsarsy.id", jenis: "Antar / Jemput Dokter", kendaraan: "Mobil Dinas RS ARSY", km: 209, bbm: 17, statusTrip: "Selesai", tujuan: "Antar dr anik ke sidoarjo" },
-        { tanggal: "14/11/2026", driver: "Dimas", email: "dimas.drv@rsarsy.id", jenis: "Rujuk", kendaraan: "Ambulan APV RS ARSY", km: 160, bbm: 20, statusTrip: "Selesai", tujuan: "RSUD Soetomo Surabaya" }
+function defaultData() {
+  return {
+    patroli: [
+      { id: 1, tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 2, tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '12:30', petugas: 'SUWAJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 3, tanggal: '2026-11-26', dinas: 'SIANG', status: 'Patroli', jam: '15:30', petugas: 'JOHAN', kondisi: 'Ada Temuan', temuan: 'Lampu lorong perlu dicek', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) }
+    ],
+    harian: [
+      { id: 1, tanggal: '2026-11-26', nama: 'Suwaji', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Informasi', insiden: 'Tidak Ada Insiden', next_petugas: 'Johan', jam: {} }
+    ],
+    adzan: [
+      { id: 1, tanggal: '2026-11-26', waktu: '03:55', status: 'Adzan Sudah Dilaksanakan', petugas: 'Johan', keterangan: 'Aman' }
+    ],
+    parkir: [
+      { id: 1, tanggal: '2026-11-26', nama: 'Arry', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Parkir', status_sistem: 'Berfungsi Normal Sepanjang Shift', alat: 'Normal', motor: 185, mobil: 22, manual: 'Tidak', kendala: 'Tidak Ada Kendala', ganti_kertas: 'Tidak', storan: 295000, temuan: '-', catatan: 'Normal' }
+    ],
+    driver: [
+      { id: 1, tanggal: '2026-11-26', jam_berangkat: '08:00', jam_kembali: '11:30', jenis_permintaan: 'Antar / Jemput Dokter', kendaraan: 'Mobil Dinas RS ARSY', km_awal: 133100, km_akhir: 133195, jarak: 95, bbm_beli: 15, bbm_pakai: 9, harga_bbm: 150000, etoll: 0, ket_unit: 'POLI', tujuan: 'Lamongan', driver_status: 'Dinas', driver_nama: 'DIMAS', insiden: 'Tidak', hambatan: 'tidak ada' }
+    ]
+  };
+}
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : defaultData();
+  } catch {
+    return defaultData();
+  }
+}
+
+function saveDB(db) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+}
+
+function initForms() {
+  const today = '2026-11-27';
+  document.getElementById('refDate').value = today;
+  document.querySelectorAll('input[type="date"][name="tanggal"]').forEach(el => el.value = today);
+
+  document.getElementById('patroliAreasBox').innerHTML = AREAS.map(a => `
+    <label>${a}
+      <select name="area_${btoa(a).replace(/=/g,'')}">
+        <option value="Aman">Aman</option>
+        <option value="Tidak">Tidak</option>
+      </select>
+    </label>
+  `).join('');
+
+  document.getElementById('harianHoursBox').innerHTML = HOURS.map(h => `
+    <label>Pukul ${h}
+      <input type="text" name="hr_${h.replace(/[^0-9]/g,'')}" placeholder="Kegiatan jam ${h}" />
+    </label>
+  `).join('');
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`panel-${currentTab}`).classList.remove('hidden');
+      const labels = {
+        patroli: 'Patroli Keliling (Target 2x/Shift)',
+        harian: 'Laporan Harian Satpam (Target 1x/Shift)',
+        adzan: 'Laporan Adzan Subuh',
+        parkir: 'Unit Parkir',
+        driver: 'Unit Driver'
+      };
+      document.getElementById('activeUnitTitle').textContent = `Unit Aktif: ${labels[currentTab]}`;
+      refreshView();
+    });
+  });
+}
+
+function savePatroli(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  const areas = {};
+  AREAS.forEach(a => {
+    areas[a] = fd.get('area_' + btoa(a).replace(/=/g,'')) || 'Aman';
+  });
+  db.patroli.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    dinas: fd.get('dinas'),
+    status: fd.get('status'),
+    jam: fd.get('jam'),
+    petugas: fd.get('petugas'),
+    kondisi: fd.get('kondisi'),
+    temuan: fd.get('temuan') || '-',
+    areas
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveHarian(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  const jam = {};
+  HOURS.forEach(h => { jam[h] = fd.get('hr_' + h.replace(/[^0-9]/g,'')) || ''; });
+  db.harian.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    nama: fd.get('nama'),
+    shift: fd.get('shift'),
+    lokasi: fd.get('lokasi'),
+    insiden: fd.get('insiden'),
+    next_petugas: fd.get('next_petugas') || '-',
+    jam
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveAdzan(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  db.adzan.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    waktu: fd.get('waktu'),
+    status: fd.get('status'),
+    petugas: fd.get('petugas'),
+    keterangan: fd.get('keterangan') || '-'
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveParkir(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  db.parkir.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    nama: fd.get('nama'),
+    shift: fd.get('shift'),
+    lokasi: fd.get('lokasi'),
+    status_sistem: fd.get('status_sistem'),
+    alat: fd.get('alat'),
+    motor: Number(fd.get('motor') || 0),
+    mobil: Number(fd.get('mobil') || 0),
+    manual: fd.get('manual'),
+    kendala: fd.get('kendala'),
+    ganti_kertas: fd.get('ganti_kertas'),
+    storan: Number(fd.get('storan') || 0),
+    temuan: fd.get('temuan') || '-',
+    catatan: fd.get('catatan') || '-'
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveDriver(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  const kmAwal = Number(fd.get('km_awal') || 0);
+  const kmAkhir = Number(fd.get('km_akhir') || 0);
+  db.driver.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    jam_berangkat: fd.get('jam_berangkat'),
+    jam_kembali: fd.get('jam_kembali'),
+    jenis_permintaan: fd.get('jenis_permintaan'),
+    kendaraan: fd.get('kendaraan'),
+    km_awal: kmAwal,
+    km_akhir: kmAkhir,
+    jarak: Math.max(0, kmAkhir - kmAwal),
+    bbm_beli: Number(fd.get('bbm_beli') || 0),
+    bbm_pakai: Number(fd.get('bbm_pakai') || 0),
+    harga_bbm: Number(fd.get('harga_bbm') || 0),
+    etoll: Number(fd.get('etoll') || 0),
+    ket_unit: fd.get('ket_unit') || '-',
+    tujuan: fd.get('tujuan'),
+    driver_status: fd.get('driver_status'),
+    driver_nama: fd.get('driver_nama'),
+    insiden: fd.get('insiden'),
+    hambatan: fd.get('hambatan') || 'tidak ada'
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function filterByPeriode(rows) {
+  const mode = document.getElementById('periodeMode').value;
+  const ref = new Date(document.getElementById('refDate').value + 'T00:00:00');
+  if (isNaN(ref)) return rows;
+  return rows.filter(r => {
+    const d = new Date((r.tanggal || '') + 'T00:00:00');
+    if (isNaN(d)) return true;
+    if (mode === 'harian') return d.toDateString() === ref.toDateString();
+    if (mode === 'mingguan') {
+      const diff = Math.abs(d - ref) / (1000 * 60 * 60 * 24);
+      return diff <= 3.5;
+    }
+    return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth();
+  });
+}
+
+function pct(part, total) {
+  if (!total) return 0;
+  return Math.round((part / total) * 1000) / 10;
+}
+
+function renderCharts(labels, s1, s2, pctLabels, pctVals, title1, title2) {
+  if (chartMain) chartMain.destroy();
+  if (chartPct) chartPct.destroy();
+  chartMain = new Chart(document.getElementById('chartMain'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: title1, data: s1, backgroundColor: '#0f766e' },
+        { label: title2, data: s2, backgroundColor: '#94a3b8' }
       ]
-    };
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(initialData);
-        const p = JSON.parse(raw);
-        return {
-          accounts: p.accounts || structuredClone(DEFAULT_ACCOUNTS),
-          permissions: p.permissions || { keamanan: true, parkir: true, driver: true },
-          keamanan: Array.isArray(p.keamanan) ? p.keamanan : structuredClone(initialData.keamanan),
-          parkir: Array.isArray(p.parkir) ? p.parkir : structuredClone(initialData.parkir),
-          driver: Array.isArray(p.driver) ? p.driver : structuredClone(initialData.driver)
-        };
-      } catch {
-        return structuredClone(initialData);
-      }
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Perbandingan Jumlah' } } }
+  });
+  chartPct = new Chart(document.getElementById('chartPct'), {
+    type: 'bar',
+    data: {
+      labels: pctLabels,
+      datasets: [{ label: 'Persentase (%)', data: pctVals, backgroundColor: ['#0284c7', '#0d9488', '#4f46e5', '#d97706'] }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { y: { min: 0, max: 100 } },
+      plugins: { title: { display: true, text: 'Pembanding Persentase (%)' } }
     }
+  });
+}
 
-    let stateData = loadState();
-    let currentUser = null;
-    let selectedActivationEmail = null;
-    let unitChartInstance = null;
-    let driverChartInstance = null;
+function refreshView() {
+  const db = loadDB();
+  const mode = document.getElementById('periodeMode').value;
+  const rows = filterByPeriode(db[currentTab] || []);
+  const kpiBox = document.getElementById('kpiBox');
+  const table = document.getElementById('rekapTable');
+  document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()}) — ${rows.length} Data`;
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateData));
-    }
+  if (currentTab === 'patroli') {
+    const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
+    const targetShift = mode === 'harian' ? 2 : daysCount * 2;
+    const shifts = ['PAGI', 'SIANG', 'MALAM'];
+    const realPerShift = shifts.map(s => rows.filter(r => r.dinas === s && r.status === 'Patroli').length);
+    const pctPerShift = realPerShift.map(v => pct(v, targetShift));
+    const temuanCount = rows.filter(r => r.kondisi === 'Ada Temuan').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Entri Patroli</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Patroli Terlaksana</div><div class="val">${rows.filter(r=>r.status==='Patroli').length}</div></div>
+      <div class="kpi"><div class="lbl">% Temuan vs Aman</div><div class="val">${pct(temuanCount, rows.length)}%</div></div>
+      <div class="kpi"><div class="lbl">Target / Shift (2x)</div><div class="val">${targetShift}</div></div>
+    `;
+    renderCharts(shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'harian') {
+    const shifts = ['Pagi ( 07:00 - 14:00 )', 'Siang ( 14:00 - 21:00 )', 'Malam ( 21:00 - 07:00 )'];
+    const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
+    const target = mode === 'harian' ? 1 : daysCount;
+    const counts = shifts.map(s => rows.filter(r => r.shift === s).length);
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Laporan Harian Masuk</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Insiden Tercatat</div><div class="val">${rows.filter(r=>r.insiden==='Ya').length}</div></div>
+      <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(rows.filter(r=>r.insiden!=='Ya').length, rows.length)}%</div></div>
+    `;
+    renderCharts(['Pagi','Siang','Malam'], counts, [target,target,target], ['Pagi','Siang','Malam'], counts.map(c=>pct(c,target)), 'Laporan Harian', 'Target (1x/Shift)');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'adzan') {
+    const done = rows.filter(r => r.status === 'Adzan Sudah Dilaksanakan').length;
+    const notDone = rows.filter(r => r.status !== 'Adzan Sudah Dilaksanakan').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Entri Subuh</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Sudah Adzan</div><div class="val">${done} (${pct(done, rows.length)}%)</div></div>
+      <div class="kpi"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div></div>
+    `;
+    renderCharts(['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah Hari', 'Total Entri');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'parkir') {
+    const totMotor = rows.reduce((a,b)=>a+(b.motor||0),0);
+    const totMobil = rows.reduce((a,b)=>a+(b.mobil||0),0);
+    const totStoran = rows.reduce((a,b)=>a+(b.storan||0),0);
+    const normalCnt = rows.filter(r => r.status_sistem === 'Berfungsi Normal Sepanjang Shift').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Motor</div><div class="val">${totMotor}</div></div>
+      <div class="kpi"><div class="lbl">Total Mobil</div><div class="val">${totMobil}</div></div>
+      <div class="kpi"><div class="lbl">Total Storan</div><div class="val">Rp ${totStoran.toLocaleString('id-ID')}</div></div>
+      <div class="kpi"><div class="lbl">% Sistem Normal</div><div class="val">${pct(normalCnt, rows.length)}%</div></div>
+    `;
+    renderCharts(['Motor','Mobil'], [totMotor, totMobil], [0,0], ['Sistem Normal','Gangguan/Manual'], [pct(normalCnt, rows.length), pct(rows.length-normalCnt, rows.length)], 'Jumlah Kendaraan', 'Cadangan');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Sistem</th><th>Motor</th><th>Mobil</th><th>Storan</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.status_sistem}</td><td>${r.motor}</td><td>${r.mobil}</td><td>Rp ${(r.storan||0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'driver') {
+    const totKm = rows.reduce((a,b)=>a+(b.jarak||0),0);
+    const totBbm = rows.reduce((a,b)=>a+(b.bbm_pakai||0),0);
+    const totEtoll = rows.reduce((a,b)=>a+(b.etoll||0),0);
+    const insCnt = rows.filter(r => r.insiden === 'Ya').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Perjalanan</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Total Jarak</div><div class="val">${totKm} km</div></div>
+      <div class="kpi"><div class="lbl">BBM Terpakai</div><div class="val">${totBbm} L</div></div>
+      <div class="kpi"><div class="lbl">% Aman (No Insiden)</div><div class="val">${pct(rows.length-insCnt, rows.length)}%</div></div>
+    `;
+    const jenisList = ['Antar / Jemput Dokter','Rujuk','Antar Pasien Gon','Antar / Jemput Kantor'];
+    const jCounts = jenisList.map(j => rows.filter(r => r.jenis_permintaan === j).length);
+    renderCharts(jenisList, jCounts, jenisList.map(()=>rows.length), jenisList, jCounts.map(c=>pct(c, rows.length)), 'Jumlah Trip', 'Total Trip');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>KM</th><th>BBM (L)</th><th>E-Toll</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak} km</td><td>${r.bbm_pakai}</td><td>Rp ${(r.etoll||0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
+  }
+}
 
-    function findEmailByName(name) {
-      const target = String(name || "").trim().toLowerCase();
-      const found = Object.entries(stateData.accounts).find(([, acc]) => acc.name.toLowerCase() === target);
-      return found ? found[0] : "-";
-    }
-
-    function getScopedData() {
-      if (currentUser?.role === "admin") {
-        return { keamanan: stateData.keamanan, parkir: stateData.parkir, driver: stateData.driver };
-      }
-      const matchSelf = r =>
-        String(r.email || "").toLowerCase() === currentUser.email.toLowerCase() ||
-        String(r.petugas || r.driver || "").toLowerCase() === currentUser.name.toLowerCase();
-      return {
-        keamanan: currentUser.unit === "keamanan" ? stateData.keamanan.filter(matchSelf) : [],
-        parkir: currentUser.unit === "parkir" ? stateData.parkir.filter(matchSelf) : [],
-        driver: currentUser.unit === "driver" ? stateData.driver.filter(matchSelf) : []
-      };
-    }
-
-    function getFilteredData() {
-      const scoped = getScopedData();
-      const unitFilter = document.getElementById("filterUnit")?.value || "all";
-      const focusFilter = document.getElementById("filterFocus")?.value || "all";
-      const kw = (document.getElementById("filterKeyword")?.value || "").trim().toLowerCase();
-      const matchText = obj => !kw || JSON.stringify(obj).toLowerCase().includes(kw);
-
-      let sec = (unitFilter === "all" || unitFilter === "keamanan") ? scoped.keamanan.filter(matchText) : [];
-      let park = (unitFilter === "all" || unitFilter === "parkir") ? scoped.parkir.filter(matchText) : [];
-      let drv = (unitFilter === "all" || unitFilter === "driver") ? scoped.driver.filter(matchText) : [];
-
-      if (focusFilter === "temuan_sec") {
-        sec = sec.filter(r => r.kondisi === "Ada Temuan" || String(r.temuan || "").toLowerCase().includes("rusak") || String(r.temuan || "").toLowerCase().includes("mati") || String(r.temuan || "").toLowerCase().includes("nyala"));
-        park = []; drv = [];
-      } else if (focusFilter === "kendala_park") {
-        park = park.filter(r => String(r.kendala || "").toLowerCase() !== "normal");
-        sec = []; drv = [];
-      } else if (focusFilter === "trip_drv") {
-        drv = drv.filter(r => String(r.jenis || "").toLowerCase().includes("rujuk") || String(r.jenis || "").toLowerCase().includes("dokter"));
-        sec = []; park = [];
-      }
-
-      return { keamanan: sec, parkir: park, driver: drv };
-    }
-
-    function applyRoleAccess() {
-      const isAdmin = currentUser.role === "admin";
-      const allowedTabs = isAdmin
-        ? ["dashboard", "pelaksana", "keamanan", "parkir", "driver", "operator"]
-        : ["pelaksana", currentUser.unit];
-
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.toggle("hidden", !allowedTabs.includes(btn.dataset.tab));
-      });
-
-      document.getElementById("btnExportXlsx").classList.toggle("hidden", !isAdmin);
-      document.getElementById("btnExportDoc").classList.toggle("hidden", !isAdmin);
-      document.getElementById("btnExportPpt").classList.toggle("hidden", !isAdmin);
-
-      populateExecutorSelectors();
-      switchTab(isAdmin ? "dashboard" : "pelaksana");
-    }
-
-    function populateExecutorSelectors() {
-      const unitSel = document.getElementById("execUnitSelect");
-      const staffSel = document.getElementById("execStaffSelect");
-      if (!unitSel || !staffSel || !currentUser) return;
-
-      const isAdmin = currentUser.role === "admin";
-      unitSel.disabled = !isAdmin;
-      if (!isAdmin) unitSel.value = currentUser.unit;
-
-      const activeUnit = unitSel.value;
-      const staffList = Object.entries(stateData.accounts)
-        .filter(([, acc]) => acc.role === "staff" && acc.unit === activeUnit && acc.status !== "disabled");
-
-      if (!isAdmin) {
-        staffSel.innerHTML = `<option value="${currentUser.name}">${currentUser.name}</option>`;
-        staffSel.value = currentUser.name;
-        staffSel.disabled = true;
-      } else {
-        staffSel.disabled = false;
-        staffSel.innerHTML = staffList.length
-          ? staffList.map(([, acc]) => `<option value="${acc.name}">${acc.name}</option>`).join("")
-          : `<option value="${currentUser.name}">${currentUser.name}</option>`;
-      }
-
-      updateExecutorFormVisibility();
-    }
-
-    function updateExecutorFormVisibility() {
-      const unit = document.getElementById("execUnitSelect").value;
-      const staffName = document.getElementById("execStaffSelect").value;
-      const isOpen = stateData.permissions[unit] !== false || currentUser.role === "admin";
-
-      document.querySelectorAll(".exec-form").forEach(f => f.classList.add("hidden"));
-      const activeFormId = unit === "keamanan" ? "execFormSec" : unit === "parkir" ? "execFormPark" : "execFormDrv";
-      const activeForm = document.getElementById(activeFormId);
-      activeForm.classList.remove("hidden");
-
-      const notice = document.getElementById("execLockNotice");
-      if (!isOpen) {
-        notice.classList.remove("hidden");
-        notice.textContent = `Input untuk unit ${unit.toUpperCase()} sedang dikunci oleh Ka. Unit / Operator.`;
-        activeForm.querySelectorAll("button[type=submit]").forEach(b => b.disabled = true);
-      } else {
-        notice.classList.add("hidden");
-        activeForm.querySelectorAll("button[type=submit]").forEach(b => b.disabled = false);
-      }
-
-      renderExecutorHistory(unit, staffName);
-    }
-
-    function fillStandardTemplate() {
-      const unit = document.getElementById("execUnitSelect").value;
-      if (unit === "keamanan") {
-        const f = document.getElementById("execFormSec");
-        f.dinas.value = "SUBUH (ADZAN)";
-        f.statusPatroli.value = "Adzan Subuh & Patroli";
-        f.jam.value = "04:30:00";
-        f.area.value = "Masjid & Seluruh Area RS ARSY";
-        f.kondisi.value = "Tidak Ada Temuan";
-        f.temuan.value = "Adzan subuh dikumandangkan tepat waktu, patroli keliling aman";
-      } else if (unit === "parkir") {
-        const f = document.getElementById("execFormPark");
-        f.shift.value = "Pagi ( 07:00 - 14:00 )";
-        f.lokasi.value = "Pos Parkir";
-        f.motor.value = "0";
-        f.mobil.value = "0";
-        f.storan.value = "0";
-        f.kendala.value = "Area parkir tertib, tidak ada kendala";
-      } else {
-        const f = document.getElementById("execFormDrv");
-        f.jenis.value = "Antar / Jemput Dokter";
-        f.kendaraan.value = "Mobil Dinas RS ARSY";
-        f.statusTrip.value = "Selesai";
-        f.km.value = "0";
-        f.bbm.value = "0";
-        f.tujuan.value = "Operasional RS ARSY";
-      }
-    }
-
-    function renderExecutorHistory(unit, staffName) {
-      const tbody = document.getElementById("tableExecHistory");
-      if (!tbody) return;
-      const scoped = getScopedData();
-      const rows = [];
-
-      if (unit === "keamanan") {
-        scoped.keamanan
-          .filter(r => currentUser.role !== "admin" || !staffName || r.petugas.toLowerCase().includes(staffName.toLowerCase()))
-          .forEach(r => rows.push({ tanggal: r.tanggal, nama: r.petugas, email: r.email || findEmailByName(r.petugas), unit: "Keamanan", ringkasan: `${r.dinas} (${r.jam}) • ${r.area || "-"} • ${r.kondisi}: ${r.temuan}` }));
-      } else if (unit === "parkir") {
-        scoped.parkir
-          .filter(r => currentUser.role !== "admin" || !staffName || r.petugas.toLowerCase().includes(staffName.toLowerCase()))
-          .forEach(r => rows.push({ tanggal: r.tanggal, nama: r.petugas, email: r.email || findEmailByName(r.petugas), unit: "Parkir", ringkasan: `${r.shift} • Motor: ${r.motor}, Mobil: ${r.mobil}, Storan: Rp${r.storan} (${r.kendala})` }));
-      } else {
-        scoped.driver
-          .filter(r => currentUser.role !== "admin" || !staffName || r.driver.toLowerCase().includes(staffName.toLowerCase()))
-          .forEach(r => rows.push({ tanggal: r.tanggal, nama: r.driver, email: r.email || findEmailByName(r.driver), unit: "Driver", ringkasan: `${r.jenis} • ${r.kendaraan} • ${r.km} KM / ${r.bbm} L • ${r.tujuan}` }));
-      }
-
-      tbody.innerHTML = rows.length
-        ? rows.map(r => `<tr class="border-b"><td class="p-2">${r.tanggal}</td><td class="p-2 font-medium">${r.nama}</td><td class="p-2 font-mono text-[11px]">${r.email}</td><td class="p-2">${r.unit}</td><td class="p-2">${r.ringkasan}</td></tr>`).join("")
-        : `<tr><td colspan="5" class="p-3 text-center text-slate-400">Belum ada laporan tercatat.</td></tr>`;
-    }
-
-    function switchTab(tabName) {
-      if (currentUser?.role !== "admin" && ["dashboard", "operator"].includes(tabName)) tabName = "pelaksana";
-      document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
-      document.getElementById("tab-" + tabName)?.classList.remove("hidden");
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        const active = btn.dataset.tab === tabName;
-        btn.classList.toggle("border-teal-700", active);
-        btn.classList.toggle("text-teal-800", active);
-        btn.classList.toggle("border-transparent", !active);
-        btn.classList.toggle("text-slate-600", !active);
-      });
-      if (tabName === "dashboard" && currentUser?.role === "admin") renderDashboardAndCharts();
-      if (tabName === "pelaksana") populateExecutorSelectors();
-      if (tabName === "operator" && currentUser?.role === "admin") renderOperatorPanel();
-    }
-
-    function renderAllTables() {
-      const isAdmin = currentUser?.role === "admin";
-      const scoped = getScopedData();
-
-      document.getElementById("tableSec").innerHTML = scoped.keamanan.map(r => {
-        const realIdx = stateData.keamanan.indexOf(r);
-        return `<tr class="border-b hover:bg-slate-50">
-          <td class="p-2">${r.tanggal}</td><td class="p-2">${r.dinas}</td><td class="p-2">${r.statusPatroli}</td>
-          <td class="p-2">${r.jam}</td><td class="p-2">${r.petugas}</td><td class="p-2">${r.area || "-"}</td>
-          <td class="p-2">${r.kondisi}</td><td class="p-2">${r.temuan}</td>
-          <td class="p-2">${isAdmin && realIdx >= 0 ? `<button onclick="deleteRow('keamanan', ${realIdx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
-        </tr>`;
-      }).join("");
-
-      document.getElementById("tablePark").innerHTML = scoped.parkir.map(r => {
-        const realIdx = stateData.parkir.indexOf(r);
-        return `<tr class="border-b hover:bg-slate-50">
-          <td class="p-2">${r.tanggal}</td><td class="p-2">${r.petugas}</td><td class="p-2">${r.shift}</td>
-          <td class="p-2">${r.lokasi || "-"}</td><td class="p-2">${r.motor}</td><td class="p-2">${r.mobil}</td>
-          <td class="p-2">${r.storan}</td><td class="p-2">${r.kendala}</td>
-          <td class="p-2">${isAdmin && realIdx >= 0 ? `<button onclick="deleteRow('parkir', ${realIdx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
-        </tr>`;
-      }).join("");
-
-      document.getElementById("tableDrv").innerHTML = scoped.driver.map(r => {
-        const realIdx = stateData.driver.indexOf(r);
-        return `<tr class="border-b hover:bg-slate-50">
-          <td class="p-2">${r.tanggal}</td><td class="p-2">${r.driver}</td><td class="p-2">${r.jenis}</td>
-          <td class="p-2">${r.kendaraan}</td><td class="p-2">${r.km}</td><td class="p-2">${r.bbm}</td>
-          <td class="p-2">${r.statusTrip || "Selesai"}</td><td class="p-2">${r.tujuan}</td>
-          <td class="p-2">${isAdmin && realIdx >= 0 ? `<button onclick="deleteRow('driver', ${realIdx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
-        </tr>`;
-      }).join("");
-    }
-
-    window.deleteRow = function (unit, index) {
-      if (currentUser?.role !== "admin") return;
-      stateData[unit].splice(index, 1);
-      saveState();
-      renderAllTables();
-      renderDashboardAndCharts();
-    };
-
-    function renderDashboardAndCharts() {
-      if (currentUser?.role !== "admin") return;
-      const f = getFilteredData();
-      const secCount = f.keamanan.length;
-      const parkCount = f.parkir.length;
-      const drvCount = f.driver.length;
-
-      const secFindings = f.keamanan.filter(r => r.kondisi === "Ada Temuan").length;
-      const totalMotor = f.parkir.reduce((a, b) => a + (Number(b.motor) || 0), 0);
-      const totalMobil = f.parkir.reduce((a, b) => a + (Number(b.mobil) || 0), 0);
-      const totalKm = f.driver.reduce((a, b) => a + (Number(b.km) || 0), 0);
-      const totalBbm = f.driver.reduce((a, b) => a + (Number(b.bbm) || 0), 0);
-
-      document.getElementById("kpiSecCount").textContent = secCount;
-      document.getElementById("kpiSecFinding").textContent = `Ada Temuan: ${secFindings}`;
-      document.getElementById("kpiParkCount").textContent = parkCount;
-      document.getElementById("kpiParkVehicles").textContent = `Motor: ${totalMotor.toLocaleString("id-ID")} | Mobil: ${totalMobil.toLocaleString("id-ID")}`;
-      document.getElementById("kpiDrvCount").textContent = drvCount;
-      document.getElementById("kpiDrvFuel").textContent = `BBM: ${totalBbm.toLocaleString("id-ID")} L`;
-      document.getElementById("kpiKmTotal").textContent = totalKm.toLocaleString("id-ID");
-
-      document.getElementById("listAlertSec").innerHTML = f.keamanan.slice(0, 4).map(r => `
-        <li class="p-2 rounded-lg bg-slate-50 border">
-          <div class="font-semibold text-slate-900">${r.tanggal} • ${r.petugas} (${r.dinas})</div>
-          <div class="text-slate-600">${r.area || "-"} — <span class="${r.kondisi === "Ada Temuan" ? "text-amber-700 font-semibold" : ""}">${r.temuan}</span></div>
-        </li>`).join("") || `<li class="text-slate-400">Tidak ada log keamanan sesuai filter.</li>`;
-
-      document.getElementById("listAlertPark").innerHTML = f.parkir.slice(0, 4).map(r => `
-        <li class="p-2 rounded-lg bg-slate-50 border">
-          <div class="font-semibold text-slate-900">${r.tanggal} • ${r.petugas}</div>
-          <div class="text-slate-600">Motor ${r.motor}, Mobil ${r.mobil}, Storan Rp${r.storan} • ${r.kendala}</div>
-        </li>`).join("") || `<li class="text-slate-400">Tidak ada log parkir sesuai filter.</li>`;
-
-      document.getElementById("listAlertDrv").innerHTML = f.driver.slice(0, 4).map(r => `
-        <li class="p-2 rounded-lg bg-slate-50 border">
-          <div class="font-semibold text-slate-900">${r.tanggal} • ${r.driver} (${r.km} KM)</div>
-          <div class="text-slate-600">${r.jenis} • ${r.kendaraan} — ${r.tujuan}</div>
-        </li>`).join("") || `<li class="text-slate-400">Tidak ada log driver sesuai filter.</li>`;
-
-      const rekapMap = new Map();
-      Object.entries(stateData.accounts).forEach(([emailKey, acc]) => {
-        if (acc.role === "admin") return;
-        const unitLabel = acc.unit === "keamanan" ? "Keamanan" : acc.unit === "parkir" ? "Parkir" : "Driver";
-        const statusLabel = acc.status === "active" ? "Teraktivasi" : acc.status === "disabled" ? "Nonaktif" : "Menunggu Aktivasi";
-        rekapMap.set(`${unitLabel}::${acc.name}`, { name: acc.name, email: emailKey, unit: unitLabel, statusLabel, count: 0, km: 0, motor: 0, mobil: 0, temuan: 0 });
-      });
-
-      const touchRekap = (name, email, unit, detailFn) => {
-        const key = `${unit}::${name}`;
-        if (!rekapMap.has(key)) {
-          const foundEmail = email || findEmailByName(name);
-          const acc = stateData.accounts[foundEmail];
-          const statusLabel = acc?.status === "active" ? "Teraktivasi" : acc?.status === "disabled" ? "Nonaktif" : "Menunggu Aktivasi";
-          rekapMap.set(key, { name, email: foundEmail, unit, statusLabel, count: 0, km: 0, motor: 0, mobil: 0, temuan: 0 });
-        }
-        const item = rekapMap.get(key);
-        item.count += 1;
-        detailFn(item);
-      };
-
-      f.keamanan.forEach(r => touchRekap(r.petugas || "Petugas", r.email, "Keamanan", it => { if (r.kondisi === "Ada Temuan") it.temuan += 1; }));
-      f.parkir.forEach(r => touchRekap(r.petugas || "Petugas", r.email, "Parkir", it => { it.motor += Number(r.motor) || 0; it.mobil += Number(r.mobil) || 0; }));
-      f.driver.forEach(r => touchRekap(r.driver || "Driver", r.email, "Driver", it => { it.km += Number(r.km) || 0; }));
-
-      const rekapArr = Array.from(rekapMap.values());
-      document.getElementById("kpiActiveStaff").textContent = `Anggota terdata: ${rekapArr.length}`;
-
-      document.getElementById("tablePelaksanaRekap").innerHTML = rekapArr.map(r => {
-        const metric = r.unit === "Driver"
-          ? `Total ${r.km.toLocaleString("id-ID")} KM`
-          : r.unit === "Parkir"
-            ? `Motor ${r.motor} • Mobil ${r.mobil}`
-            : `Temuan tercatat: ${r.temuan}`;
-        const pill = r.statusLabel === "Teraktivasi"
-          ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Teraktivasi</span>`
-          : r.statusLabel === "Nonaktif"
-            ? `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">Nonaktif</span>`
-            : `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Menunggu Aktivasi</span>`;
-        return `<tr class="border-b"><td class="p-2 font-semibold">${r.name}</td><td class="p-2 font-mono text-[11px]">${r.email}</td><td class="p-2">${r.unit}</td><td class="p-2">${pill}</td><td class="p-2">${r.count}</td><td class="p-2">${metric}</td></tr>`;
-      }).join("");
-
-      const ctx1 = document.getElementById("unitChart");
-      const ctx2 = document.getElementById("driverChart");
-      if (!ctx1 || !ctx2 || typeof Chart === "undefined") return;
-
-      if (unitChartInstance) unitChartInstance.destroy();
-      unitChartInstance = new Chart(ctx1, {
-        type: "bar",
-        data: {
-          labels: ["Keamanan", "Parkir", "Driver"],
-          datasets: [{ label: "Jumlah Laporan", data: [secCount, parkCount, drvCount], backgroundColor: ["#0f766e", "#0284c7", "#d97706"] }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-      });
-
-      const byDriver = {};
-      f.driver.forEach(d => {
-        const key = d.driver || "Driver";
-        byDriver[key] = (byDriver[key] || 0) + (Number(d.km) || 0);
-      });
-
-      if (driverChartInstance) driverChartInstance.destroy();
-      driverChartInstance = new Chart(ctx2, {
-        type: "bar",
-        data: {
-          labels: Object.keys(byDriver),
-          datasets: [{ label: "KM Tempuh", data: Object.values(byDriver), backgroundColor: "#0d9488" }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-      });
-    }
-
-    function renderOperatorPanel() {
-      if (currentUser?.role !== "admin") return;
-      document.getElementById("permSecInput").checked = stateData.permissions.keamanan !== false;
-      document.getElementById("permParkInput").checked = stateData.permissions.parkir !== false;
-      document.getElementById("permDrvInput").checked = stateData.permissions.driver !== false;
-
-      const tbody = document.getElementById("tableAccounts");
-      tbody.innerHTML = Object.entries(stateData.accounts).map(([emailKey, acc]) => {
-        if (emailKey === "suwaji.kpk@rsarsy.id") {
-          return `<tr class="border-b">
-            <td class="p-2 font-mono text-[11px] font-semibold">${emailKey}</td>
-            <td class="p-2">${acc.name}</td>
-            <td class="p-2 uppercase">SEMUA</td>
-            <td class="p-2"><input type="text" value="${acc.password}" onchange="updateAccountPassword('${emailKey}', this.value)" class="px-2 py-1 border rounded w-32 font-mono" /></td>
-            <td class="p-2"><span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold">Operator Aktif</span></td>
-            <td class="p-2">-</td>
-          </tr>`;
-        }
-
-        const badge = acc.status === "active"
-          ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Teraktivasi</span>`
-          : acc.status === "disabled"
-            ? `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">Nonaktif</span>`
-            : `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Menunggu Aktivasi</span>`;
-
-        return `<tr class="border-b">
-          <td class="p-2 font-mono text-[11px] font-semibold">${emailKey}</td>
-          <td class="p-2">${acc.name}</td>
-          <td class="p-2 uppercase">${acc.unit}</td>
-          <td class="p-2"><input type="text" value="${acc.password}" onchange="updateAccountPassword('${emailKey}', this.value)" class="px-2 py-1 border rounded w-32 font-mono" /></td>
-          <td class="p-2">${badge}</td>
-          <td class="p-2 flex flex-wrap gap-1.5">
-            <button onclick="openActivationComposer('${emailKey}')" class="px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-semibold hover:bg-sky-200">Siapkan Aktivasi</button>
-            ${acc.status !== "active"
-              ? `<button onclick="setAccountStatus('${emailKey}', 'active')" class="px-2 py-0.5 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700">Aktifkan</button>`
-              : `<button onclick="setAccountStatus('${emailKey}', 'disabled')" class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold hover:bg-amber-200">Nonaktifkan</button>`}
-            <button onclick="removeAccount('${emailKey}')" class="px-2 py-0.5 text-rose-600 hover:underline">Hapus</button>
-          </td>
-        </tr>`;
-      }).join("");
-    }
-
-    window.openActivationComposer = function (emailKey) {
-      const acc = stateData.accounts[emailKey];
-      if (!acc) return;
-      selectedActivationEmail = emailKey;
-      const box = document.getElementById("activationBox");
-      box.classList.remove("hidden");
-      document.getElementById("activationTargetLabel").textContent = `Pesan Aktivasi untuk: ${acc.name} (${emailKey})`;
-      const subject = encodeURIComponent(`Aktivasi Akun SIM-KPK RS ARSY — ${acc.name}`);
-      const bodyText =
-        `Kepada ${acc.name} (Unit ${acc.unit.toUpperCase()}),\n` +
-        `Akun SIM-KPK RS ARSY Anda sudah disiapkan.\n` +
-        `Link Aplikasi : ${APP_URL}\n` +
-        `Email Login   : ${emailKey}\n` +
-        `Password Awal : ${acc.password}\n` +
-        `Silakan hubungi Ka. Unit (Suwaji) untuk konfirmasi aktivasi akun agar dapat masuk dan mengisi laporan unit.`;
-      document.getElementById("activationMessageArea").value = bodyText;
-      document.getElementById("linkGmailCompose").href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailKey)}&su=${subject}&body=${encodeURIComponent(bodyText)}`;
-    };
-
-    document.getElementById("btnCopyActivationMsg").addEventListener("click", () => {
-      const ta = document.getElementById("activationMessageArea");
-      ta.select();
-      navigator.clipboard?.writeText(ta.value).catch(() => document.execCommand("copy"));
+function exportExcel() {
+  const db = loadDB();
+  const wb = XLSX.utils.book_new();
+  Object.keys(db).forEach(k => {
+    const flat = (db[k] || []).map(item => {
+      const copy = { ...item };
+      if (copy.areas) { Object.assign(copy, copy.areas); delete copy.areas; }
+      if (copy.jam) { Object.assign(copy, copy.jam); delete copy.jam; }
+      return copy;
     });
+    const ws = XLSX.utils.json_to_sheet(flat.length ? flat : [{ info: 'Belum ada data' }]);
+    XLSX.utils.book_append_sheet(wb, ws, k.toUpperCase());
+  });
+  XLSX.writeFile(wb, `Rekap_SIM_KPK_RS_ARSY_${document.getElementById('refDate').value}.xlsx`);
+}
 
-    document.getElementById("btnConfirmActivateNow").addEventListener("click", () => {
-      if (!selectedActivationEmail) return;
-      setAccountStatus(selectedActivationEmail, "active");
-    });
+function exportWord() {
+  const db = loadDB();
+  const rows = filterByPeriode(db[currentTab] || []);
+  const html = `<html><head><meta charset="utf-8"><title>Rekap ${currentTab}</title></head><body>
+    <h2>Laporan Rekap ${currentTab.toUpperCase()} - RS ARSY</h2>
+    <p>Periode: ${document.getElementById('periodeMode').value} | Acuan: ${document.getElementById('refDate').value} | Total Data: ${rows.length}</p>
+    <pre>${JSON.stringify(rows, null, 2)}</pre>
+  </body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Rekap_${currentTab}_RS_ARSY.doc`;
+  a.click();
+}
 
-    window.updateAccountPassword = function (emailKey, val) {
-      if (currentUser?.role !== "admin" || !stateData.accounts[emailKey]) return;
-      const trimmed = val.trim();
-      if (!trimmed) return;
-      stateData.accounts[emailKey].password = trimmed;
-      saveState();
-    };
+function exportPPT() {
+  const db = loadDB();
+  const rows = filterByPeriode(db[currentTab] || []);
+  const pptx = new PptxGenJS();
+  const slide = pptx.addSlide();
+  slide.addText(`Rekap Laporan ${currentTab.toUpperCase()} — RS ARSY`, { x: 0.5, y: 0.4, fontSize: 20, bold: true, color: '0F766E' });
+  slide.addText(`Periode: ${document.getElementById('periodeMode').value} | Tanggal Acuan: ${document.getElementById('refDate').value}`, { x: 0.5, y: 0.9, fontSize: 12, color: '475569' });
+  slide.addText(`Jumlah Entri Tercatat: ${rows.length}`, { x: 0.5, y: 1.4, fontSize: 14, bold: true });
+  if (chartPct) {
+    const imgData = document.getElementById('chartPct').toDataURL('image/png');
+    slide.addImage({ data: imgData, x: 0.5, y: 2.0, w: 6.0, h: 3.2 });
+  }
+  pptx.writeFile({ fileName: `Rekap_${currentTab}_RS_ARSY.pptx` });
+}
 
-    window.setAccountStatus = function (emailKey, nextStatus) {
-      if (currentUser?.role !== "admin" || !stateData.accounts[emailKey] || emailKey === "suwaji.kpk@rsarsy.id") return;
-      stateData.accounts[emailKey].status = nextStatus;
-      saveState();
-      renderOperatorPanel();
-      renderDashboardAndCharts();
-    };
-
-    window.removeAccount = function (emailKey) {
-      if (currentUser?.role !== "admin" || emailKey === "suwaji.kpk@rsarsy.id") return;
-      delete stateData.accounts[emailKey];
-      saveState();
-      renderOperatorPanel();
-    };
-
-    document.getElementById("loginForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const emailInput = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const passInput = document.getElementById("loginPass").value;
-      const acc = stateData.accounts[emailInput];
-      const errEl = document.getElementById("loginError");
-
-      if (!acc || acc.password !== passInput) {
-        errEl.textContent = "Email atau password tidak sesuai.";
-        errEl.classList.remove("hidden");
-        return;
-      }
-      if (acc.status === "pending") {
-        errEl.textContent = "Akun email ini masih menunggu aktivasi oleh Ka. Unit / Operator.";
-        errEl.classList.remove("hidden");
-        return;
-      }
-      if (acc.status === "disabled") {
-        errEl.textContent = "Akun email ini sedang dinonaktifkan oleh Ka. Unit / Operator.";
-        errEl.classList.remove("hidden");
-        return;
-      }
-
-      currentUser = { email: emailInput, ...acc };
-      errEl.classList.add("hidden");
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("appShell").classList.remove("hidden");
-      document.getElementById("userBadge").textContent = `${currentUser.name} (${currentUser.email}) • Akses: ${currentUser.role === "admin" ? "Operator / Semua Laporan" : "Unit " + currentUser.unit.toUpperCase()}`;
-      renderAllTables();
-      applyRoleAccess();
-      if (currentUser.role === "admin") renderDashboardAndCharts();
-    });
-
-    document.getElementById("btnLogout").addEventListener("click", () => {
-      currentUser = null;
-      document.getElementById("appShell").classList.add("hidden");
-      document.getElementById("loginScreen").classList.remove("hidden");
-      document.getElementById("loginForm").reset();
-    });
-
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
-    });
-
-    document.getElementById("execUnitSelect").addEventListener("change", populateExecutorSelectors);
-    document.getElementById("execStaffSelect").addEventListener("change", updateExecutorFormVisibility);
-    document.getElementById("btnFillTemplate").addEventListener("click", fillStandardTemplate);
-
-    document.getElementById("execFormSec").addEventListener("submit", e => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const petugas = currentUser.role === "admin" ? (document.getElementById("execStaffSelect").value || currentUser.name) : currentUser.name;
-      const email = currentUser.role === "admin" ? findEmailByName(petugas) : currentUser.email;
-      stateData.keamanan.unshift({ ...Object.fromEntries(fd.entries()), petugas, email });
-      saveState(); renderAllTables(); updateExecutorFormVisibility();
-    });
-
-    document.getElementById("execFormPark").addEventListener("submit", e => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const petugas = currentUser.role === "admin" ? (document.getElementById("execStaffSelect").value || currentUser.name) : currentUser.name;
-      const email = currentUser.role === "admin" ? findEmailByName(petugas) : currentUser.email;
-      stateData.parkir.unshift({ ...Object.fromEntries(fd.entries()), petugas, email });
-      saveState(); renderAllTables(); updateExecutorFormVisibility();
-    });
-
-    document.getElementById("execFormDrv").addEventListener("submit", e => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const driver = currentUser.role === "admin" ? (document.getElementById("execStaffSelect").value || currentUser.name) : currentUser.name;
-      const email = currentUser.role === "admin" ? findEmailByName(driver) : currentUser.email;
-      stateData.driver.unshift({ ...Object.fromEntries(fd.entries()), driver, email });
-      saveState(); renderAllTables(); updateExecutorFormVisibility();
-    });
-
-    ["permSecInput", "permParkInput", "permDrvInput"].forEach((id, idx) => {
-      const key = ["keamanan", "parkir", "driver"][idx];
-      document.getElementById(id).addEventListener("change", e => {
-        stateData.permissions[key] = e.target.checked;
-        saveState();
-      });
-    });
-
-    document.getElementById("formAddAccount").addEventListener("submit", e => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const email = String(fd.get("email") || "").trim().toLowerCase();
-      const name = String(fd.get("name") || "").trim();
-      const unit = String(fd.get("unit") || "keamanan");
-      const password = String(fd.get("password") || "Arsy#2026").trim();
-      if (!email || !name) return;
-      stateData.accounts[email] = { name, role: "staff", unit, password, status: "pending" };
-      saveState();
-      renderOperatorPanel();
-      openActivationComposer(email);
-      e.target.reset();
-    });
-
-    ["filterUnit", "filterFocus"].forEach(id => {
-      document.getElementById(id).addEventListener("change", renderDashboardAndCharts);
-    });
-    document.getElementById("filterKeyword").addEventListener("input", renderDashboardAndCharts);
-    document.getElementById("btnResetFilter").addEventListener("click", () => {
-      document.getElementById("filterUnit").value = "all";
-      document.getElementById("filterFocus").value = "all";
-      document.getElementById("filterKeyword").value = "";
-      renderDashboardAndCharts();
-    });
-
-    document.getElementById("btnBackupJson").addEventListener("click", () => {
-      if (currentUser?.role !== "admin") return;
-      const blob = new Blob([JSON.stringify(stateData, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "Backup_SIM_KPK_RS_ARSY.json";
-      a.click();
-    });
-
-    document.getElementById("inputRestoreJson").addEventListener("change", e => {
-      if (currentUser?.role !== "admin") return;
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(String(reader.result || "{}"));
-          stateData = { ...structuredClone(initialData), ...parsed };
-          saveState();
-          renderAllTables();
-          renderDashboardAndCharts();
-          renderOperatorPanel();
-          alert("Data berhasil dipulihkan.");
-        } catch {
-          alert("File JSON tidak valid.");
-        }
-      };
-      reader.readAsText(file);
-    });
-
-    document.getElementById("btnResetDemoData").addEventListener("click", () => {
-      if (currentUser?.role !== "admin") return;
-      if (!confirm("Kembalikan seluruh data dan akun ke pengaturan awal?")) return;
-      stateData = structuredClone(initialData);
-      saveState();
-      renderAllTables();
-      renderDashboardAndCharts();
-      renderOperatorPanel();
-    });
-
-    document.getElementById("btnExportXlsx").addEventListener("click", () => {
-      if (currentUser?.role !== "admin" || typeof XLSX === "undefined") return;
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.keamanan), "Keamanan");
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.parkir), "Parkir");
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.driver), "Driver");
-      XLSX.writeFile(wb, "Laporan_SIM_KPK_RS_ARSY.xlsx");
-    });
-
-    document.getElementById("btnExportDoc").addEventListener("click", () => {
-      if (currentUser?.role !== "admin") return;
-      const secRows = stateData.keamanan.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join("");
-      const parkRows = stateData.parkir.map(r => `<tr><td>${r.tanggal}</td><td>${r.petugas}</td><td>${r.shift}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.storan}</td></tr>`).join("");
-      const drvRows = stateData.driver.map(r => `<tr><td>${r.tanggal}</td><td>${r.driver}</td><td>${r.jenis}</td><td>${r.kendaraan}</td><td>${r.km}</td><td>${r.bbm}</td><td>${r.tujuan}</td></tr>`).join("");
-
-      const html = `<html><head><meta charset="utf-8"><title>Laporan SIM-KPK RS ARSY</title></head><body>
-        <h2>LAPORAN UNIT KEAMANAN, PARKIR & KENDARAAN — RS ARSY</h2>
-        <p>Operator / Ka. Unit: Suwaji (suwaji.kpk@rsarsy.id)</p>
-        <h3>1. Laporan Keamanan (${stateData.keamanan.length})</h3>
-        <table border="1" cellpadding="4" cellspacing="0"><tr><th>Tanggal</th><th>Dinas</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr>${secRows}</table>
-        <h3>2. Laporan Parkir (${stateData.parkir.length})</h3>
-        <table border="1" cellpadding="4" cellspacing="0"><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Motor</th><th>Mobil</th><th>Storan</th></tr>${parkRows}</table>
-        <h3>3. Laporan Driver (${stateData.driver.length})</h3>
-        <table border="1" cellpadding="4" cellspacing="0"><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>KM</th><th>BBM (L)</th><th>Tujuan</th></tr>${drvRows}</table>
-      </body></html>`;
-      const blob = new Blob([html], { type: "application/msword" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "Laporan_SIM_KPK_RS_ARSY.doc";
-      a.click();
-    });
-
-    document.getElementById("btnExportPpt").addEventListener("click", () => {
-      if (currentUser?.role !== "admin" || typeof PptxGenJS === "undefined") return;
-      const totalKm = stateData.driver.reduce((a, b) => a + (Number(b.km) || 0), 0);
-      const pptx = new PptxGenJS();
-      const slide = pptx.addSlide();
-      slide.addText("SIM-KPK RS ARSY", { x: 0.5, y: 0.4, fontSize: 24, bold: true, color: "0F766E" });
-      slide.addText("Rekap Operasional Keamanan, Parkir & Kendaraan", { x: 0.5, y: 0.9, fontSize: 13, color: "475569" });
-      slide.addText(
-        `• Patroli Keamanan: ${stateData.keamanan.length} laporan\n• Shift Parkir: ${stateData.parkir.length} laporan\n• Kegiatan Driver: ${stateData.driver.length} trip (${totalKm.toLocaleString("id-ID")} KM)`,
-        { x: 0.5, y: 1.6, fontSize: 15, color: "1E293B" }
-      );
-      pptx.writeFile({ fileName: "Presentasi_SIM_KPK_RS_ARSY.pptx" });
-    });
-  </script>
+initForms();
+refreshView();
+</script>
 </body>
 </html>
