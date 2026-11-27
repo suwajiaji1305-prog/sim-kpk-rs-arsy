@@ -15,6 +15,8 @@
       --muted: #64748b;
       --primary: #0f766e;
       --primary-dark: #115e59;
+      --sidebar-bg: #0b2530;
+      --sidebar-ink: #e2e8f0;
       --accent: #0284c7;
       --warn: #d97706;
       --danger: #dc2626;
@@ -28,7 +30,7 @@
       color: var(--ink);
     }
 
-    /* LOGIN PORTAL */
+    /* LOGIN & REGISTER PORTAL */
     .login-shell {
       min-height: 100vh;
       display: grid;
@@ -58,54 +60,36 @@
       flex-direction: column;
       justify-content: center;
     }
-    .login-brand h1 {
-      margin: 0 0 10px;
-      font-size: 1.9rem;
-      letter-spacing: 0.02em;
-      line-height: 1.15;
-    }
-    .login-brand .meaning {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.55;
-      color: rgba(255, 255, 255, 0.92);
-      font-weight: 500;
-    }
-    .login-form-pane {
-      padding: 28px 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+    .login-brand h1 { margin: 0 0 10px; font-size: 1.9rem; letter-spacing: 0.02em; line-height: 1.15; }
+    .login-brand .meaning { margin: 0; font-size: 1rem; line-height: 1.55; color: rgba(255, 255, 255, 0.92); font-weight: 500; }
+    .login-form-pane { padding: 28px 24px; display: flex; flex-direction: column; justify-content: center; }
     .login-form-pane h2 { margin: 0 0 6px; font-size: 1.25rem; }
     .login-sub { margin: 0 0 16px; font-size: 0.83rem; color: var(--muted); }
-    .login-err {
-      color: var(--danger);
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-top: 8px;
-      min-height: 18px;
-    }
-    .sync-pill {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-    .cred-note {
+    .login-err { color: var(--danger); font-size: 0.82rem; font-weight: 700; margin-top: 8px; min-height: 18px; }
+    .login-ok { color: var(--primary-dark); font-size: 0.82rem; font-weight: 700; margin-top: 8px; min-height: 18px; }
+    .auth-switch-wrap {
       margin-top: 14px;
-      padding: 11px 12px;
-      border-radius: 10px;
-      background: #f8fafc;
-      border: 1px dashed var(--border);
-      font-size: 0.78rem;
-      color: #334155;
-      line-height: 1.5;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+      color: var(--muted);
     }
+    .link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .link-btn:hover { color: var(--primary); }
 
     @media (max-width: 760px) {
       .login-card { grid-template-columns: 1fr; }
@@ -114,49 +98,135 @@
       .login-brand h1 { font-size: 1.55rem; }
     }
 
-    /* APLIKASI UTAMA */
-    header {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-      color: #fff;
-      padding: 14px 16px;
+    /* LAYOUT DASHBOARD SIDEBAR + AREA TENGAH */
+    .app-layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 270px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, var(--sidebar-bg) 0%, #0f172a 100%);
+      color: var(--sidebar-ink);
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      padding: 16px 12px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 40;
+      transition: transform 0.22s ease;
     }
-    header h1 { margin: 0; font-size: 1.05rem; }
-    header small { opacity: 0.9; display: block; font-size: 0.78rem; }
-    .container { max-width: 1380px; margin: 14px auto; padding: 0 12px 36px; }
-    .tabs {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 8px;
-      margin-bottom: 14px;
-      padding-bottom: 4px;
-      -webkit-overflow-scrolling: touch;
+    .sidebar-brand {
+      padding: 8px 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 12px;
     }
-    .tab-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--ink);
-      padding: 9px 13px;
+    .sidebar-brand .title { font-size: 1.05rem; font-weight: 800; color: #fff; }
+    .sidebar-brand .sub { font-size: 0.73rem; color: #94a3b8; margin-top: 3px; line-height: 1.35; }
+    .sidebar-section-lbl {
+      font-size: 0.69rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #94a3b8;
+      padding: 10px 10px 5px;
+      font-weight: 700;
+    }
+    .nav-list { display: flex; flex-direction: column; gap: 4px; }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 9px 11px;
       border-radius: 9px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.84rem;
-      white-space: nowrap;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       transition: 0.15s;
     }
-    .tab-btn:hover { border-color: var(--primary); }
-    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 14px;
+    .nav-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+    .nav-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 6px 14px rgba(15, 118, 110, 0.35);
     }
+    .sidebar-controls {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar-controls label { color: #cbd5e1; font-size: 0.74rem; }
+    .sidebar-controls input, .sidebar-controls select {
+      background: #1e293b;
+      color: #fff;
+      border-color: #334155;
+      padding: 7px 8px;
+      font-size: 0.8rem;
+    }
+    .sidebar-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 12px;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .user-chip {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      line-height: 1.4;
+      color: #f1f5f9;
+    }
+
+    .main-area { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 11px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-title { margin: 0; font-size: 1rem; font-weight: 800; color: var(--ink); }
+    .topbar-sub { font-size: 0.76rem; color: var(--muted); }
+    .topbar-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+    .content-wrap { width: 100%; max-width: 1320px; margin: 14px auto; padding: 0 14px 36px; }
+
+    .mobile-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 35;
+    }
+    .mobile-backdrop.open { display: block; }
+
+    @media (max-width: 900px) {
+      .sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+    }
+
+    /* KARTU & KOMPONEN */
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -196,13 +266,13 @@
     .btn {
       border: none;
       border-radius: 8px;
-      padding: 9px 14px;
+      padding: 8px 13px;
       font-weight: 700;
       cursor: pointer;
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       transition: 0.15s;
     }
-    .btn-sm { padding: 5px 10px; font-size: 0.76rem; border-radius: 6px; }
+    .btn-sm { padding: 5px 10px; font-size: 0.75rem; border-radius: 6px; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-dark); }
     .btn-export { background: var(--accent); color: #fff; }
@@ -223,65 +293,30 @@
       border: 1px solid #e2e8f0;
       border-radius: 10px;
       padding: 10px;
-      height: 300px;
+      height: 295px;
       position: relative;
     }
-    .chart-box.wide { grid-column: 1 / -1; height: 290px; }
-    .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; -webkit-overflow-scrolling: touch; }
+    .chart-box.wide { grid-column: 1 / -1; height: 285px; }
+    .table-wrap { overflow-x: auto; max-height: 380px; border: 1px solid var(--border); border-radius: 8px; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
     th { background: #f8fafc; position: sticky; top: 0; z-index: 1; }
     .hidden { display: none !important; }
-    .user-pill { background: rgba(255, 255, 255, 0.16); padding: 6px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; }
     .status-badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.73rem; font-weight: 700; }
     .st-active { background: #dcfce7; color: #166534; }
     .st-inactive { background: #fee2e2; color: #991b1b; }
     .op-msg { font-size: 0.8rem; font-weight: 700; color: var(--primary-dark); margin-left: 8px; }
-    .cloud-box {
-      background: #f0fdfa;
-      border: 1px solid #99f6e4;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      font-size: 0.8rem;
-    }
+    .cloud-box { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.8rem; }
 
-    /* DETAIL MODAL */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      display: grid;
-      place-items: center;
-      padding: 16px;
-      z-index: 999;
-    }
-    .modal-card {
-      width: 100%;
-      max-width: 720px;
-      max-height: 85vh;
-      overflow-y: auto;
-      background: #fff;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 18px;
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
-    }
-    .detail-pre {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.8rem;
-      line-height: 1.55;
-      white-space: pre-wrap;
-      margin: 0;
-    }
+    /* MODAL DETAIL */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); display: grid; place-items: center; padding: 16px; z-index: 999; }
+    .modal-card { width: 100%; max-width: 720px; max-height: 85vh; overflow-y: auto; background: #fff; border-radius: 14px; border: 1px solid var(--border); padding: 18px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35); }
+    .detail-pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; font-size: 0.8rem; line-height: 1.55; white-space: pre-wrap; margin: 0; }
   </style>
 </head>
 <body>
 
-<!-- HALAMAN LOGIN PORTAL -->
+<!-- HALAMAN LOGIN & DAFTAR AKUN -->
 <div id="loginScreen" class="login-shell">
   <div class="login-card">
     <div class="login-brand">
@@ -290,411 +325,489 @@
     </div>
 
     <div class="login-form-pane">
-      <h2>Masuk</h2>
-      <p class="login-sub">Gunakan <b>Email</b> dan <b>Sandi</b> akun Anda untuk melanjutkan.</p>
-      <form id="formLogin" onsubmit="handleLogin(event)">
-        <div class="form-grid" style="grid-template-columns:1fr;">
-          <label>Alamat Email
-            <input type="email" id="loginEmail" autocomplete="username" required placeholder="Contoh: aji.elek1305@gmail.com" />
-          </label>
-          <label>Sandi / Password
-            <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="Masukkan sandi akun" />
-          </label>
+      <!-- FORM MASUK -->
+      <div id="loginBox">
+        <h2>Masuk</h2>
+        <p class="login-sub">Gunakan <b>Email</b> dan <b>Sandi</b> akun Anda untuk melanjutkan.</p>
+        <form id="formLogin" onsubmit="handleLogin(event)">
+          <div class="form-grid" style="grid-template-columns:1fr;">
+            <label>Alamat Email
+              <input type="email" id="loginEmail" autocomplete="username" required placeholder="Masukkan email akun" />
+            </label>
+            <label>Sandi / Password
+              <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="Masukkan sandi akun" />
+            </label>
+          </div>
+          <div class="login-err" id="loginErr"></div>
+          <div style="margin-top:10px;">
+            <button class="btn btn-primary" id="btnLoginSubmit" type="submit" style="width:100%;padding:11px 14px;">Masuk ke Sistem</button>
+          </div>
+        </form>
+
+        <div class="auth-switch-wrap">
+          <span>Belum punya akun anggota?</span>
+          <button class="link-btn" type="button" onclick="toggleAuthMode('register')">Daftar Akun Baru</button>
         </div>
-        <div class="login-err" id="loginErr"></div>
-        <div style="margin-top:10px;">
-          <button class="btn btn-primary" id="btnLoginSubmit" type="submit" style="width:100%;padding:11px 14px;">Masuk ke Sistem</button>
+      </div>
+
+      <!-- FORM DAFTAR AKUN -->
+      <div id="registerBox" class="hidden">
+        <h2>Daftar Akun</h2>
+        <p class="login-sub">Lengkapi data di bawah untuk mendaftarkan akun anggota baru.</p>
+        <form id="formRegister" onsubmit="handleRegister(event)">
+          <div class="form-grid" style="grid-template-columns:1fr;">
+            <label>Nama Lengkap
+              <input type="text" id="regName" required placeholder="Masukkan nama lengkap" />
+            </label>
+            <label>Alamat Email
+              <input type="email" id="regEmail" required placeholder="contoh: nama@gmail.com" />
+            </label>
+            <label>Unit Tugas
+              <select id="regUnit" required>
+                <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
+                <option value="parkir">Unit Parkir</option>
+                <option value="driver">Unit Driver</option>
+              </select>
+            </label>
+            <label>Sandi / Password
+              <input type="password" id="regPassword" required minlength="4" placeholder="Buat sandi akun" />
+            </label>
+          </div>
+          <div class="login-err" id="regErr"></div>
+          <div class="login-ok" id="regOk"></div>
+          <div style="margin-top:10px;">
+            <button class="btn btn-primary" type="submit" style="width:100%;padding:11px 14px;">Daftar Akun</button>
+          </div>
+        </form>
+
+        <div class="auth-switch-wrap">
+          <span>Sudah memiliki akun?</span>
+          <button class="link-btn" type="button" onclick="toggleAuthMode('login')">Kembali ke Masuk</button>
         </div>
-        <div>
-          <span class="sync-pill" id="loginSyncStatus">Status Server: Siap (Mode Lokal + Cloud)</span>
-        </div>
-        <div class="cred-note">
-          <b>Akun Operator:</b> <code>suwaji.aji1305@gmail.com</code> • Sandi: <code>Suwaji@1305</code><br/>
-          <b>Anggota Terdaftar:</b> Gunakan email anggota aktif yang didaftarkan operator (sandi awal: <code>arsy123</code>).
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- APLIKASI UTAMA -->
-<div id="appScreen" class="hidden">
-  <header>
+<!-- APLIKASI UTAMA (SIDEBAR + AREA TENGAH FOKUS HASIL) -->
+<div id="appScreen" class="app-layout hidden">
+  <div id="mobileBackdrop" class="mobile-backdrop" onclick="toggleSidebar(false)"></div>
+
+  <aside id="sidebar" class="sidebar">
     <div>
-      <h1>SIM-KPK RS ARSY — Sistem Informasi Keamanan, Parkir & Driver RS ARSY</h1>
-      <small>Patroli Keliling (2x/Shift) • Harian Satpam (1x/Shift) • Adzan Subuh • Parkir • Driver</small>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-      <span class="user-pill" id="userBadge">-</span>
-      <button class="btn btn-primary" onclick="syncFromCloud(true)">Sinkronkan Data</button>
-      <button class="btn btn-export export-only" onclick="exportExcel()">Excel (.xlsx)</button>
-      <button class="btn btn-export export-only" onclick="exportWord()">Word (.doc)</button>
-      <button class="btn btn-warn export-only" onclick="exportPPT()">PPT (.pptx)</button>
-      <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
-    </div>
-  </header>
-
-  <div class="container">
-    <!-- PANEL KONTROL OPERATOR -->
-    <section id="operatorControlBox" class="card op-card operator-only hidden">
-      <div class="toolbar">
-        <h2 style="margin:0;color:var(--primary-dark);">Panel Kontrol Operator — Tambah & Nonaktifkan Email Anggota</h2>
-        <span class="status-badge st-active">Akses Penuh Semua Laporan & Data</span>
+      <div class="sidebar-brand">
+        <div class="title">SIM-KPK RS ARSY</div>
+        <div class="sub">Sistem Informasi Keamanan, Parkir & Driver RS ARSY</div>
       </div>
 
-      <div class="cloud-box">
-        <div style="font-weight:700;color:var(--primary-dark);margin-bottom:6px;">
-          Sinkronisasi Cloud Google Sheets (Agar Semua HP Anggota Terhubung Otomatis)
-        </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-          <input type="url" id="cloudUrlInput" placeholder="Tempel URL Web App Google Apps Script (https://script.google.com/macros/s/.../exec)" style="flex:1;min-width:240px;" />
-          <button class="btn btn-primary btn-sm" type="button" onclick="saveCloudUrl()">Simpan & Hubungkan Cloud</button>
-          <button class="btn btn-outline btn-sm" type="button" onclick="exportBackupJson()">Cadangkan JSON</button>
-          <label class="btn btn-outline btn-sm" style="flex-direction:row;align-items:center;gap:4px;cursor:pointer;margin:0;">
-            Pulihkan JSON
-            <input type="file" accept=".json,application/json" onchange="importBackupJson(event)" style="display:none;" />
-          </label>
-        </div>
-        <div id="cloudConnInfo" style="margin-top:5px;color:#0f766e;font-weight:600;"></div>
-      </div>
+      <div class="sidebar-section-lbl">Menu Unit & Laporan</div>
+      <nav class="nav-list" id="mainTabs">
+        <button class="nav-btn active" data-tab="patroli" data-unit="keamanan"><span>1. Patroli Keliling (2x/Shift)</span></button>
+        <button class="nav-btn" data-tab="harian" data-unit="keamanan"><span>2. Harian Satpam (1x/Shift)</span></button>
+        <button class="nav-btn" data-tab="adzan" data-unit="keamanan"><span>3. Adzan Subuh</span></button>
+        <button class="nav-btn" data-tab="parkir" data-unit="parkir"><span>4. Unit Parkir</span></button>
+        <button class="nav-btn" data-tab="driver" data-unit="driver"><span>5. Unit Driver</span></button>
+      </nav>
 
-      <form id="form-member" onsubmit="saveMemberAccount(event)" style="margin-bottom:12px;">
-        <div class="form-grid">
-          <label>Nama Anggota
-            <input type="text" name="member_name" required placeholder="Contoh: Johan" />
-          </label>
-          <label>Email Anggota Baru
-            <input type="email" name="member_email" required placeholder="contoh: anggota@gmail.com" />
-          </label>
-          <label>Sandi Anggota
-            <input type="text" name="member_pass" value="arsy123" required />
-          </label>
-          <label>Unit Tugas
-            <select name="member_unit">
-              <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
-              <option value="parkir">Unit Parkir</option>
-              <option value="driver">Unit Driver</option>
-            </select>
-          </label>
-          <label>Status Email
-            <select name="member_active">
-              <option value="true">Aktif</option>
-              <option value="false">Nonaktif</option>
-            </select>
-          </label>
-        </div>
-        <div style="margin-top:10px;display:flex;align-items:center;flex-wrap:wrap;">
-          <button class="btn btn-primary" type="submit">Simpan / Tambah Email Anggota</button>
-          <span class="op-msg" id="opStatusMsg"></span>
-        </div>
-      </form>
-
-      <div class="table-wrap" style="max-height:240px;">
-        <table id="membersTable"></table>
-      </div>
-    </section>
-
-    <div class="tabs" id="mainTabs">
-      <button class="tab-btn active" data-tab="patroli" data-unit="keamanan">1. Patroli Keliling (2x/Shift)</button>
-      <button class="tab-btn" data-tab="harian" data-unit="keamanan">2. Laporan Harian Satpam (1x/Shift)</button>
-      <button class="tab-btn" data-tab="adzan" data-unit="keamanan">3. Laporan Adzan Subuh</button>
-      <button class="tab-btn" data-tab="parkir" data-unit="parkir">4. Unit Parkir</button>
-      <button class="tab-btn" data-tab="driver" data-unit="driver">5. Unit Driver</button>
-    </div>
-
-    <!-- FILTER REKAP & MONITORING DIAGRAM DETAIL -->
-    <div id="monitoringCard" class="card">
-      <div class="toolbar">
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-          <label style="flex-direction:row;align-items:center;gap:6px;">
-            Periode Rekap:
-            <select id="periodeMode" onchange="refreshView()" style="width:auto;">
-              <option value="harian">Harian (Per Tanggal)</option>
-              <option value="mingguan">Mingguan (Per Pekan)</option>
-              <option value="bulanan" selected>Bulanan (Per Bulan)</option>
-            </select>
-          </label>
-          <label style="flex-direction:row;align-items:center;gap:6px;">
-            Tanggal / Bulan Acuan:
-            <input type="date" id="refDate" onchange="refreshView()" style="width:auto;" />
-          </label>
-        </div>
-        <div id="activeUnitTitle" style="font-weight:700;color:var(--primary-dark);">Unit Aktif: Patroli Keliling</div>
-      </div>
-
-      <div id="alertSummaryBox" class="alert-card"></div>
-      <div class="kpis" id="kpiBox"></div>
-
-      <div class="charts-grid">
-        <div class="chart-box"><canvas id="chartTemuanCompare"></canvas></div>
-        <div class="chart-box"><canvas id="chartPct"></canvas></div>
-        <div class="chart-box"><canvas id="chartMain"></canvas></div>
-        <div class="chart-box wide"><canvas id="chartTrend"></canvas></div>
-      </div>
-    </div>
-
-    <!-- FORM 1: PATROLI KELILING -->
-    <section id="panel-patroli" class="panel card">
-      <div class="toolbar">
-        <h2 style="margin:0;">Input Laporan Mutu Patroli Keliling (Target 2x / Shift)</h2>
-        <button class="btn btn-outline btn-sm" type="button" onclick="setAllPatroliAman()">Set Semua Area = Aman</button>
-      </div>
-      <form id="form-patroli" onsubmit="savePatroli(event)">
-        <div class="form-grid">
-          <label>Tanggal <input type="date" name="tanggal" required /></label>
-          <label>Status Dinas
-            <select name="dinas">
-              <option value="PAGI">PAGI</option>
-              <option value="SIANG">SIANG</option>
-              <option value="MALAM">MALAM</option>
-            </select>
-          </label>
-          <label>Status Patroli
-            <select name="status">
-              <option value="Patroli">Patroli</option>
-              <option value="Tidak Patroli">Tidak Patroli</option>
-            </select>
-          </label>
-          <label>Jam Patroli <input type="time" name="jam" value="08:00" required /></label>
-          <label>Petugas Patroli
-            <input type="text" name="petugas" required placeholder="Nama petugas" />
-          </label>
-          <label>Status Kondisi
-            <select name="kondisi">
-              <option value="Tidak Ada Temuan">Tidak Ada Temuan</option>
-              <option value="Ada Temuan">Ada Temuan</option>
-            </select>
-          </label>
-        </div>
-        <div class="areas-grid" id="patroliAreasBox"></div>
-        <label>Temuan Ketika Patroli / Alasan Tidak Patroli
-          <textarea name="temuan" placeholder="Contoh: Tidak ada temuan / aman"></textarea>
-        </label>
-        <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Patroli Keliling</button></div>
-      </form>
-    </section>
-
-    <!-- FORM 2: HARIAN SATPAM -->
-    <section id="panel-harian" class="panel card hidden">
-      <div class="toolbar">
-        <h2 style="margin:0;">Input Laporan Kegiatan Harian Satpam (Target 1x / Shift)</h2>
-        <button class="btn btn-outline btn-sm" type="button" onclick="setHarianNormal()">Set Inventaris = Normal/Aman</button>
-      </div>
-      <form id="form-harian" onsubmit="saveHarian(event)">
-        <div class="form-grid">
-          <label>Nama Satpam Jaga <input type="text" name="nama" required placeholder="Nama petugas" /></label>
-          <label>Tanggal <input type="date" name="tanggal" required /></label>
-          <label>Shift
-            <select name="shift">
-              <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
-              <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
-              <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
-              <option value="Sabtu Siang Poli ( 12:00 - 17:00 )">Sabtu Siang Poli ( 12:00 - 17:00 )</option>
-            </select>
-          </label>
-          <label>Lokasi Penugasan
-            <select name="lokasi">
-              <option>Pos Informasi</option>
-              <option>Gedung Poli</option>
-            </select>
-          </label>
-          <label>Ada Insiden?
-            <select name="insiden">
-              <option value="Tidak Ada Insiden">Tidak Ada Insiden</option>
-              <option value="Ya">Ya</option>
-            </select>
-          </label>
-          <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" placeholder="Nama petugas berikut" /></label>
-        </div>
-        <div class="hours-grid" id="harianHoursBox"></div>
-        <div class="form-grid">
-          <label>Komputer <input type="text" name="komputer" value="Ada, Berfungsi Baik" /></label>
-          <label>Kipas Angin <input type="text" name="kipas" value="Ada, Berfungsi Baik" /></label>
-          <label>Monitor CCTV <input type="text" name="cctv" value="Ada, Berfungsi Baik" /></label>
-          <label>Ampli <input type="text" name="ampli" value="Ada, Berfungsi Baik" /></label>
-          <label>Telepon Duduk <input type="text" name="telpon" value="Ada, Berfungsi Baik" /></label>
-          <label>Kunci Ruangan/Mobil/Motor <input type="text" name="kunci" value="Lengkap dan Aman" /></label>
-          <label>APAR, Helm, Kursi, Meja, Sound <input type="text" name="apar" value="Lengkap dan Aman" /></label>
-          <label>Keterangan Insiden <input type="text" name="ket_insiden" value="Tidak ada insiden" /></label>
-        </div>
-        <div class="form-grid" style="margin-top:8px;">
-          <label>Catatan Inventaris <input type="text" name="cat_inv" value="Aman" /></label>
-          <label>Instruksi Shift Sebelumnya <input type="text" name="info_prev" value="Aman" /></label>
-          <label>Instruksi Shift Berikutnya <input type="text" name="info_next" value="Aman" /></label>
-          <label>Catatan / Saran Lainnya <input type="text" name="saran" value="Tidak ada" /></label>
-        </div>
-        <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Harian</button></div>
-      </form>
-    </section>
-
-    <!-- FORM 3: ADZAN SUBUH -->
-    <section id="panel-adzan" class="panel card hidden">
-      <h2>Input Laporan Adzan Subuh</h2>
-      <form id="form-adzan" onsubmit="saveAdzan(event)">
-        <div class="form-grid">
-          <label>Tanggal <input type="date" name="tanggal" required /></label>
-          <label>Waktu Adzan Subuh <input type="time" name="waktu" value="04:00" required /></label>
-          <label>Status Adzan Subuh
-            <select name="status">
-              <option value="Adzan Sudah Dilaksanakan">Adzan Sudah Dilaksanakan</option>
-              <option value="Tidak Dilaksanakan">Tidak Dilaksanakan</option>
-            </select>
-          </label>
-          <label>Nama Petugas <input type="text" name="petugas" required placeholder="Nama petugas" /></label>
-        </div>
-        <label style="margin-top:8px;">Keterangan (Kendala / Catatan / Bukti Foto WA)
-          <input type="text" name="keterangan" placeholder="Contoh: Aman / bukti foto di grup WA" />
-        </label>
-        <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Adzan</button></div>
-      </form>
-    </section>
-
-    <!-- FORM 4: PARKIR -->
-    <section id="panel-parkir" class="panel card hidden">
-      <h2>Input Laporan Kegiatan Petugas Parkir</h2>
-      <form id="form-parkir" onsubmit="saveParkir(event)">
-        <div class="form-grid">
-          <label>Nama Petugas Jaga <input type="text" name="nama" required /></label>
-          <label>Tanggal <input type="date" name="tanggal" required /></label>
-          <label>Waktu Shift
-            <select name="shift">
-              <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
-              <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
-              <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
-            </select>
-          </label>
-          <label>Lokasi Jaga
-            <select name="lokasi">
-              <option value="Pos Parkir">Pos Parkir</option>
-              <option value="Menata Area Parkir">Menata Area Parkir</option>
-            </select>
-          </label>
-          <label>Status Sistem Parkir Otomatis
-            <select name="status_sistem">
-              <option value="Berfungsi Normal Sepanjang Shift">Berfungsi Normal Sepanjang Shift</option>
-              <option value="Mengalami Gangguan Sesekali">Mengalami Gangguan Sesekali</option>
-              <option value="Sering Mengalami Gangguan">Sering Mengalami Gangguan</option>
-            </select>
-          </label>
-          <label>Peralatan Tidak Normal
-            <select name="alat">
-              <option value="Normal">Normal</option>
-              <option value="Palang Otomatis (Masuk/Keluar)">Palang Otomatis (Masuk/Keluar)</option>
-              <option value="Pembaca Tiket/Kartu Keluar">Pembaca Tiket/Kartu Keluar</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </label>
-          <label>Jumlah Motor <input type="number" name="motor" min="0" value="0" required /></label>
-          <label>Jumlah Mobil <input type="number" name="mobil" min="0" value="0" required /></label>
-          <label>Intervensi Manual
-            <select name="manual">
-              <option value="Tidak">Tidak</option>
-              <option value="Ya">Ya</option>
-            </select>
-          </label>
-          <label>Jenis Kendala
-            <select name="kendala">
-              <option value="Tidak Ada Kendala">Tidak Ada Kendala</option>
-              <option value="Pengendara Kehilangan Tiket/Kartu">Pengendara Kehilangan Tiket/Kartu</option>
-              <option value="Kendaraan Mundur/Menerobos">Kendaraan Mundur/Menerobos</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </label>
-          <label>Ganti Kertas
-            <select name="ganti_kertas">
-              <option value="Tidak">Tidak</option>
-              <option value="Ya">Ya</option>
-            </select>
-          </label>
-          <label>Total Storan (Rp) <input type="number" name="storan" min="0" value="0" required /></label>
-          <label>Temuan Ketika Jaga <input type="text" name="temuan" value="-" /></label>
-          <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" /></label>
-        </div>
-        <label style="margin-top:8px;">Keterangan Gangguan / Catatan Tambahan
-          <input type="text" name="catatan" placeholder="Detail gangguan alat atau observasi" />
-        </label>
-        <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Parkir</button></div>
-      </form>
-    </section>
-
-    <!-- FORM 5: DRIVER -->
-    <section id="panel-driver" class="panel card hidden">
-      <h2>Input Laporan Kegiatan Driver</h2>
-      <form id="form-driver" onsubmit="saveDriver(event)">
-        <div class="form-grid">
-          <label>Tanggal <input type="date" name="tanggal" required /></label>
-          <label>Jam Berangkat <input type="time" name="jam_berangkat" required /></label>
-          <label>Jam Kembali <input type="time" name="jam_kembali" required /></label>
-          <label>Jenis Permintaan
-            <select name="jenis_permintaan">
-              <option>Antar / Jemput Dokter</option>
-              <option>Rujuk</option>
-              <option>Antar Pasien Gon</option>
-              <option>Antar / Jemput Kantor</option>
-              <option>Ngantar Pasien Pulang</option>
-              <option>Lainnya</option>
-            </select>
-          </label>
-          <label>Jenis Kendaraan
-            <select name="kendaraan">
-              <option>Mobil Dinas RS ARSY</option>
-              <option>Ambulan Pregio RS ARSY</option>
-              <option>Ambulan APV RS ARSY</option>
-              <option>Kendaraan Mobil Luar / Rental</option>
-              <option>Ambulan Luar ( Sewa )</option>
-            </select>
-          </label>
-          <label>KM Awal <input type="number" name="km_awal" min="0" required /></label>
-          <label>KM Akhir <input type="number" name="km_akhir" min="0" required /></label>
-          <label>BBM Dibeli (Liter) <input type="number" step="0.01" name="bbm_beli" value="0" /></label>
-          <label>BBM Terpakai (Liter) <input type="number" step="0.01" name="bbm_pakai" value="0" /></label>
-          <label>Harga BBM (Rp) <input type="number" name="harga_bbm" value="0" /></label>
-          <label>Isi E-Toll (Rp) <input type="number" name="etoll" value="0" /></label>
-          <label>Keterangan Unit/Poli <input type="text" name="ket_unit" placeholder="POLI / IGD / KANTOR" /></label>
-          <label>Tujuan <input type="text" name="tujuan" required placeholder="Kota / RS / Alamat" /></label>
-          <label>Status Driver
-            <select name="driver_status">
-              <option value="Dinas">Dinas</option>
-              <option value="On Call">On Call</option>
-            </select>
-          </label>
-          <label>Nama Driver
-            <input type="text" name="driver_nama" required placeholder="Nama driver" />
-          </label>
-          <label>Insiden di Jalan
-            <select name="insiden">
-              <option value="Tidak">Tidak</option>
-              <option value="Ya">Ya</option>
-            </select>
-          </label>
-        </div>
-        <label style="margin-top:8px;">Keterangan Hambatan / Kendala
-          <input type="text" name="hambatan" value="tidak ada" />
-        </label>
-        <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Driver</button></div>
-      </form>
-    </section>
-
-    <!-- TABEL REKAP -->
-    <div id="rekapCard" class="card">
-      <div class="toolbar">
-        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
-          <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
-          <span class="op-msg" id="rekapDeleteMsg"></span>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <input type="search" id="searchKeyword" oninput="refreshView()" placeholder="Cari petugas / catatan / tujuan..." style="width:220px;" />
-          <select id="filterFlag" onchange="refreshView()" style="width:auto;">
-            <option value="all">Semua Status</option>
-            <option value="issue">Hanya Temuan / Kendala / Insiden</option>
-            <option value="normal">Hanya Normal / Aman</option>
+      <div class="sidebar-section-lbl">Filter Periode Rekap</div>
+      <div class="sidebar-controls">
+        <label>Periode Rekap
+          <select id="periodeMode" onchange="refreshView()">
+            <option value="harian">Harian (Per Tanggal)</option>
+            <option value="mingguan">Mingguan (Per Pekan)</option>
+            <option value="bulanan" selected>Bulanan (Per Bulan)</option>
           </select>
-        </div>
+        </label>
+        <label>Tanggal / Bulan Acuan
+          <input type="date" id="refDate" onchange="refreshView()" />
+        </label>
       </div>
-      <div class="table-wrap">
-        <table id="rekapTable"></table>
+
+      <div class="sidebar-section-lbl operator-only hidden">Kelola Sistem</div>
+      <div class="nav-list operator-only hidden">
+        <button class="nav-btn" type="button" onclick="toggleOperatorPanel()"><span>Kontrol Operator & Email</span></button>
       </div>
     </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip" id="userBadge">-</div>
+      <button class="btn btn-primary btn-sm" type="button" onclick="syncFromCloud(true)">Sinkronkan Data</button>
+      <button class="btn btn-danger btn-sm" type="button" onclick="handleLogout()">Keluar</button>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="btn btn-outline btn-sm" type="button" onclick="toggleSidebar()">☰ Menu</button>
+        <div>
+          <h1 class="topbar-title" id="activeUnitTitle">Patroli Keliling (Target 2x/Shift)</h1>
+          <div class="topbar-sub">Ringkasan Hasil Laporan • Diagram Perbandingan & Tren • Tabel Rekap</div>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" type="button" id="btnToggleForm" onclick="toggleFormPanel()">+ Input Laporan</button>
+        <button class="btn btn-export btn-sm export-only" type="button" onclick="exportExcel()">Excel (.xlsx)</button>
+        <button class="btn btn-export btn-sm export-only" type="button" onclick="exportWord()">Word (.doc)</button>
+        <button class="btn btn-warn btn-sm export-only" type="button" onclick="exportPPT()">PPT (.pptx)</button>
+      </div>
+    </header>
+
+    <main class="content-wrap">
+      <!-- PANEL KONTROL OPERATOR -->
+      <section id="operatorControlBox" class="card op-card operator-only hidden">
+        <div class="toolbar">
+          <h2 style="margin:0;color:var(--primary-dark);">Panel Kontrol Operator — Tambah & Nonaktifkan Email Anggota</h2>
+          <span class="status-badge st-active">Akses Penuh Semua Laporan & Data</span>
+        </div>
+
+        <div class="cloud-box">
+          <div style="font-weight:700;color:var(--primary-dark);margin-bottom:6px;">
+            Sinkronisasi Cloud Google Sheets (Agar Semua HP Anggota Terhubung Otomatis)
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <input type="url" id="cloudUrlInput" placeholder="Tempel URL Web App Google Apps Script (https://script.google.com/macros/s/.../exec)" style="flex:1;min-width:240px;" />
+            <button class="btn btn-primary btn-sm" type="button" onclick="saveCloudUrl()">Simpan & Hubungkan Cloud</button>
+            <button class="btn btn-outline btn-sm" type="button" onclick="exportBackupJson()">Cadangkan JSON</button>
+            <label class="btn btn-outline btn-sm" style="flex-direction:row;align-items:center;gap:4px;cursor:pointer;margin:0;">
+              Pulihkan JSON
+              <input type="file" accept=".json,application/json" onchange="importBackupJson(event)" style="display:none;" />
+            </label>
+          </div>
+          <div id="cloudConnInfo" style="margin-top:5px;color:#0f766e;font-weight:600;"></div>
+        </div>
+
+        <form id="form-member" onsubmit="saveMemberAccount(event)" style="margin-bottom:12px;">
+          <div class="form-grid">
+            <label>Nama Anggota
+              <input type="text" name="member_name" required placeholder="Contoh: Johan" />
+            </label>
+            <label>Email Anggota Baru
+              <input type="email" name="member_email" required placeholder="contoh: anggota@gmail.com" />
+            </label>
+            <label>Sandi Anggota
+              <input type="text" name="member_pass" value="arsy123" required />
+            </label>
+            <label>Unit Tugas
+              <select name="member_unit">
+                <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
+                <option value="parkir">Unit Parkir</option>
+                <option value="driver">Unit Driver</option>
+              </select>
+            </label>
+            <label>Status Email
+              <select name="member_active">
+                <option value="true">Aktif</option>
+                <option value="false">Nonaktif</option>
+              </select>
+            </label>
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Simpan / Tambah Email Anggota</button>
+            <span class="op-msg" id="opStatusMsg"></span>
+          </div>
+        </form>
+
+        <div class="table-wrap" style="max-height:240px;">
+          <table id="membersTable"></table>
+        </div>
+      </section>
+
+      <!-- FORM INPUT LAPORAN -->
+      <div id="formDrawerContainer" class="hidden">
+        <!-- FORM 1: PATROLI KELILING -->
+        <section id="panel-patroli" class="panel card">
+          <div class="toolbar">
+            <h2 style="margin:0;">Input Laporan Mutu Patroli Keliling (Target 2x / Shift)</h2>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-outline btn-sm" type="button" onclick="setAllPatroliAman()">Set Semua Area = Aman</button>
+              <button class="btn btn-outline btn-sm" type="button" onclick="toggleFormPanel(false)">Sembunyikan Form</button>
+            </div>
+          </div>
+          <form id="form-patroli" onsubmit="savePatroli(event)">
+            <div class="form-grid">
+              <label>Tanggal <input type="date" name="tanggal" required /></label>
+              <label>Status Dinas
+                <select name="dinas">
+                  <option value="PAGI">PAGI</option>
+                  <option value="SIANG">SIANG</option>
+                  <option value="MALAM">MALAM</option>
+                </select>
+              </label>
+              <label>Status Patroli
+                <select name="status">
+                  <option value="Patroli">Patroli</option>
+                  <option value="Tidak Patroli">Tidak Patroli</option>
+                </select>
+              </label>
+              <label>Jam Patroli <input type="time" name="jam" value="08:00" required /></label>
+              <label>Petugas Patroli
+                <input type="text" name="petugas" required placeholder="Nama petugas" />
+              </label>
+              <label>Status Kondisi
+                <select name="kondisi">
+                  <option value="Tidak Ada Temuan">Tidak Ada Temuan</option>
+                  <option value="Ada Temuan">Ada Temuan</option>
+                </select>
+              </label>
+            </div>
+            <div class="areas-grid" id="patroliAreasBox"></div>
+            <label>Temuan Ketika Patroli / Alasan Tidak Patroli
+              <textarea name="temuan" placeholder="Contoh: Tidak ada temuan / aman"></textarea>
+            </label>
+            <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Patroli Keliling</button></div>
+          </form>
+        </section>
+
+        <!-- FORM 2: HARIAN SATPAM -->
+        <section id="panel-harian" class="panel card hidden">
+          <div class="toolbar">
+            <h2 style="margin:0;">Input Laporan Kegiatan Harian Satpam (Target 1x / Shift)</h2>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-outline btn-sm" type="button" onclick="setHarianNormal()">Set Inventaris = Normal/Aman</button>
+              <button class="btn btn-outline btn-sm" type="button" onclick="toggleFormPanel(false)">Sembunyikan Form</button>
+            </div>
+          </div>
+          <form id="form-harian" onsubmit="saveHarian(event)">
+            <div class="form-grid">
+              <label>Nama Satpam Jaga <input type="text" name="nama" required placeholder="Nama petugas" /></label>
+              <label>Tanggal <input type="date" name="tanggal" required /></label>
+              <label>Shift
+                <select name="shift">
+                  <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
+                  <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
+                  <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
+                  <option value="Sabtu Siang Poli ( 12:00 - 17:00 )">Sabtu Siang Poli ( 12:00 - 17:00 )</option>
+                </select>
+              </label>
+              <label>Lokasi Penugasan
+                <select name="lokasi">
+                  <option>Pos Informasi</option>
+                  <option>Gedung Poli</option>
+                </select>
+              </label>
+              <label>Ada Insiden?
+                <select name="insiden">
+                  <option value="Tidak Ada Insiden">Tidak Ada Insiden</option>
+                  <option value="Ya">Ya</option>
+                </select>
+              </label>
+              <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" placeholder="Nama petugas berikut" /></label>
+            </div>
+            <div class="hours-grid" id="harianHoursBox"></div>
+            <div class="form-grid">
+              <label>Komputer <input type="text" name="komputer" value="Ada, Berfungsi Baik" /></label>
+              <label>Kipas Angin <input type="text" name="kipas" value="Ada, Berfungsi Baik" /></label>
+              <label>Monitor CCTV <input type="text" name="cctv" value="Ada, Berfungsi Baik" /></label>
+              <label>Ampli <input type="text" name="ampli" value="Ada, Berfungsi Baik" /></label>
+              <label>Telepon Duduk <input type="text" name="telpon" value="Ada, Berfungsi Baik" /></label>
+              <label>Kunci Ruangan/Mobil/Motor <input type="text" name="kunci" value="Lengkap dan Aman" /></label>
+              <label>APAR, Helm, Kursi, Meja, Sound <input type="text" name="apar" value="Lengkap dan Aman" /></label>
+              <label>Keterangan Insiden <input type="text" name="ket_insiden" value="Tidak ada insiden" /></label>
+            </div>
+            <div class="form-grid" style="margin-top:8px;">
+              <label>Catatan Inventaris <input type="text" name="cat_inv" value="Aman" /></label>
+              <label>Instruksi Shift Sebelumnya <input type="text" name="info_prev" value="Aman" /></label>
+              <label>Instruksi Shift Berikutnya <input type="text" name="info_next" value="Aman" /></label>
+              <label>Catatan / Saran Lainnya <input type="text" name="saran" value="Tidak ada" /></label>
+            </div>
+            <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Harian</button></div>
+          </form>
+        </section>
+
+        <!-- FORM 3: ADZAN SUBUH -->
+        <section id="panel-adzan" class="panel card hidden">
+          <div class="toolbar">
+            <h2 style="margin:0;">Input Laporan Adzan Subuh</h2>
+            <button class="btn btn-outline btn-sm" type="button" onclick="toggleFormPanel(false)">Sembunyikan Form</button>
+          </div>
+          <form id="form-adzan" onsubmit="saveAdzan(event)">
+            <div class="form-grid">
+              <label>Tanggal <input type="date" name="tanggal" required /></label>
+              <label>Waktu Adzan Subuh <input type="time" name="waktu" value="04:00" required /></label>
+              <label>Status Adzan Subuh
+                <select name="status">
+                  <option value="Adzan Sudah Dilaksanakan">Adzan Sudah Dilaksanakan</option>
+                  <option value="Tidak Dilaksanakan">Tidak Dilaksanakan</option>
+                </select>
+              </label>
+              <label>Nama Petugas <input type="text" name="petugas" required placeholder="Nama petugas" /></label>
+            </div>
+            <label style="margin-top:8px;">Keterangan (Kendala / Catatan / Bukti Foto WA)
+              <input type="text" name="keterangan" placeholder="Contoh: Aman / bukti foto di grup WA" />
+            </label>
+            <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Adzan</button></div>
+          </form>
+        </section>
+
+        <!-- FORM 4: PARKIR -->
+        <section id="panel-parkir" class="panel card hidden">
+          <div class="toolbar">
+            <h2 style="margin:0;">Input Laporan Kegiatan Petugas Parkir</h2>
+            <button class="btn btn-outline btn-sm" type="button" onclick="toggleFormPanel(false)">Sembunyikan Form</button>
+          </div>
+          <form id="form-parkir" onsubmit="saveParkir(event)">
+            <div class="form-grid">
+              <label>Nama Petugas Jaga <input type="text" name="nama" required /></label>
+              <label>Tanggal <input type="date" name="tanggal" required /></label>
+              <label>Waktu Shift
+                <select name="shift">
+                  <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
+                  <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
+                  <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
+                </select>
+              </label>
+              <label>Lokasi Jaga
+                <select name="lokasi">
+                  <option value="Pos Parkir">Pos Parkir</option>
+                  <option value="Menata Area Parkir">Menata Area Parkir</option>
+                </select>
+              </label>
+              <label>Status Sistem Parkir Otomatis
+                <select name="status_sistem">
+                  <option value="Berfungsi Normal Sepanjang Shift">Berfungsi Normal Sepanjang Shift</option>
+                  <option value="Mengalami Gangguan Sesekali">Mengalami Gangguan Sesekali</option>
+                  <option value="Sering Mengalami Gangguan">Sering Mengalami Gangguan</option>
+                </select>
+              </label>
+              <label>Peralatan Tidak Normal
+                <select name="alat">
+                  <option value="Normal">Normal</option>
+                  <option value="Palang Otomatis (Masuk/Keluar)">Palang Otomatis (Masuk/Keluar)</option>
+                  <option value="Pembaca Tiket/Kartu Keluar">Pembaca Tiket/Kartu Keluar</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </label>
+              <label>Jumlah Motor <input type="number" name="motor" min="0" value="0" required /></label>
+              <label>Jumlah Mobil <input type="number" name="mobil" min="0" value="0" required /></label>
+              <label>Intervensi Manual
+                <select name="manual">
+                  <option value="Tidak">Tidak</option>
+                  <option value="Ya">Ya</option>
+                </select>
+              </label>
+              <label>Jenis Kendala
+                <select name="kendala">
+                  <option value="Tidak Ada Kendala">Tidak Ada Kendala</option>
+                  <option value="Pengendara Kehilangan Tiket/Kartu">Pengendara Kehilangan Tiket/Kartu</option>
+                  <option value="Kendaraan Mundur/Menerobos">Kendaraan Mundur/Menerobos</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </label>
+              <label>Ganti Kertas
+                <select name="ganti_kertas">
+                  <option value="Tidak">Tidak</option>
+                  <option value="Ya">Ya</option>
+                </select>
+              </label>
+              <label>Total Storan (Rp) <input type="number" name="storan" min="0" value="0" required /></label>
+              <label>Temuan Ketika Jaga <input type="text" name="temuan" value="-" /></label>
+              <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" /></label>
+            </div>
+            <label style="margin-top:8px;">Keterangan Gangguan / Catatan Tambahan
+              <input type="text" name="catatan" placeholder="Detail gangguan alat atau observasi" />
+            </label>
+            <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Parkir</button></div>
+          </form>
+        </section>
+
+        <!-- FORM 5: DRIVER -->
+        <section id="panel-driver" class="panel card hidden">
+          <div class="toolbar">
+            <h2 style="margin:0;">Input Laporan Kegiatan Driver</h2>
+            <button class="btn btn-outline btn-sm" type="button" onclick="toggleFormPanel(false)">Sembunyikan Form</button>
+          </div>
+          <form id="form-driver" onsubmit="saveDriver(event)">
+            <div class="form-grid">
+              <label>Tanggal <input type="date" name="tanggal" required /></label>
+              <label>Jam Berangkat <input type="time" name="jam_berangkat" required /></label>
+              <label>Jam Kembali <input type="time" name="jam_kembali" required /></label>
+              <label>Jenis Permintaan
+                <select name="jenis_permintaan">
+                  <option>Antar / Jemput Dokter</option>
+                  <option>Rujuk</option>
+                  <option>Antar Pasien Gon</option>
+                  <option>Antar / Jemput Kantor</option>
+                  <option>Ngantar Pasien Pulang</option>
+                  <option>Lainnya</option>
+                </select>
+              </label>
+              <label>Jenis Kendaraan
+                <select name="kendaraan">
+                  <option>Mobil Dinas RS ARSY</option>
+                  <option>Ambulan Pregio RS ARSY</option>
+                  <option>Ambulan APV RS ARSY</option>
+                  <option>Kendaraan Mobil Luar / Rental</option>
+                  <option>Ambulan Luar ( Sewa )</option>
+                </select>
+              </label>
+              <label>KM Awal <input type="number" name="km_awal" min="0" required /></label>
+              <label>KM Akhir <input type="number" name="km_akhir" min="0" required /></label>
+              <label>BBM Dibeli (Liter) <input type="number" step="0.01" name="bbm_beli" value="0" /></label>
+              <label>BBM Terpakai (Liter) <input type="number" step="0.01" name="bbm_pakai" value="0" /></label>
+              <label>Harga BBM (Rp) <input type="number" name="harga_bbm" value="0" /></label>
+              <label>Isi E-Toll (Rp) <input type="number" name="etoll" value="0" /></label>
+              <label>Keterangan Unit/Poli <input type="text" name="ket_unit" placeholder="POLI / IGD / KANTOR" /></label>
+              <label>Tujuan <input type="text" name="tujuan" required placeholder="Kota / RS / Alamat" /></label>
+              <label>Status Driver
+                <select name="driver_status">
+                  <option value="Dinas">Dinas</option>
+                  <option value="On Call">On Call</option>
+                </select>
+              </label>
+              <label>Nama Driver
+                <input type="text" name="driver_nama" required placeholder="Nama driver" />
+              </label>
+              <label>Insiden di Jalan
+                <select name="insiden">
+                  <option value="Tidak">Tidak</option>
+                  <option value="Ya">Ya</option>
+                </select>
+              </label>
+            </div>
+            <label style="margin-top:8px;">Keterangan Hambatan / Kendala
+              <input type="text" name="hambatan" value="tidak ada" />
+            </label>
+            <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Driver</button></div>
+          </form>
+        </section>
+      </div>
+
+      <!-- AREA TENGAH: RINGKASAN HASIL, DIAGRAM PERBANDINGAN & TREN -->
+      <div id="monitoringCard" class="card">
+        <div id="alertSummaryBox" class="alert-card"></div>
+        <div class="kpis" id="kpiBox"></div>
+
+        <div class="charts-grid">
+          <div class="chart-box"><canvas id="chartTemuanCompare"></canvas></div>
+          <div class="chart-box"><canvas id="chartPct"></canvas></div>
+          <div class="chart-box"><canvas id="chartMain"></canvas></div>
+          <div class="chart-box wide"><canvas id="chartTrend"></canvas></div>
+        </div>
+      </div>
+
+      <!-- AREA TENGAH: TABEL HASIL LAPORAN -->
+      <div id="rekapCard" class="card">
+        <div class="toolbar">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
+            <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
+            <span class="op-msg" id="rekapDeleteMsg"></span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input type="search" id="searchKeyword" oninput="refreshView()" placeholder="Cari petugas / catatan / tujuan..." style="width:220px;" />
+            <select id="filterFlag" onchange="refreshView()" style="width:auto;">
+              <option value="all">Semua Status</option>
+              <option value="issue">Hanya Temuan / Kendala / Insiden</option>
+              <option value="normal">Hanya Normal / Aman</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="rekapTable"></table>
+        </div>
+      </div>
+    </main>
   </div>
 </div>
 
@@ -710,9 +823,9 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V12';
-const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V12';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V12';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V14';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V14';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V14';
 const CLOUD_URL_KEY = 'SIM_KPK_RS_ARSY_CLOUD_URL';
 
 const DEFAULT_CLOUD_URL = '';
@@ -734,10 +847,10 @@ const HOURS = [
 
 let currentSession = null;
 let currentTab = 'patroli';
+let formOpen = false;
 let chartTemuanCompare = null, chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
 
-/* PLUGIN LABEL ANGKA & PERSEN LANGSUNG DI ATAS BATANG / DONAT */
 const valuePercentLabelPlugin = {
   id: 'valuePercentLabelPlugin',
   afterDatasetsDraw(chart) {
@@ -763,9 +876,7 @@ const valuePercentLabelPlugin = {
           ctx.fillText(`${val} (${pctVal}%)`, pos.x, pos.y);
         } else if (chart.config.type === 'bar') {
           const customPcts = dataset.customPcts;
-          const labelStr = Array.isArray(customPcts)
-            ? `${val} (${customPcts[index]}%)`
-            : `${val}`;
+          const labelStr = Array.isArray(customPcts) ? `${val} (${customPcts[index]}%)` : `${val}`;
           ctx.fillStyle = '#0f172a';
           ctx.textBaseline = 'bottom';
           ctx.fillText(labelStr, element.x, element.y - 4);
@@ -782,6 +893,81 @@ const valuePercentLabelPlugin = {
 
 if (typeof Chart !== 'undefined') {
   Chart.register(valuePercentLabelPlugin);
+}
+
+function toggleAuthMode(mode) {
+  const loginBox = document.getElementById('loginBox');
+  const regBox = document.getElementById('registerBox');
+  document.getElementById('loginErr').textContent = '';
+  document.getElementById('regErr').textContent = '';
+  document.getElementById('regOk').textContent = '';
+  if (mode === 'register') {
+    loginBox.classList.add('hidden');
+    regBox.classList.remove('hidden');
+  } else {
+    regBox.classList.add('hidden');
+    loginBox.classList.remove('hidden');
+  }
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const unit = document.getElementById('regUnit').value || 'keamanan';
+  const password = document.getElementById('regPassword').value.trim();
+  const errEl = document.getElementById('regErr');
+  const okEl = document.getElementById('regOk');
+  errEl.textContent = '';
+  okEl.textContent = '';
+
+  if (!name || !email || !password) {
+    errEl.textContent = 'Semua kolom pendaftaran wajib diisi.';
+    return;
+  }
+  if (email === OPERATOR_EMAIL.toLowerCase()) {
+    errEl.textContent = 'Email ini tidak dapat didaftarkan.';
+    return;
+  }
+
+  await syncFromCloud(false);
+  const members = loadMembers();
+  const exists = members.find(m => (m.email || '').trim().toLowerCase() === email);
+  if (exists) {
+    errEl.textContent = 'Email tersebut sudah terdaftar. Silakan masuk menggunakan akun Anda.';
+    return;
+  }
+
+  members.unshift({ name, email, password, unit, active: true });
+  saveMembers(members, true);
+  okEl.textContent = 'Akun berhasil didaftarkan. Silakan masuk menggunakan email dan sandi Anda.';
+  document.getElementById('formRegister').reset();
+  document.getElementById('loginEmail').value = email;
+  setTimeout(() => toggleAuthMode('login'), 900);
+}
+
+function toggleSidebar(forceState) {
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('mobileBackdrop');
+  const next = typeof forceState === 'boolean' ? forceState : !sb.classList.contains('open');
+  sb.classList.toggle('open', next);
+  bd.classList.toggle('open', next);
+}
+
+function toggleFormPanel(forceState) {
+  const drawer = document.getElementById('formDrawerContainer');
+  const btn = document.getElementById('btnToggleForm');
+  formOpen = typeof forceState === 'boolean' ? forceState : !formOpen;
+  drawer.classList.toggle('hidden', !formOpen);
+  btn.textContent = formOpen ? '− Tutup Form Input' : '+ Input Laporan';
+  if (formOpen && currentSession) prefillAuthorFields(currentSession);
+}
+
+function toggleOperatorPanel() {
+  const box = document.getElementById('operatorControlBox');
+  if (!isOperatorUser()) return;
+  box.classList.toggle('hidden');
+  toggleSidebar(false);
 }
 
 function getCloudUrl() {
@@ -803,17 +989,14 @@ function saveCloudUrl() {
 
 function updateCloudIndicator() {
   const url = getCloudUrl();
-  const loginPill = document.getElementById('loginSyncStatus');
   const infoEl = document.getElementById('cloudConnInfo');
   const inputEl = document.getElementById('cloudUrlInput');
   if (inputEl && url && !inputEl.value) inputEl.value = url;
 
-  if (url) {
-    if (loginPill) loginPill.textContent = 'Status Server: Terhubung ke Cloud Google Sheets';
-    if (infoEl) infoEl.textContent = 'Terhubung ke Cloud: Semua HP yang membuka aplikasi akan menyinkronkan akun & laporan.';
-  } else {
-    if (loginPill) loginPill.textContent = 'Status Server: Mode Bawaan + Lokal HP';
-    if (infoEl) infoEl.textContent = 'Belum ada URL Cloud. Isi URL Apps Script di atas agar semua HP sinkron otomatis.';
+  if (infoEl) {
+    infoEl.textContent = url
+      ? 'Terhubung ke Cloud: Semua HP yang membuka aplikasi akan menyinkronkan akun & laporan.'
+      : 'Belum ada URL Cloud. Isi URL Apps Script di atas agar semua HP sinkron otomatis.';
   }
 }
 
@@ -968,7 +1151,7 @@ async function handleLogin(e) {
   const members = loadMembers();
   const found = members.find(m => (m.email || '').trim().toLowerCase() === email);
   if (!found) {
-    errEl.textContent = 'Email anggota belum terdaftar. Hubungi operator untuk menambahkan email.';
+    errEl.textContent = 'Email anggota belum terdaftar. Silakan daftar akun baru terlebih dahulu.';
     return;
   }
   if (!found.active) {
@@ -998,6 +1181,7 @@ function handleLogout() {
   currentSession = null;
   document.getElementById('appScreen').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
+  toggleAuthMode('login');
   document.getElementById('formLogin').reset();
 }
 
@@ -1017,10 +1201,10 @@ function applyRolePermissions(session) {
     renderMembersTable();
   }
 
-  const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
+  const navButtons = Array.from(document.querySelectorAll('.nav-btn[data-tab]'));
   let firstAllowedTab = null;
 
-  tabButtons.forEach(btn => {
+  navButtons.forEach(btn => {
     const allowed = isOperator ? true : (btn.dataset.unit === session.unit);
     btn.classList.toggle('hidden', !allowed);
     if (allowed && !firstAllowedTab) firstAllowedTab = btn.dataset.tab;
@@ -1031,7 +1215,7 @@ function applyRolePermissions(session) {
 
 function switchTab(tabName) {
   currentTab = tabName;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  document.querySelectorAll('.nav-btn[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
   const targetPanel = document.getElementById(`panel-${tabName}`);
   if (targetPanel) targetPanel.classList.remove('hidden');
@@ -1044,7 +1228,8 @@ function switchTab(tabName) {
     parkir: 'Unit Parkir',
     driver: 'Unit Driver'
   };
-  document.getElementById('activeUnitTitle').textContent = `Unit Aktif: ${labels[tabName] || tabName}`;
+  document.getElementById('activeUnitTitle').textContent = labels[tabName] || tabName;
+  toggleSidebar(false);
   refreshView();
 }
 
@@ -1294,7 +1479,7 @@ function initForms() {
     </label>
   `).join('');
 
-  document.querySelectorAll('.tab-btn').forEach(btn => {
+  document.querySelectorAll('.nav-btn[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
       if (!btn.classList.contains('hidden')) switchTab(btn.dataset.tab);
     });
@@ -1323,6 +1508,7 @@ function savePatroli(e) {
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
   if (currentSession) prefillAuthorFields(currentSession);
+  toggleFormPanel(false);
   refreshView();
 }
 
@@ -1347,6 +1533,7 @@ function saveHarian(e) {
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
   if (currentSession) prefillAuthorFields(currentSession);
+  toggleFormPanel(false);
   refreshView();
 }
 
@@ -1367,6 +1554,7 @@ function saveAdzan(e) {
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
   if (currentSession) prefillAuthorFields(currentSession);
+  toggleFormPanel(false);
   refreshView();
 }
 
@@ -1397,6 +1585,7 @@ function saveParkir(e) {
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
   if (currentSession) prefillAuthorFields(currentSession);
+  toggleFormPanel(false);
   refreshView();
 }
 
@@ -1432,6 +1621,7 @@ function saveDriver(e) {
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
   if (currentSession) prefillAuthorFields(currentSession);
+  toggleFormPanel(false);
   refreshView();
 }
 
@@ -1492,7 +1682,6 @@ function renderMonitoringCharts(rows, compareCfg, mainCfg) {
   const pctClean = pct(cleanCount, total);
   const pctIssue = pct(issueCount, total);
 
-  /* 1. DIAGRAM BATANG DETAIL PERBANDINGAN: TIDAK ADA TEMUAN VS ADA TEMUAN (ANGKA & PERSEN) */
   chartTemuanCompare = new Chart(document.getElementById('chartTemuanCompare'), {
     type: 'bar',
     data: {
@@ -1515,33 +1704,20 @@ function renderMonitoringCharts(rows, compareCfg, mainCfg) {
       layout: { padding: { top: 24 } },
       plugins: {
         showValuePercent: true,
-        title: {
-          display: true,
-          text: compareCfg.barTitle,
-          font: { size: 13, weight: 'bold' }
-        },
+        title: { display: true, text: compareCfg.barTitle, font: { size: 13, weight: 'bold' } },
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (ctx) => {
-              const v = ctx.parsed.y;
-              const p = pct(v, total);
-              return `Jumlah: ${v} laporan (${p}% dari ${total} total)`;
-            }
+            label: (ctx) => `Jumlah: ${ctx.parsed.y} laporan (${pct(ctx.parsed.y, total)}% dari ${total} total)`
           }
         }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          suggestedMax: Math.max(cleanCount, issueCount, 1) + 1,
-          ticks: { precision: 0 }
-        }
+        y: { beginAtZero: true, suggestedMax: Math.max(cleanCount, issueCount, 1) + 1, ticks: { precision: 0 } }
       }
     }
   });
 
-  /* 2. DIAGRAM DONAT PERSENTASE & ANGKA PROPORSI */
   chartPct = new Chart(document.getElementById('chartPct'), {
     type: 'doughnut',
     data: {
@@ -1562,40 +1738,19 @@ function renderMonitoringCharts(rows, compareCfg, mainCfg) {
       cutout: '52%',
       plugins: {
         showValuePercent: true,
-        title: {
-          display: true,
-          text: 'Persentase & Jumlah Temuan vs Aman',
-          font: { size: 13, weight: 'bold' }
-        },
-        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `${ctx.label}`
-          }
-        }
+        title: { display: true, text: 'Persentase & Jumlah Temuan vs Aman', font: { size: 13, weight: 'bold' } },
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
       }
     }
   });
 
-  /* 3. DIAGRAM CAPAIAN OPERASIONAL / SHIFT */
   chartMain = new Chart(document.getElementById('chartMain'), {
     type: 'bar',
     data: {
       labels: mainCfg.labels,
       datasets: [
-        {
-          label: mainCfg.title1,
-          data: mainCfg.s1,
-          customPcts: mainCfg.pct1 || null,
-          backgroundColor: '#0284c7',
-          borderRadius: 6
-        },
-        {
-          label: mainCfg.title2,
-          data: mainCfg.s2,
-          backgroundColor: '#cbd5e1',
-          borderRadius: 6
-        }
+        { label: mainCfg.title1, data: mainCfg.s1, customPcts: mainCfg.pct1 || null, backgroundColor: '#0284c7', borderRadius: 6 },
+        { label: mainCfg.title2, data: mainCfg.s2, backgroundColor: '#cbd5e1', borderRadius: 6 }
       ]
     },
     options: {
@@ -1610,7 +1765,6 @@ function renderMonitoringCharts(rows, compareCfg, mainCfg) {
     }
   });
 
-  /* 4. DIAGRAM TREN KENAIKAN DETAIL MULTI-GARIS (TOTAL, AMAN, ADA TEMUAN) */
   const dayStats = {};
   rows.forEach(r => {
     if (!r.tanggal) return;
@@ -1643,37 +1797,9 @@ function renderMonitoringCharts(rows, compareCfg, mainCfg) {
     data: {
       labels: trendLabels,
       datasets: [
-        {
-          label: 'Total Laporan Masuk',
-          data: totalSeries,
-          borderColor: '#0284c7',
-          backgroundColor: gradTotal,
-          borderWidth: 2.5,
-          fill: true,
-          tension: 0.3,
-          pointRadius: 4
-        },
-        {
-          label: compareCfg.cleanLabel,
-          data: cleanSeries,
-          borderColor: '#0f766e',
-          backgroundColor: '#0f766e',
-          borderWidth: 2.2,
-          fill: false,
-          tension: 0.3,
-          pointRadius: 4
-        },
-        {
-          label: compareCfg.issueLabel,
-          data: issueSeries,
-          borderColor: '#dc2626',
-          backgroundColor: '#dc2626',
-          borderWidth: 2.2,
-          borderDash: [5, 4],
-          fill: false,
-          tension: 0.3,
-          pointRadius: 4
-        }
+        { label: 'Total Laporan Masuk', data: totalSeries, borderColor: '#0284c7', backgroundColor: gradTotal, borderWidth: 2.5, fill: true, tension: 0.3, pointRadius: 4 },
+        { label: compareCfg.cleanLabel, data: cleanSeries, borderColor: '#0f766e', backgroundColor: '#0f766e', borderWidth: 2.2, fill: false, tension: 0.3, pointRadius: 4 },
+        { label: compareCfg.issueLabel, data: issueSeries, borderColor: '#dc2626', backgroundColor: '#dc2626', borderWidth: 2.2, borderDash: [5, 4], fill: false, tension: 0.3, pointRadius: 4 }
       ]
     },
     options: {
@@ -1682,11 +1808,7 @@ function renderMonitoringCharts(rows, compareCfg, mainCfg) {
       layout: { padding: { top: 20 } },
       plugins: {
         showValuePercent: true,
-        title: {
-          display: true,
-          text: 'Grafik Tren Kenaikan Harian (Total vs Tidak Ada Temuan vs Ada Temuan)',
-          font: { size: 13, weight: 'bold' }
-        },
+        title: { display: true, text: 'Grafik Tren Kenaikan Harian (Total vs Tidak Ada Temuan vs Ada Temuan)', font: { size: 13, weight: 'bold' } },
         legend: { position: 'bottom', labels: { boxWidth: 14, font: { size: 11 } } }
       },
       scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
@@ -1735,23 +1857,8 @@ function refreshView() {
 
     renderMonitoringCharts(
       rows,
-      {
-        cleanLabel: 'Tidak Ada Temuan',
-        issueLabel: 'Ada Temuan',
-        cleanCount: amanCount,
-        issueCount: temuanCount,
-        barTitle: 'Perbandingan Ada Temuan vs Tidak Ada Temuan (Angka & %)',
-        isIssueFn: (r) => r.kondisi === 'Ada Temuan'
-      },
-      {
-        labels: shifts,
-        s1: realPerShift,
-        s2: shifts.map(() => targetShift),
-        pct1: pctPerShift,
-        title1: 'Realisasi Patroli',
-        title2: 'Target (2x/Shift)',
-        chartTitle: 'Realisasi Patroli per Shift vs Target'
-      }
+      { cleanLabel: 'Tidak Ada Temuan', issueLabel: 'Ada Temuan', cleanCount: amanCount, issueCount: temuanCount, barTitle: 'Perbandingan Ada Temuan vs Tidak Ada Temuan (Angka & %)', isIssueFn: (r) => r.kondisi === 'Ada Temuan' },
+      { labels: shifts, s1: realPerShift, s2: shifts.map(() => targetShift), pct1: pctPerShift, title1: 'Realisasi Patroli', title2: 'Target (2x/Shift)', chartTitle: 'Realisasi Patroli per Shift vs Target' }
     );
 
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th>${actionTh}</tr></thead><tbody>` +
@@ -1772,23 +1879,8 @@ function refreshView() {
 
     renderMonitoringCharts(
       rows,
-      {
-        cleanLabel: 'Tidak Ada Insiden',
-        issueLabel: 'Ada Insiden',
-        cleanCount: amanCount,
-        issueCount: insidenCount,
-        barTitle: 'Perbandingan Tidak Ada Insiden vs Ada Insiden (Angka & %)',
-        isIssueFn: (r) => r.insiden === 'Ya'
-      },
-      {
-        labels: ['Pagi', 'Siang', 'Malam'],
-        s1: counts,
-        s2: [target, target, target],
-        pct1: counts.map(v => pct(v, target)),
-        title1: 'Laporan Harian',
-        title2: 'Target (1x/Shift)',
-        chartTitle: 'Laporan Harian per Shift vs Target'
-      }
+      { cleanLabel: 'Tidak Ada Insiden', issueLabel: 'Ada Insiden', cleanCount: amanCount, issueCount: insidenCount, barTitle: 'Perbandingan Tidak Ada Insiden vs Ada Insiden (Angka & %)', isIssueFn: (r) => r.insiden === 'Ya' },
+      { labels: ['Pagi', 'Siang', 'Malam'], s1: counts, s2: [target, target, target], pct1: counts.map(v => pct(v, target)), title1: 'Laporan Harian', title2: 'Target (1x/Shift)', chartTitle: 'Laporan Harian per Shift vs Target' }
     );
 
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th>${actionTh}</tr></thead><tbody>` +
@@ -1805,23 +1897,8 @@ function refreshView() {
 
     renderMonitoringCharts(
       rows,
-      {
-        cleanLabel: 'Sudah Adzan',
-        issueLabel: 'Tidak Dilaksanakan',
-        cleanCount: done,
-        issueCount: notDone,
-        barTitle: 'Perbandingan Pelaksanaan Adzan Subuh (Angka & %)',
-        isIssueFn: (r) => r.status !== 'Adzan Sudah Dilaksanakan'
-      },
-      {
-        labels: ['Sudah Adzan', 'Tidak Dilaksanakan'],
-        s1: [done, notDone],
-        s2: [rows.length, rows.length],
-        pct1: [pct(done, rows.length), pct(notDone, rows.length)],
-        title1: 'Realisasi',
-        title2: 'Total Entri',
-        chartTitle: 'Capaian Pelaksanaan Adzan Subuh'
-      }
+      { cleanLabel: 'Sudah Adzan', issueLabel: 'Tidak Dilaksanakan', cleanCount: done, issueCount: notDone, barTitle: 'Perbandingan Pelaksanaan Adzan Subuh (Angka & %)', isIssueFn: (r) => r.status !== 'Adzan Sudah Dilaksanakan' },
+      { labels: ['Sudah Adzan', 'Tidak Dilaksanakan'], s1: [done, notDone], s2: [rows.length, rows.length], pct1: [pct(done, rows.length), pct(notDone, rows.length)], title1: 'Realisasi', title2: 'Total Entri', chartTitle: 'Capaian Pelaksanaan Adzan Subuh' }
     );
 
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th>${actionTh}</tr></thead><tbody>` +
@@ -1843,23 +1920,8 @@ function refreshView() {
 
     renderMonitoringCharts(
       rows,
-      {
-        cleanLabel: 'Tidak Ada Kendala',
-        issueLabel: 'Ada Kendala/Gangguan',
-        cleanCount: normalCount,
-        issueCount: kendalaCount,
-        barTitle: 'Perbandingan Tidak Ada Kendala vs Ada Kendala Parkir (Angka & %)',
-        isIssueFn: isParkirIssue
-      },
-      {
-        labels: ['Motor', 'Mobil', 'Shift Normal'],
-        s1: [totalMotor, totalMobil, normalCount],
-        s2: [totalMotor + totalMobil, totalMotor + totalMobil, rows.length],
-        pct1: [pct(totalMotor, totalMotor + totalMobil), pct(totalMobil, totalMotor + totalMobil), pct(normalCount, rows.length)],
-        title1: 'Jumlah',
-        title2: 'Total Acuan',
-        chartTitle: 'Volume Kendaraan & Kesiapan Sistem Parkir'
-      }
+      { cleanLabel: 'Tidak Ada Kendala', issueLabel: 'Ada Kendala/Gangguan', cleanCount: normalCount, issueCount: kendalaCount, barTitle: 'Perbandingan Tidak Ada Kendala vs Ada Kendala Parkir (Angka & %)', isIssueFn: isParkirIssue },
+      { labels: ['Motor', 'Mobil', 'Shift Normal'], s1: [totalMotor, totalMobil, normalCount], s2: [totalMotor + totalMobil, totalMotor + totalMobil, rows.length], pct1: [pct(totalMotor, totalMotor + totalMobil), pct(totalMobil, totalMotor + totalMobil), pct(normalCount, rows.length)], title1: 'Jumlah', title2: 'Total Acuan', chartTitle: 'Volume Kendaraan & Kesiapan Sistem Parkir' }
     );
 
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th>${actionTh}</tr></thead><tbody>` +
@@ -1881,22 +1943,8 @@ function refreshView() {
 
     renderMonitoringCharts(
       rows,
-      {
-        cleanLabel: 'Tanpa Insiden',
-        issueLabel: 'Ada Insiden',
-        cleanCount: amanTrip,
-        issueCount: insidenCount,
-        barTitle: 'Perbandingan Perjalanan Aman vs Ada Insiden (Angka & %)',
-        isIssueFn: (r) => r.insiden === 'Ya'
-      },
-      {
-        labels: ['Perjalanan', 'Jarak (KM)', 'BBM (L)'],
-        s1: [totalTrip, totalJarak, totalBBM],
-        s2: [totalTrip, totalJarak, totalBBM],
-        title1: 'Capaian',
-        title2: 'Acuan',
-        chartTitle: 'Ringkasan Operasional Driver'
-      }
+      { cleanLabel: 'Tanpa Insiden', issueLabel: 'Ada Insiden', cleanCount: amanTrip, issueCount: insidenCount, barTitle: 'Perbandingan Perjalanan Aman vs Ada Insiden (Angka & %)', isIssueFn: (r) => r.insiden === 'Ya' },
+      { labels: ['Perjalanan', 'Jarak (KM)', 'BBM (L)'], s1: [totalTrip, totalJarak, totalBBM], s2: [totalTrip, totalJarak, totalBBM], title1: 'Capaian', title2: 'Acuan', chartTitle: 'Ringkasan Operasional Driver' }
     );
 
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th>${actionTh}</tr></thead><tbody>` +
