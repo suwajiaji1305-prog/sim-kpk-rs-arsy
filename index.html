@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIM-KPK RS ARSY - Login, Laporan & Rekap Terpisah</title>
+  <title>SIM-KPK RS ARSY - Login Email/Password, Akses Role & Monitoring Diagram</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
@@ -15,15 +15,16 @@
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); }
-    header { background: var(--primary); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
     header h1 { margin: 0; font-size: 1.1rem; }
     header small { opacity: .9; display: block; }
-    .container { max-width: 1320px; margin: 14px auto; padding: 0 14px 36px; }
+    .container { max-width: 1360px; margin: 14px auto; padding: 0 14px 36px; }
     .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-    .tab-btn { border: 1px solid var(--border); background: #fff; color: var(--ink); padding: 9px 13px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; }
+    .tab-btn { border: 1px solid var(--border); background: #fff; color: var(--ink); padding: 9px 13px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; transition: .15s; }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 1rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
     label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: #334155; }
@@ -38,49 +39,60 @@
     .btn-warn { background: var(--warn); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
-    .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 11px; }
     .kpi .val { font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); }
     .kpi .lbl { font-size: .76rem; color: var(--muted); }
+    .chart-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; height: 270px; position: relative; }
     .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; }
     table { width: 100%; border-collapse: collapse; font-size: .8rem; }
     th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
     th { background: #f8fafc; position: sticky; top: 0; z-index: 1; }
     .hidden { display: none; }
-    .login-wrap { max-width: 420px; margin: 48px auto; padding: 0 14px; }
+    .login-wrap { max-width: 460px; margin: 40px auto; padding: 0 14px; }
     .login-err { color: var(--danger); font-size: .82rem; font-weight: 600; margin-top: 8px; min-height: 18px; }
-    .user-pill { background: rgba(255,255,255,.16); padding: 6px 10px; border-radius: 8px; font-size: .82rem; font-weight: 600; }
+    .user-pill { background: rgba(255,255,255,.16); padding: 6px 10px; border-radius: 8px; font-size: .8rem; font-weight: 600; }
+    .hint-box { margin-top: 12px; padding: 10px; background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; font-size: .78rem; color: #334155; }
   </style>
 </head>
 <body>
 
-<!-- HALAMAN LOGIN -->
+<!-- HALAMAN LOGIN EMAIL & PASSWORD -->
 <div id="loginScreen" class="login-wrap">
   <div class="card">
     <h2>Login SIM-KPK RS ARSY</h2>
-    <p style="margin:0 0 12px;font-size:.82rem;color:var(--muted);">Masuk menggunakan akun petugas atau admin untuk mengakses laporan dan rekap.</p>
+    <p style="margin:0 0 12px;font-size:.82rem;color:var(--muted);">Masuk menggunakan <b>Email</b> dan <b>Password</b> sesuai hak akses (Operator / Ka. Unit atau Anggota Unit).</p>
     <form id="formLogin" onsubmit="handleLogin(event)">
       <div class="form-grid" style="grid-template-columns:1fr;">
-        <label>Username / Nama Petugas
-          <input type="text" id="loginUser" required placeholder="Contoh: suwaji atau admin" />
+        <label>Email Petugas / Operator
+          <input type="email" id="loginEmail" required placeholder="suwaji.aji1305@gmail.com" />
         </label>
         <label>Password
-          <input type="password" id="loginPass" required placeholder="Masukkan password" />
+          <input type="password" id="loginPassword" required placeholder="Masukkan password" />
         </label>
-        <label>Role / Unit Tugas
-          <select id="loginRole">
-            <option value="Petugas Keamanan (Satpam)">Petugas Keamanan (Satpam)</option>
-            <option value="Petugas Parkir">Petugas Parkir</option>
-            <option value="Driver">Driver</option>
-            <option value="Koordinator / Admin">Koordinator / Admin</option>
+        <label>Level Akses Login
+          <select id="loginLevel">
+            <option value="ka_unit">Ka. Unit / Operator (Akses Semua Laporan)</option>
+            <option value="anggota">Anggota (Sesuai Unit & Laporan Sendiri)</option>
+          </select>
+        </label>
+        <label id="unitSelectGroup" class="hidden">Unit Tugas Anggota
+          <select id="loginUnit">
+            <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
+            <option value="parkir">Unit Parkir</option>
+            <option value="driver">Unit Driver</option>
           </select>
         </label>
       </div>
       <div class="login-err" id="loginErr"></div>
-      <div style="margin-top:10px;display:flex;gap:8px;align-items:center;justify-content:space-between;">
+      <div style="margin-top:10px;">
         <button class="btn btn-primary" type="submit" style="width:100%;">Masuk Sistem</button>
       </div>
-      <small style="display:block;margin-top:10px;color:var(--muted);">Akses standar: user <b>admin</b> / pass <b>arsy123</b> (atau nama petugas dengan password <b>arsy123</b>).</small>
+      <div class="hint-box">
+        <b>Akun Terdaftar:</b><br/>
+        • Operator / Ka. Unit: <code>suwaji.aji1305@gmail.com</code> (sandi khusus operator)<br/>
+        • Anggota Unit (sandi <code>arsy123</code>): <code>parkir@rsarsy.id</code>, <code>driver@rsarsy.id</code>, atau email anggota lainnya.
+      </div>
     </form>
   </div>
 </div>
@@ -89,28 +101,28 @@
 <div id="appScreen" class="hidden">
   <header>
     <div>
-      <h1>SIM-KPK RS ARSY — Sistem Laporan Terpisah, Rekap & Ekspor</h1>
+      <h1>SIM-KPK RS ARSY — Sistem Laporan, Rekap & Monitoring</h1>
       <small>Patroli Keliling (2x/Shift) • Harian Satpam (1x/Shift) • Adzan Subuh • Parkir • Driver</small>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
       <span class="user-pill" id="userBadge">-</span>
-      <button class="btn btn-export" onclick="exportExcel()">Ekspor Excel (.xlsx)</button>
-      <button class="btn btn-export" onclick="exportWord()">Ekspor Word (.doc)</button>
-      <button class="btn btn-warn" onclick="exportPPT()">Ekspor PPT (.pptx)</button>
+      <button class="btn btn-export export-only" onclick="exportExcel()">Ekspor Excel (.xlsx)</button>
+      <button class="btn btn-export export-only" onclick="exportWord()">Ekspor Word (.doc)</button>
+      <button class="btn btn-warn export-only" onclick="exportPPT()">Ekspor PPT (.pptx)</button>
       <button class="btn btn-danger" onclick="handleLogout()">Keluar</button>
     </div>
   </header>
 
   <div class="container">
     <div class="tabs" id="mainTabs">
-      <button class="tab-btn active" data-tab="patroli">1. Patroli Keliling (2x/Shift)</button>
-      <button class="tab-btn" data-tab="harian">2. Laporan Harian Satpam (1x/Shift)</button>
-      <button class="tab-btn" data-tab="adzan">3. Laporan Adzan Subuh</button>
-      <button class="tab-btn" data-tab="parkir">4. Unit Parkir</button>
-      <button class="tab-btn" data-tab="driver">5. Unit Driver</button>
+      <button class="tab-btn active" data-tab="patroli" data-unit="keamanan">1. Patroli Keliling (2x/Shift)</button>
+      <button class="tab-btn" data-tab="harian" data-unit="keamanan">2. Laporan Harian Satpam (1x/Shift)</button>
+      <button class="tab-btn" data-tab="adzan" data-unit="keamanan">3. Laporan Adzan Subuh</button>
+      <button class="tab-btn" data-tab="parkir" data-unit="parkir">4. Unit Parkir</button>
+      <button class="tab-btn" data-tab="driver" data-unit="driver">5. Unit Driver</button>
     </div>
 
-    <!-- FILTER REKAP & GRAFIK -->
+    <!-- FILTER REKAP & MONITORING DIAGRAM -->
     <div class="card">
       <div class="toolbar">
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
@@ -130,9 +142,10 @@
         <div id="activeUnitTitle" style="font-weight:700;color:var(--primary-dark);">Unit Aktif: Patroli Keliling</div>
       </div>
       <div class="kpis" id="kpiBox"></div>
-      <div class="grid-2">
-        <div style="height:260px;"><canvas id="chartMain"></canvas></div>
-        <div style="height:260px;"><canvas id="chartPct"></canvas></div>
+      <div class="grid-3">
+        <div class="chart-box"><canvas id="chartTrend"></canvas></div>
+        <div class="chart-box"><canvas id="chartMain"></canvas></div>
+        <div class="chart-box"><canvas id="chartPct"></canvas></div>
       </div>
     </div>
 
@@ -157,10 +170,7 @@
           </label>
           <label>Jam Patroli <input type="time" name="jam" value="08:00" required /></label>
           <label>Petugas Patroli
-            <select name="petugas">
-              <option>SUWAJI</option><option>JOHAN</option><option>AGOS</option>
-              <option>AFIF</option><option>ROFI'I</option><option>YENI</option><option>ADI</option>
-            </select>
+            <input type="text" name="petugas" required placeholder="Nama petugas" />
           </label>
           <label>Status Kondisi
             <select name="kondisi">
@@ -359,9 +369,7 @@
             </select>
           </label>
           <label>Nama Driver
-            <select name="driver_nama">
-              <option>SUMINTRI</option><option>SIDIK</option><option>ZAINAL ARIFIN</option><option>DIMAS</option>
-            </select>
+            <input type="text" name="driver_nama" required placeholder="Nama driver" />
           </label>
           <label>Insiden di Jalan
             <select name="insiden">
@@ -388,9 +396,11 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V2';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION';
-const DEFAULT_PASS = 'arsy123';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V5';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V5';
+const OPERATOR_EMAIL = 'suwaji.aji1305@gmail.com';
+const OPERATOR_PASS = 'Suwaji@1305';
+const MEMBER_PASS = 'arsy123';
 
 const AREAS = [
   'AREA PARKIR','DEPAN IGD','DEPAN POLI','RUANG IGD','RUANG PONEK',
@@ -405,44 +415,157 @@ const HOURS = [
   '04:00 - 05:00','05:00 - 06:00','06:00 - 07:00'
 ];
 
+let currentSession = null;
 let currentTab = 'patroli';
-let chartMain = null, chartPct = null;
+let chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
+
+document.getElementById('loginLevel').addEventListener('change', (e) => {
+  document.getElementById('unitSelectGroup').classList.toggle('hidden', e.target.value !== 'anggota');
+});
+
+function resolveAccount(email, level, selectedUnit) {
+  const cleanEmail = email.toLowerCase().trim();
+  const rawPrefix = cleanEmail.split('@')[0] || 'PETUGAS';
+  const formattedName = rawPrefix.replace(/[._-]+/g, ' ').trim().toUpperCase() || 'PETUGAS';
+
+  if (cleanEmail === OPERATOR_EMAIL.toLowerCase()) {
+    return {
+      email: cleanEmail,
+      name: 'SUWAJI AJI',
+      level: 'ka_unit',
+      unit: 'all',
+      roleLabel: 'Operator / Ka. Unit'
+    };
+  }
+
+  if (level === 'ka_unit') {
+    return {
+      email: cleanEmail,
+      name: formattedName,
+      level: 'ka_unit',
+      unit: 'all',
+      roleLabel: 'Ka. Unit / Operator'
+    };
+  }
+
+  const unitLabels = {
+    keamanan: 'Anggota Keamanan',
+    parkir: 'Anggota Parkir',
+    driver: 'Anggota Driver'
+  };
+  return {
+    email: cleanEmail,
+    name: formattedName,
+    level: 'anggota',
+    unit: selectedUnit || 'keamanan',
+    roleLabel: unitLabels[selectedUnit || 'keamanan']
+  };
+}
+
+function prefillAuthorFields(session) {
+  document.querySelectorAll('input[name="petugas"], input[name="nama"], input[name="driver_nama"]').forEach(el => {
+    if (!el.value.trim()) {
+      el.value = session.name;
+    }
+  });
+}
 
 function handleLogin(e) {
   e.preventDefault();
-  const user = document.getElementById('loginUser').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  const role = document.getElementById('loginRole').value;
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const level = document.getElementById('loginLevel').value;
+  const selectedUnit = document.getElementById('loginUnit').value;
   const errEl = document.getElementById('loginErr');
 
-  if (!user || pass !== DEFAULT_PASS) {
-    errEl.textContent = 'Username atau password salah. Gunakan password standar: arsy123';
+  const cleanEmail = email.toLowerCase();
+  const isOperatorEmail = cleanEmail === OPERATOR_EMAIL.toLowerCase();
+
+  if (!email) {
+    errEl.textContent = 'Email wajib diisi.';
     return;
   }
 
+  if (isOperatorEmail) {
+    if (pass !== OPERATOR_PASS) {
+      errEl.textContent = 'Password operator salah.';
+      return;
+    }
+  } else {
+    if (pass !== MEMBER_PASS && pass !== OPERATOR_PASS) {
+      errEl.textContent = 'Password tidak valid. Gunakan password anggota (arsy123).';
+      return;
+    }
+  }
+
   errEl.textContent = '';
-  const session = { user, role, loggedAt: new Date().toISOString() };
+  const session = resolveAccount(email, level, selectedUnit);
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
   showApp(session);
 }
 
 function handleLogout() {
   sessionStorage.removeItem(SESSION_KEY);
+  currentSession = null;
   document.getElementById('appScreen').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('formLogin').reset();
+  document.getElementById('unitSelectGroup').classList.add('hidden');
+}
+
+function applyRolePermissions(session) {
+  const isKaUnit = session.level === 'ka_unit';
+  document.querySelectorAll('.export-only').forEach(btn => {
+    btn.classList.toggle('hidden', !isKaUnit);
+  });
+
+  const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
+  let firstAllowedTab = null;
+
+  tabButtons.forEach(btn => {
+    const btnUnit = btn.dataset.unit;
+    const allowed = isKaUnit || btnUnit === session.unit;
+    btn.classList.toggle('hidden', !allowed);
+    if (allowed && !firstAllowedTab) {
+      firstAllowedTab = btn.dataset.tab;
+    }
+  });
+
+  currentTab = firstAllowedTab || 'patroli';
+  switchTab(currentTab);
+}
+
+function switchTab(tabName) {
+  currentTab = tabName;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+  const targetPanel = document.getElementById(`panel-${tabName}`);
+  if (targetPanel) targetPanel.classList.remove('hidden');
+  if (currentSession) prefillAuthorFields(currentSession);
+
+  const labels = {
+    patroli: 'Patroli Keliling (Target 2x/Shift)',
+    harian: 'Laporan Harian Satpam (Target 1x/Shift)',
+    adzan: 'Laporan Adzan Subuh',
+    parkir: 'Unit Parkir',
+    driver: 'Unit Driver'
+  };
+  document.getElementById('activeUnitTitle').textContent = `Unit Aktif: ${labels[tabName] || tabName}`;
+  refreshView();
 }
 
 function showApp(session) {
+  currentSession = session;
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('appScreen').classList.remove('hidden');
-  document.getElementById('userBadge').textContent = `${session.user.toUpperCase()} • ${session.role}`;
+  document.getElementById('userBadge').textContent = `${session.name} (${session.email}) • ${session.roleLabel}`;
   if (!appInitialized) {
     initForms();
     appInitialized = true;
   }
-  refreshView();
+  prefillAuthorFields(session);
+  applyRolePermissions(session);
 }
 
 function checkSession() {
@@ -460,21 +583,21 @@ function checkSession() {
 function defaultData() {
   return {
     patroli: [
-      { id: 1, tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
-      { id: 2, tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '12:30', petugas: 'SUWAJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
-      { id: 3, tanggal: '2026-11-26', dinas: 'SIANG', status: 'Patroli', jam: '15:30', petugas: 'JOHAN', kondisi: 'Ada Temuan', temuan: 'Lampu lorong perlu dicek', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) }
+      { id: 1, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI AJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 2, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '12:30', petugas: 'SUWAJI AJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 3, authorEmail: 'johan@rsarsy.id', tanggal: '2026-11-26', dinas: 'SIANG', status: 'Patroli', jam: '15:30', petugas: 'JOHAN', kondisi: 'Ada Temuan', temuan: 'Lampu lorong perlu dicek', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) }
     ],
     harian: [
-      { id: 1, tanggal: '2026-11-26', nama: 'Suwaji', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Informasi', insiden: 'Tidak Ada Insiden', next_petugas: 'Johan', jam: {} }
+      { id: 1, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-26', nama: 'SUWAJI AJI', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Informasi', insiden: 'Tidak Ada Insiden', next_petugas: 'Johan', jam: {} }
     ],
     adzan: [
-      { id: 1, tanggal: '2026-11-26', waktu: '03:55', status: 'Adzan Sudah Dilaksanakan', petugas: 'Johan', keterangan: 'Aman' }
+      { id: 1, authorEmail: 'johan@rsarsy.id', tanggal: '2026-11-26', waktu: '03:55', status: 'Adzan Sudah Dilaksanakan', petugas: 'JOHAN', keterangan: 'Aman' }
     ],
     parkir: [
-      { id: 1, tanggal: '2026-11-26', nama: 'Arry', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Parkir', status_sistem: 'Berfungsi Normal Sepanjang Shift', alat: 'Normal', motor: 185, mobil: 22, manual: 'Tidak', kendala: 'Tidak Ada Kendala', ganti_kertas: 'Tidak', storan: 295000, temuan: '-', catatan: 'Normal' }
+      { id: 1, authorEmail: 'parkir@rsarsy.id', tanggal: '2026-11-26', nama: 'Arry', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Parkir', status_sistem: 'Berfungsi Normal Sepanjang Shift', alat: 'Normal', motor: 185, mobil: 22, manual: 'Tidak', kendala: 'Tidak Ada Kendala', ganti_kertas: 'Tidak', storan: 295000, temuan: '-', catatan: 'Normal' }
     ],
     driver: [
-      { id: 1, tanggal: '2026-11-26', jam_berangkat: '08:00', jam_kembali: '11:30', jenis_permintaan: 'Antar / Jemput Dokter', kendaraan: 'Mobil Dinas RS ARSY', km_awal: 133100, km_akhir: 133195, jarak: 95, bbm_beli: 15, bbm_pakai: 9, harga_bbm: 150000, etoll: 0, ket_unit: 'POLI', tujuan: 'Lamongan', driver_status: 'Dinas', driver_nama: 'DIMAS', insiden: 'Tidak', hambatan: 'tidak ada' }
+      { id: 1, authorEmail: 'driver@rsarsy.id', tanggal: '2026-11-26', jam_berangkat: '08:00', jam_kembali: '11:30', jenis_permintaan: 'Antar / Jemput Dokter', kendaraan: 'Mobil Dinas RS ARSY', km_awal: 133100, km_akhir: 133195, jarak: 95, bbm_beli: 15, bbm_pakai: 9, harga_bbm: 150000, etoll: 0, ket_unit: 'POLI', tujuan: 'Lamongan', driver_status: 'Dinas', driver_nama: 'DIMAS', insiden: 'Tidak', hambatan: 'tidak ada' }
     ]
   };
 }
@@ -514,20 +637,9 @@ function initForms() {
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentTab = btn.dataset.tab;
-      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
-      document.getElementById(`panel-${currentTab}`).classList.remove('hidden');
-      const labels = {
-        patroli: 'Patroli Keliling (Target 2x/Shift)',
-        harian: 'Laporan Harian Satpam (Target 1x/Shift)',
-        adzan: 'Laporan Adzan Subuh',
-        parkir: 'Unit Parkir',
-        driver: 'Unit Driver'
-      };
-      document.getElementById('activeUnitTitle').textContent = `Unit Aktif: ${labels[currentTab]}`;
-      refreshView();
+      if (!btn.classList.contains('hidden')) {
+        switchTab(btn.dataset.tab);
+      }
     });
   });
 }
@@ -542,6 +654,7 @@ function savePatroli(e) {
   });
   db.patroli.unshift({
     id: Date.now(),
+    authorEmail: currentSession ? currentSession.email : 'unknown',
     tanggal: fd.get('tanggal'),
     dinas: fd.get('dinas'),
     status: fd.get('status'),
@@ -554,6 +667,7 @@ function savePatroli(e) {
   saveDB(db);
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
+  if (currentSession) prefillAuthorFields(currentSession);
   refreshView();
 }
 
@@ -565,6 +679,7 @@ function saveHarian(e) {
   HOURS.forEach(h => { jam[h] = fd.get('hr_' + h.replace(/[^0-9]/g,'')) || ''; });
   db.harian.unshift({
     id: Date.now(),
+    authorEmail: currentSession ? currentSession.email : 'unknown',
     tanggal: fd.get('tanggal'),
     nama: fd.get('nama'),
     shift: fd.get('shift'),
@@ -576,6 +691,7 @@ function saveHarian(e) {
   saveDB(db);
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
+  if (currentSession) prefillAuthorFields(currentSession);
   refreshView();
 }
 
@@ -585,6 +701,7 @@ function saveAdzan(e) {
   const db = loadDB();
   db.adzan.unshift({
     id: Date.now(),
+    authorEmail: currentSession ? currentSession.email : 'unknown',
     tanggal: fd.get('tanggal'),
     waktu: fd.get('waktu'),
     status: fd.get('status'),
@@ -594,6 +711,7 @@ function saveAdzan(e) {
   saveDB(db);
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
+  if (currentSession) prefillAuthorFields(currentSession);
   refreshView();
 }
 
@@ -603,6 +721,7 @@ function saveParkir(e) {
   const db = loadDB();
   db.parkir.unshift({
     id: Date.now(),
+    authorEmail: currentSession ? currentSession.email : 'unknown',
     tanggal: fd.get('tanggal'),
     nama: fd.get('nama'),
     shift: fd.get('shift'),
@@ -622,6 +741,7 @@ function saveParkir(e) {
   saveDB(db);
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
+  if (currentSession) prefillAuthorFields(currentSession);
   refreshView();
 }
 
@@ -633,6 +753,7 @@ function saveDriver(e) {
   const kmAkhir = Number(fd.get('km_akhir') || 0);
   db.driver.unshift({
     id: Date.now(),
+    authorEmail: currentSession ? currentSession.email : 'unknown',
     tanggal: fd.get('tanggal'),
     jam_berangkat: fd.get('jam_berangkat'),
     jam_kembali: fd.get('jam_kembali'),
@@ -655,14 +776,22 @@ function saveDriver(e) {
   saveDB(db);
   e.target.reset();
   e.target.tanggal.value = document.getElementById('refDate').value;
+  if (currentSession) prefillAuthorFields(currentSession);
   refreshView();
 }
 
-function filterByPeriode(rows) {
+function filterByRoleAndPeriode(rows) {
   const mode = document.getElementById('periodeMode').value;
   const ref = new Date(document.getElementById('refDate').value + 'T00:00:00');
-  if (isNaN(ref)) return rows;
+  const isAnggota = currentSession && currentSession.level === 'anggota';
+
   return rows.filter(r => {
+    if (isAnggota) {
+      const emailMatch = (r.authorEmail || '').toLowerCase() === (currentSession.email || '').toLowerCase();
+      const nameMatch = (r.petugas || r.nama || r.driver_nama || '').toLowerCase() === (currentSession.name || '').toLowerCase();
+      if (!emailMatch && !nameMatch) return false;
+    }
+    if (isNaN(ref)) return true;
     const d = new Date((r.tanggal || '') + 'T00:00:00');
     if (isNaN(d)) return true;
     if (mode === 'harian') return d.toDateString() === ref.toDateString();
@@ -679,41 +808,102 @@ function pct(part, total) {
   return Math.round((part / total) * 1000) / 10;
 }
 
-function renderCharts(labels, s1, s2, pctLabels, pctVals, title1, title2) {
+function renderMonitoringCharts(rows, labels, s1, s2, pctLabels, pctVals, title1, title2) {
+  if (chartTrend) chartTrend.destroy();
   if (chartMain) chartMain.destroy();
   if (chartPct) chartPct.destroy();
+
+  const byDate = {};
+  rows.forEach(r => {
+    if (!r.tanggal) return;
+    byDate[r.tanggal] = (byDate[r.tanggal] || 0) + 1;
+  });
+  const sortedDates = Object.keys(byDate).sort();
+  const trendLabels = sortedDates.length ? sortedDates : ['Tidak Ada Data'];
+  const trendValues = sortedDates.length ? sortedDates.map(dt => byDate[dt]) : [0];
+
+  const ctxTrend = document.getElementById('chartTrend').getContext('2d');
+  const grad = ctxTrend.createLinearGradient(0, 0, 0, 240);
+  grad.addColorStop(0, 'rgba(15, 118, 110, 0.35)');
+  grad.addColorStop(1, 'rgba(15, 118, 110, 0.02)');
+
+  chartTrend = new Chart(ctxTrend, {
+    type: 'line',
+    data: {
+      labels: trendLabels,
+      datasets: [{
+        label: 'Tren Jumlah Laporan',
+        data: trendValues,
+        borderColor: '#0f766e',
+        backgroundColor: grad,
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 4,
+        pointBackgroundColor: '#0f766e'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: 'Monitoring Tren Harian Laporan', font: { size: 13, weight: 'bold' } },
+        legend: { display: false }
+      },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+
   chartMain = new Chart(document.getElementById('chartMain'), {
     type: 'bar',
     data: {
       labels,
       datasets: [
-        { label: title1, data: s1, backgroundColor: '#0f766e' },
-        { label: title2, data: s2, backgroundColor: '#94a3b8' }
+        { label: title1, data: s1, backgroundColor: '#0f766e', borderRadius: 6 },
+        { label: title2, data: s2, backgroundColor: '#cbd5e1', borderRadius: 6 }
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Perbandingan Jumlah' } } }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { title: { display: true, text: 'Perbandingan Realisasi vs Acuan', font: { size: 13, weight: 'bold' } } },
+      scales: { y: { beginAtZero: true } }
+    }
   });
+
   chartPct = new Chart(document.getElementById('chartPct'), {
-    type: 'bar',
+    type: 'doughnut',
     data: {
       labels: pctLabels,
-      datasets: [{ label: 'Persentase (%)', data: pctVals, backgroundColor: ['#0284c7', '#0d9488', '#4f46e5', '#d97706'] }]
+      datasets: [{
+        label: 'Persentase (%)',
+        data: pctVals,
+        backgroundColor: ['#0f766e', '#0284c7', '#f59e0b', '#ef4444'],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: { y: { min: 0, max: 100 } },
-      plugins: { title: { display: true, text: 'Pembanding Persentase (%)' } }
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '58%',
+      plugins: {
+        title: { display: true, text: 'Komposisi / Persentase Capaian (%)', font: { size: 13, weight: 'bold' } },
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+      }
     }
   });
 }
 
 function refreshView() {
+  if (!currentSession) return;
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
-  const rows = filterByPeriode(db[currentTab] || []);
+  const rows = filterByRoleAndPeriode(db[currentTab] || []);
   const kpiBox = document.getElementById('kpiBox');
   const table = document.getElementById('rekapTable');
-  document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()}) — ${rows.length} Data`;
+  const scopeNote = currentSession.level === 'anggota' ? ' — Laporan Milik Anda' : ' — Semua Laporan';
+  document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()})${scopeNote} — ${rows.length} Data`;
 
   if (currentTab === 'patroli') {
     const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
@@ -725,10 +915,10 @@ function refreshView() {
     kpiBox.innerHTML = `
       <div class="kpi"><div class="lbl">Total Entri Patroli</div><div class="val">${rows.length}</div></div>
       <div class="kpi"><div class="lbl">Patroli Terlaksana</div><div class="val">${rows.filter(r=>r.status==='Patroli').length}</div></div>
-      <div class="kpi"><div class="lbl">% Temuan vs Aman</div><div class="val">${pct(temuanCount, rows.length)}%</div></div>
+      <div class="kpi"><div class="lbl">% Ada Temuan</div><div class="val">${pct(temuanCount, rows.length)}%</div></div>
       <div class="kpi"><div class="lbl">Target / Shift (2x)</div><div class="val">${targetShift}</div></div>
     `;
-    renderCharts(shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
+    renderMonitoringCharts(rows, shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join('') + '</tbody>';
   } else if (currentTab === 'harian') {
@@ -736,12 +926,14 @@ function refreshView() {
     const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
     const target = mode === 'harian' ? 1 : daysCount;
     const counts = shifts.map(s => rows.filter(r => r.shift === s).length);
+    const amanCount = rows.filter(r => r.insiden !== 'Ya').length;
+    const insidenCount = rows.filter(r => r.insiden === 'Ya').length;
     kpiBox.innerHTML = `
       <div class="kpi"><div class="lbl">Laporan Harian Masuk</div><div class="val">${rows.length}</div></div>
-      <div class="kpi"><div class="lbl">Insiden Tercatat</div><div class="val">${rows.filter(r=>r.insiden==='Ya').length}</div></div>
-      <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(rows.filter(r=>r.insiden!=='Ya').length, rows.length)}%</div></div>
+      <div class="kpi"><div class="lbl">Insiden Tercatat</div><div class="val">${insidenCount}</div></div>
+      <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(amanCount, rows.length)}%</div></div>
     `;
-    renderCharts(['Pagi','Siang','Malam'], counts, [target,target,target], ['Pagi','Siang','Malam'], counts.map(c=>pct(c,target)), 'Laporan Harian', 'Target (1x/Shift)');
+    renderMonitoringCharts(rows, ['Pagi','Siang','Malam'], counts, [target,target,target], ['Tanpa Insiden','Ada Insiden'], [pct(amanCount, rows.length), pct(insidenCount, rows.length)], 'Laporan Harian', 'Target (1x/Shift)');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th></tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td></tr>`).join('') + '</tbody>';
   } else if (currentTab === 'adzan') {
@@ -752,7 +944,7 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Sudah Adzan</div><div class="val">${done} (${pct(done, rows.length)}%)</div></div>
       <div class="kpi"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div></div>
     `;
-    renderCharts(['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah', 'Total Entri');
+    renderMonitoringCharts(rows, ['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah', 'Total Entri');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th></tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td></tr>`).join('') + '</tbody>';
   } else if (currentTab === 'parkir') {
@@ -760,13 +952,14 @@ function refreshView() {
     const totalMobil = rows.reduce((a, b) => a + Number(b.mobil || 0), 0);
     const totalStoran = rows.reduce((a, b) => a + Number(b.storan || 0), 0);
     const normalCount = rows.filter(r => r.status_sistem === 'Berfungsi Normal Sepanjang Shift').length;
+    const kendalaCount = rows.filter(r => r.kendala !== 'Tidak Ada Kendala').length;
     kpiBox.innerHTML = `
       <div class="kpi"><div class="lbl">Total Motor</div><div class="val">${totalMotor}</div></div>
       <div class="kpi"><div class="lbl">Total Mobil</div><div class="val">${totalMobil}</div></div>
       <div class="kpi"><div class="lbl">Total Storan</div><div class="val">Rp ${totalStoran.toLocaleString('id-ID')}</div></div>
       <div class="kpi"><div class="lbl">% Sistem Normal</div><div class="val">${pct(normalCount, rows.length)}%</div></div>
     `;
-    renderCharts(['Motor', 'Mobil', 'Normal'], [totalMotor, totalMobil, normalCount], [totalMotor, totalMobil, rows.length], ['Sistem Normal', 'Kendala / Gangguan', 'Ganti Kertas'], [pct(normalCount, rows.length), pct(rows.filter(r => r.kendala !== 'Tidak Ada Kendala').length, rows.length), pct(rows.filter(r => r.ganti_kertas === 'Ya').length, rows.length)], 'Realisasi', 'Acuan');
+    renderMonitoringCharts(rows, ['Motor', 'Mobil', 'Sistem Normal'], [totalMotor, totalMobil, normalCount], [totalMotor, totalMobil, rows.length], ['Sistem Normal', 'Ada Kendala'], [pct(normalCount, rows.length), pct(kendalaCount, rows.length)], 'Realisasi', 'Acuan');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th></tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
   } else if (currentTab === 'driver') {
@@ -781,7 +974,7 @@ function refreshView() {
       <div class="kpi"><div class="lbl">BBM Terpakai</div><div class="val">${totalBBM} L</div></div>
       <div class="kpi"><div class="lbl">Total Biaya (BBM+Toll)</div><div class="val">Rp ${totalBiaya.toLocaleString('id-ID')}</div></div>
     `;
-    renderCharts(['Perjalanan', 'Jarak (KM)', 'BBM (L)'], [totalTrip, totalJarak, totalBBM], [totalTrip, totalJarak, totalBBM], ['Tanpa Insiden', 'Ada Insiden'], [pct(totalTrip - insidenCount, totalTrip), pct(insidenCount, totalTrip)], 'Capaian', 'Acuan');
+    renderMonitoringCharts(rows, ['Perjalanan', 'Jarak (KM)', 'BBM (L)'], [totalTrip, totalJarak, totalBBM], [totalTrip, totalJarak, totalBBM], ['Tanpa Insiden', 'Ada Insiden'], [pct(totalTrip - insidenCount, totalTrip), pct(insidenCount, totalTrip)], 'Capaian', 'Acuan');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th></tr></thead><tbody>` +
       rows.map(r => {
         const biaya = Number(r.harga_bbm || 0) + Number(r.etoll || 0);
@@ -791,6 +984,7 @@ function refreshView() {
 }
 
 function exportExcel() {
+  if (!currentSession || currentSession.level !== 'ka_unit') return;
   const db = loadDB();
   const wb = XLSX.utils.book_new();
   Object.keys(db).forEach(key => {
@@ -807,9 +1001,10 @@ function exportExcel() {
 }
 
 function exportWord() {
+  if (!currentSession || currentSession.level !== 'ka_unit') return;
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
-  const rows = filterByPeriode(db[currentTab] || []);
+  const rows = filterByRoleAndPeriode(db[currentTab] || []);
   const tableHtml = document.getElementById('rekapTable').outerHTML;
   const html = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -829,10 +1024,11 @@ function exportWord() {
 }
 
 function exportPPT() {
+  if (!currentSession || currentSession.level !== 'ka_unit') return;
   if (typeof PptxGenJS === 'undefined') return alert('Library PptxGenJS belum termuat.');
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
-  const rows = filterByPeriode(db[currentTab] || []);
+  const rows = filterByRoleAndPeriode(db[currentTab] || []);
   const pptx = new PptxGenJS();
   const slide = pptx.addSlide();
   slide.addText(`SIM-KPK RS ARSY — ${currentTab.toUpperCase()}`, { x: 0.5, y: 0.4, fontSize: 22, bold: true, color: '0F766E' });
