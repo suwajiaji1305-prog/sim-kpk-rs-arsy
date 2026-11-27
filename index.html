@@ -235,7 +235,7 @@
         <h2>Sistem Informasi Keamanan, Parkir & Driver</h2>
         <p>Pemantauan laporan operasional terpisah per unit dengan monitoring grafik real-time dan kontrol akses berbasis email.</p>
         <div class="brand-features">
-          <div class="brand-feat"><b>Operator:</b> Akses seluruh data laporan, ekspor dokumen, serta tambah & nonaktifkan email anggota.</div>
+          <div class="brand-feat"><b>Operator:</b> Akses seluruh data laporan, hapus baris laporan, ekspor dokumen, serta tambah & nonaktifkan email anggota.</div>
           <div class="brand-feat"><b>Anggota Unit:</b> Akses form laporan sesuai unit tugas dan melihat laporan yang ditulis sendiri.</div>
         </div>
       </div>
@@ -600,7 +600,10 @@
 
     <!-- TABEL REKAP -->
     <div id="rekapCard" class="card">
-      <h3 id="rekapTableTitle">Rekap Data Tersimpan</h3>
+      <div class="toolbar">
+        <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
+        <span class="op-msg" id="rekapDeleteMsg"></span>
+      </div>
       <div class="table-wrap">
         <table id="rekapTable"></table>
       </div>
@@ -609,9 +612,9 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V7';
-const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V7';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V7';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V8';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V8';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V8';
 const OPERATOR_EMAIL = 'suwaji.aji1305@gmail.com';
 const OPERATOR_PASS = 'Suwaji@1305';
 
@@ -632,6 +635,10 @@ let currentSession = null;
 let currentTab = 'patroli';
 let chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
+
+function isOperatorUser() {
+  return Boolean(currentSession && currentSession.level === 'operator');
+}
 
 function defaultMembers() {
   return [
@@ -821,9 +828,16 @@ function setOperatorMsg(msg) {
   setTimeout(() => { el.textContent = ''; }, 3000);
 }
 
+function setRekapDeleteMsg(msg) {
+  const el = document.getElementById('rekapDeleteMsg');
+  if (!el) return;
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
 function saveMemberAccount(e) {
   e.preventDefault();
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const fd = new FormData(e.target);
   const name = (fd.get('member_name') || '').trim();
   const email = (fd.get('member_email') || '').trim().toLowerCase();
@@ -853,7 +867,7 @@ function saveMemberAccount(e) {
 }
 
 function toggleMemberStatus(email) {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const members = loadMembers();
   const target = members.find(m => (m.email || '').toLowerCase() === email.toLowerCase());
   if (target) {
@@ -865,7 +879,7 @@ function toggleMemberStatus(email) {
 }
 
 function removeMemberAccount(email) {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const members = loadMembers().filter(m => (m.email || '').toLowerCase() !== email.toLowerCase());
   saveMembers(members);
   renderMembersTable();
@@ -938,6 +952,23 @@ function loadDB() {
 
 function saveDB(db) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+}
+
+function deleteReportRow(category, id) {
+  if (!isOperatorUser()) return;
+  const db = loadDB();
+  const list = db[category] || [];
+  const nextList = list.filter(item => String(item.id) !== String(id));
+  if (nextList.length === list.length) return;
+  db[category] = nextList;
+  saveDB(db);
+  setRekapDeleteMsg('Baris laporan berhasil dihapus.');
+  refreshView();
+}
+
+function renderOperatorDeleteBtn(category, id) {
+  if (!isOperatorUser()) return '';
+  return `<td><button class="btn btn-sm btn-danger" onclick="deleteReportRow('${category}', '${String(id).replace(/'/g, "\\'")}')">Hapus</button></td>`;
 }
 
 function initForms() {
@@ -1227,7 +1258,9 @@ function refreshView() {
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
   const kpiBox = document.getElementById('kpiBox');
   const table = document.getElementById('rekapTable');
-  const scopeNote = currentSession.level === 'anggota' ? ' — Laporan Milik Anda' : ' — Semua Laporan';
+  const isOp = isOperatorUser();
+  const actionTh = isOp ? '<th>Aksi</th>' : '';
+  const scopeNote = isOp ? ' — Semua Laporan' : ' — Laporan Milik Anda';
   document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()})${scopeNote} — ${rows.length} Data`;
 
   if (currentTab === 'patroli') {
@@ -1244,8 +1277,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Target / Shift (2x)</div><div class="val">${targetShift}</div></div>
     `;
     renderMonitoringCharts(rows, shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td>${renderOperatorDeleteBtn('patroli', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'harian') {
     const shifts = ['Pagi ( 07:00 - 14:00 )', 'Siang ( 14:00 - 21:00 )', 'Malam ( 21:00 - 07:00 )'];
     const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
@@ -1259,8 +1292,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(amanCount, rows.length)}%</div></div>
     `;
     renderMonitoringCharts(rows, ['Pagi','Siang','Malam'], counts, [target,target,target], ['Tanpa Insiden','Ada Insiden'], [pct(amanCount, rows.length), pct(insidenCount, rows.length)], 'Laporan Harian', 'Target (1x/Shift)');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td>${renderOperatorDeleteBtn('harian', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'adzan') {
     const done = rows.filter(r => r.status === 'Adzan Sudah Dilaksanakan').length;
     const notDone = rows.filter(r => r.status !== 'Adzan Sudah Dilaksanakan').length;
@@ -1270,8 +1303,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div></div>
     `;
     renderMonitoringCharts(rows, ['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah', 'Total Entri');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td>${renderOperatorDeleteBtn('adzan', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'parkir') {
     const totalMotor = rows.reduce((a, b) => a + Number(b.motor || 0), 0);
     const totalMobil = rows.reduce((a, b) => a + Number(b.mobil || 0), 0);
@@ -1285,8 +1318,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">% Sistem Normal</div><div class="val">${pct(normalCount, rows.length)}%</div></div>
     `;
     renderMonitoringCharts(rows, ['Motor', 'Mobil', 'Sistem Normal'], [totalMotor, totalMobil, normalCount], [totalMotor, totalMobil, rows.length], ['Sistem Normal', 'Ada Kendala'], [pct(normalCount, rows.length), pct(kendalaCount, rows.length)], 'Realisasi', 'Acuan');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td>${renderOperatorDeleteBtn('parkir', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'driver') {
     const totalTrip = rows.length;
     const totalJarak = rows.reduce((a, b) => a + Number(b.jarak || 0), 0);
@@ -1300,16 +1333,16 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Total Biaya (BBM+Toll)</div><div class="val">Rp ${totalBiaya.toLocaleString('id-ID')}</div></div>
     `;
     renderMonitoringCharts(rows, ['Perjalanan', 'Jarak (KM)', 'BBM (L)'], [totalTrip, totalJarak, totalBBM], [totalTrip, totalJarak, totalBBM], ['Tanpa Insiden', 'Ada Insiden'], [pct(totalTrip - insidenCount, totalTrip), pct(insidenCount, totalTrip)], 'Capaian', 'Acuan');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th></tr></thead><tbody>` +
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => {
         const biaya = Number(r.harga_bbm || 0) + Number(r.etoll || 0);
-        return `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak}</td><td>${r.bbm_pakai}</td><td>Rp ${biaya.toLocaleString('id-ID')}</td><td>${r.insiden}</td></tr>`;
+        return `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak}</td><td>${r.bbm_pakai}</td><td>Rp ${biaya.toLocaleString('id-ID')}</td><td>${r.insiden}</td>${renderOperatorDeleteBtn('driver', r.id)}</tr>`;
       }).join('') + '</tbody>';
   }
 }
 
 function exportExcel() {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const db = loadDB();
   const wb = XLSX.utils.book_new();
   Object.keys(db).forEach(key => {
@@ -1326,7 +1359,7 @@ function exportExcel() {
 }
 
 function exportWord() {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
@@ -1349,7 +1382,7 @@ function exportWord() {
 }
 
 function exportPPT() {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   if (typeof PptxGenJS === 'undefined') return alert('Library PptxGenJS belum termuat.');
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
