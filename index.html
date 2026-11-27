@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,303 +14,102 @@
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
   <style>
     :root {
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --primary: #0f766e;
-      --primary-dark: #115e59;
-      --accent: #0284c7;
-      --warn: #d97706;
-      --danger: #dc2626;
-      --border: #cbd5e1;
+      --bg: #f1f5f9; --card: #ffffff; --ink: #0f172a; --muted: #64748b;
+      --primary: #0f766e; --primary-dark: #115e59; --accent: #0284c7;
+      --warn: #d97706; --danger: #dc2626; --border: #cbd5e1;
     }
-
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-    }
-
-    header {
-      background: var(--primary);
-      color: #fff;
-      padding: 14px 18px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); }
+    header { background: var(--primary); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
     header h1 { margin: 0; font-size: 1.1rem; }
     header small { opacity: .9; display: block; }
-
-    .container {
-      max-width: 1320px;
-      margin: 14px auto;
-      padding: 0 14px 36px;
-    }
-
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .tab-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--ink);
-      padding: 9px 13px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: .88rem;
-    }
-
-    .tab-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 14px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-
-    .card h2, .card h3 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 10px;
-    }
-
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: .8rem;
-      font-weight: 600;
-      color: #334155;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 8px 9px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      font-size: .86rem;
-      background: #fff;
-    }
-
+    .container { max-width: 1320px; margin: 14px auto; padding: 0 14px 36px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .tab-btn { border: 1px solid var(--border); background: #fff; color: var(--ink); padding: 9px 13px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+    .card h2, .card h3 { margin: 0 0 10px; font-size: 1rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: #334155; }
+    input, select, textarea { width: 100%; padding: 8px 9px; border: 1px solid var(--border); border-radius: 7px; font-size: .86rem; background: #fff; }
     textarea { min-height: 64px; resize: vertical; }
-
-    .areas-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 8px;
-      margin: 10px 0;
-    }
-
-    .hours-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 8px;
-      margin: 10px 0;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 8px;
-      padding: 9px 14px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: .85rem;
-    }
-
+    .areas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 10px 0; }
+    .hours-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; margin: 10px 0; }
+    .btn { border: none; border-radius: 8px; padding: 9px 14px; font-weight: 700; cursor: pointer; font-size: .85rem; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-dark); }
     .btn-export { background: var(--accent); color: #fff; }
     .btn-warn { background: var(--warn); color: #fff; }
-    .btn-danger { background: var(--danger); color: #fff; }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .kpis {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .kpi {
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-    }
-
-    .kpi .val {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--primary-dark);
-    }
-
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .kpi .val { font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); }
     .kpi .lbl { font-size: .76rem; color: var(--muted); }
-
-    .table-wrap {
-      overflow-x: auto;
-      max-height: 360px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .8rem;
-    }
-
-    th, td {
-      border-bottom: 1px solid #e2e8f0;
-      padding: 7px 8px;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #f8fafc;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
+    .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
+    th { background: #f8fafc; position: sticky; top: 0; z-index: 1; }
     .hidden { display: none; }
-
-    .badge {
-      padding: 2px 7px;
-      border-radius: 999px;
-      font-size: .74rem;
-      font-weight: 700;
-    }
-
+    .badge { padding: 2px 7px; border-radius: 999px; font-size: .74rem; font-weight: 700; }
     .b-ok { background: #dcfce7; color: #166534; }
     .b-no { background: #fee2e2; color: #991b1b; }
-
-    .search-box {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0;
-    }
-
-    .search-box input { max-width: 360px; }
-
-    .action-btn {
-      padding: 5px 8px;
-      border: 0;
-      border-radius: 5px;
-      cursor: pointer;
-      color: white;
-      background: var(--danger);
-    }
-
-    @media (max-width: 600px) {
-      .container { padding: 0 8px 24px; }
-      header { padding: 12px; }
-      .grid-2 { grid-template-columns: 1fr; }
-    }
   </style>
 </head>
 <body>
-
 <header>
   <div>
     <h1>SIM-KPK RS ARSY — Sistem Laporan Terpisah, Rekap & Ekspor</h1>
-    <small>Patroli Keliling • Harian Satpam • Adzan Subuh • Parkir • Driver</small>
+    <small>Patroli Keliling (2x/Shift) • Harian Satpam (1x/Shift) • Adzan Subuh • Parkir • Driver</small>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;">
     <button class="btn btn-export" onclick="exportExcel()">Ekspor Excel (.xlsx)</button>
     <button class="btn btn-export" onclick="exportWord()">Ekspor Word (.doc)</button>
     <button class="btn btn-warn" onclick="exportPPT()">Ekspor PPT (.pptx)</button>
-    <button class="btn btn-primary" onclick="backupJSON()">Backup Data</button>
-    <button class="btn btn-primary" onclick="document.getElementById('restoreFile').click()">Pulihkan Data</button>
-    <input type="file" id="restoreFile" accept=".json,application/json" hidden onchange="restoreJSON(event)">
   </div>
 </header>
 
 <div class="container">
-
   <div class="tabs" id="mainTabs">
-    <button class="tab-btn active" data-tab="patroli">1. Patroli Keliling</button>
-    <button class="tab-btn" data-tab="harian">2. Laporan Harian Satpam</button>
+    <button class="tab-btn active" data-tab="patroli">1. Patroli Keliling (2x/Shift)</button>
+    <button class="tab-btn" data-tab="harian">2. Laporan Harian Satpam (1x/Shift)</button>
     <button class="tab-btn" data-tab="adzan">3. Laporan Adzan Subuh</button>
     <button class="tab-btn" data-tab="parkir">4. Unit Parkir</button>
     <button class="tab-btn" data-tab="driver">5. Unit Driver</button>
   </div>
 
+  <!-- FILTER REKAP & GRAFIK -->
   <div class="card">
     <div class="toolbar">
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
         <label style="flex-direction:row;align-items:center;gap:6px;">
           Periode Rekap:
           <select id="periodeMode" onchange="refreshView()" style="width:auto;">
-            <option value="harian">Harian</option>
-            <option value="mingguan">Mingguan</option>
-            <option value="bulanan" selected>Bulanan</option>
+            <option value="harian">Harian (Per Tanggal)</option>
+            <option value="mingguan">Mingguan (Per Pekan)</option>
+            <option value="bulanan" selected>Bulanan (Per Bulan)</option>
           </select>
         </label>
         <label style="flex-direction:row;align-items:center;gap:6px;">
-          Tanggal Acuan:
-          <input type="date" id="refDate" onchange="refreshView()" style="width:auto;">
+          Tanggal / Bulan Acuan:
+          <input type="date" id="refDate" onchange="refreshView()" style="width:auto;" />
         </label>
       </div>
-      <div id="activeUnitTitle" style="font-weight:700;color:var(--primary-dark);">
-        Unit Aktif: Patroli Keliling
-      </div>
+      <div id="activeUnitTitle" style="font-weight:700;color:var(--primary-dark);">Unit Aktif: Patroli Keliling</div>
     </div>
-
     <div class="kpis" id="kpiBox"></div>
-
     <div class="grid-2">
       <div style="height:260px;"><canvas id="chartMain"></canvas></div>
       <div style="height:260px;"><canvas id="chartPct"></canvas></div>
     </div>
   </div>
 
+  <!-- FORM 1: PATROLI KELILING -->
   <section id="panel-patroli" class="panel card">
     <h2>Input Laporan Mutu Patroli Keliling (Target 2x / Shift)</h2>
     <form id="form-patroli" onsubmit="savePatroli(event)">
       <div class="form-grid">
-        <label>Tanggal
-          <input type="date" name="tanggal" required>
-        </label>
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
         <label>Status Dinas
           <select name="dinas">
             <option value="PAGI">PAGI</option>
@@ -319,9 +123,7 @@
             <option value="Tidak Patroli">Tidak Patroli</option>
           </select>
         </label>
-        <label>Jam Patroli
-          <input type="time" name="jam" value="08:00" required>
-        </label>
+        <label>Jam Patroli <input type="time" name="jam" value="08:00" required /></label>
         <label>Petugas Patroli
           <select name="petugas">
             <option>SUWAJI</option><option>JOHAN</option><option>AGOS</option>
@@ -336,31 +138,26 @@
         </label>
       </div>
       <div class="areas-grid" id="patroliAreasBox"></div>
-      <label>Temuan / Alasan Tidak Patroli
+      <label>Temuan Ketika Patroli / Alasan Tidak Patroli
         <textarea name="temuan" placeholder="Contoh: Tidak ada temuan / aman"></textarea>
       </label>
-      <div style="margin-top:10px;">
-        <button class="btn btn-primary" type="submit">Simpan Patroli Keliling</button>
-      </div>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Patroli Keliling</button></div>
     </form>
   </section>
 
+  <!-- FORM 2: HARIAN SATPAM -->
   <section id="panel-harian" class="panel card hidden">
-    <h2>Input Laporan Kegiatan Harian Satpam</h2>
+    <h2>Input Laporan Kegiatan Harian Satpam (Target 1x / Shift)</h2>
     <form id="form-harian" onsubmit="saveHarian(event)">
       <div class="form-grid">
-        <label>Nama Satpam Jaga
-          <input type="text" name="nama" required placeholder="Nama petugas">
-        </label>
-        <label>Tanggal
-          <input type="date" name="tanggal" required>
-        </label>
+        <label>Nama Satpam Jaga <input type="text" name="nama" required placeholder="Nama petugas" /></label>
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
         <label>Shift
           <select name="shift">
-            <option value="Pagi ( 07:00 - 14:00 )">Pagi (07:00 - 14:00)</option>
-            <option value="Siang ( 14:00 - 21:00 )">Siang (14:00 - 21:00)</option>
-            <option value="Malam ( 21:00 - 07:00 )">Malam (21:00 - 07:00)</option>
-            <option value="Sabtu Siang Poli ( 12:00 - 17:00 )">Sabtu Siang Poli (12:00 - 17:00)</option>
+            <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
+            <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
+            <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
+            <option value="Sabtu Siang Poli ( 12:00 - 17:00 )">Sabtu Siang Poli ( 12:00 - 17:00 )</option>
           </select>
         </label>
         <label>Lokasi Penugasan
@@ -375,67 +172,63 @@
             <option value="Ya">Ya</option>
           </select>
         </label>
-        <label>Petugas Shift Selanjutnya
-          <input type="text" name="next_petugas">
-        </label>
+        <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" placeholder="Nama petugas berikut" /></label>
       </div>
       <div class="hours-grid" id="harianHoursBox"></div>
       <div class="form-grid">
-        <label>Komputer <input type="text" name="komputer" value="Ada, Berfungsi Baik"></label>
-        <label>Kipas Angin <input type="text" name="kipas" value="Ada, Berfungsi Baik"></label>
-        <label>Monitor CCTV <input type="text" name="cctv" value="Ada, Berfungsi Baik"></label>
-        <label>Ampli <input type="text" name="ampli" value="Ada, Berfungsi Baik"></label>
-        <label>Telepon Duduk <input type="text" name="telpon" value="Ada, Berfungsi Baik"></label>
-        <label>Kunci Ruangan/Mobil/Motor <input type="text" name="kunci" value="Lengkap dan Aman"></label>
-        <label>APAR, Helm, Kursi, Meja, Sound <input type="text" name="apar" value="Lengkap dan Aman"></label>
-        <label>Keterangan Insiden <input type="text" name="ket_insiden" value="Tidak ada insiden"></label>
+        <label>Komputer <input type="text" name="komputer" value="Ada, Berfungsi Baik" /></label>
+        <label>Kipas Angin <input type="text" name="kipas" value="Ada, Berfungsi Baik" /></label>
+        <label>Monitor CCTV <input type="text" name="cctv" value="Ada, Berfungsi Baik" /></label>
+        <label>Ampli <input type="text" name="ampli" value="Ada, Berfungsi Baik" /></label>
+        <label>Telepon Duduk <input type="text" name="telpon" value="Ada, Berfungsi Baik" /></label>
+        <label>Kunci Ruangan/Mobil/Motor <input type="text" name="kunci" value="Lengkap dan Aman" /></label>
+        <label>APAR, Helm, Kursi, Meja, Sound <input type="text" name="apar" value="Lengkap dan Aman" /></label>
+        <label>Keterangan Insiden <input type="text" name="ket_insiden" value="Tidak ada insiden" /></label>
       </div>
       <div class="form-grid" style="margin-top:8px;">
-        <label>Catatan Inventaris <input type="text" name="cat_inv" value="Aman"></label>
-        <label>Instruksi Shift Sebelumnya <input type="text" name="info_prev" value="Aman"></label>
-        <label>Instruksi Shift Berikutnya <input type="text" name="info_next" value="Aman"></label>
-        <label>Catatan / Saran Lainnya <input type="text" name="saran" value="Tidak ada"></label>
+        <label>Catatan Inventaris <input type="text" name="cat_inv" value="Aman" /></label>
+        <label>Instruksi Shift Sebelumnya <input type="text" name="info_prev" value="Aman" /></label>
+        <label>Instruksi Shift Berikutnya <input type="text" name="info_next" value="Aman" /></label>
+        <label>Catatan / Saran Lainnya <input type="text" name="saran" value="Tidak ada" /></label>
       </div>
-      <div style="margin-top:10px;">
-        <button class="btn btn-primary" type="submit">Simpan Laporan Harian</button>
-      </div>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Harian</button></div>
     </form>
   </section>
 
+  <!-- FORM 3: ADZAN SUBUH -->
   <section id="panel-adzan" class="panel card hidden">
     <h2>Input Laporan Adzan Subuh</h2>
     <form id="form-adzan" onsubmit="saveAdzan(event)">
       <div class="form-grid">
-        <label>Tanggal <input type="date" name="tanggal" required></label>
-        <label>Waktu Adzan Subuh <input type="time" name="waktu" value="04:00" required></label>
-        <label>Status Adzan
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Waktu Adzan Subuh <input type="time" name="waktu" value="04:00" required /></label>
+        <label>Status Adzan Subuh
           <select name="status">
             <option value="Adzan Sudah Dilaksanakan">Adzan Sudah Dilaksanakan</option>
             <option value="Tidak Dilaksanakan">Tidak Dilaksanakan</option>
           </select>
         </label>
-        <label>Nama Petugas <input type="text" name="petugas" required></label>
+        <label>Nama Petugas <input type="text" name="petugas" required placeholder="Nama petugas" /></label>
       </div>
-      <label style="margin-top:8px;">Keterangan
-        <input type="text" name="keterangan" placeholder="Kendala / catatan / bukti foto WA">
+      <label style="margin-top:8px;">Keterangan (Kendala / Catatan / Bukti Foto WA)
+        <input type="text" name="keterangan" placeholder="Contoh: Aman / bukti foto di grup WA" />
       </label>
-      <div style="margin-top:10px;">
-        <button class="btn btn-primary" type="submit">Simpan Laporan Adzan</button>
-      </div>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Adzan</button></div>
     </form>
   </section>
 
+  <!-- FORM 4: PARKIR -->
   <section id="panel-parkir" class="panel card hidden">
     <h2>Input Laporan Kegiatan Petugas Parkir</h2>
     <form id="form-parkir" onsubmit="saveParkir(event)">
       <div class="form-grid">
-        <label>Nama Petugas Jaga <input type="text" name="nama" required></label>
-        <label>Tanggal <input type="date" name="tanggal" required></label>
+        <label>Nama Petugas Jaga <input type="text" name="nama" required /></label>
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
         <label>Waktu Shift
           <select name="shift">
-            <option value="Pagi ( 07:00 - 14:00 )">Pagi (07:00 - 14:00)</option>
-            <option value="Siang ( 14:00 - 21:00 )">Siang (14:00 - 21:00)</option>
-            <option value="Malam ( 21:00 - 07:00 )">Malam (21:00 - 07:00)</option>
+            <option value="Pagi ( 07:00 - 14:00 )">Pagi ( 07:00 - 14:00 )</option>
+            <option value="Siang ( 14:00 - 21:00 )">Siang ( 14:00 - 21:00 )</option>
+            <option value="Malam ( 21:00 - 07:00 )">Malam ( 21:00 - 07:00 )</option>
           </select>
         </label>
         <label>Lokasi Jaga
@@ -444,57 +237,62 @@
             <option value="Menata Area Parkir">Menata Area Parkir</option>
           </select>
         </label>
-        <label>Status Sistem Parkir
+        <label>Status Sistem Parkir Otomatis
           <select name="status_sistem">
-            <option value="Berfungsi Normal Sepanjang Shift">Berfungsi Normal</option>
-            <option value="Mengalami Gangguan Sesekali">Gangguan Sesekali</option>
+            <option value="Berfungsi Normal Sepanjang Shift">Berfungsi Normal Sepanjang Shift</option>
+            <option value="Mengalami Gangguan Sesekali">Mengalami Gangguan Sesekali</option>
             <option value="Sering Mengalami Gangguan">Sering Mengalami Gangguan</option>
           </select>
         </label>
         <label>Peralatan Tidak Normal
           <select name="alat">
             <option value="Normal">Normal</option>
-            <option value="Palang Otomatis (Masuk/Keluar)">Palang Otomatis</option>
-            <option value="Pembaca Tiket/Kartu Keluar">Pembaca Tiket/Kartu</option>
+            <option value="Palang Otomatis (Masuk/Keluar)">Palang Otomatis (Masuk/Keluar)</option>
+            <option value="Pembaca Tiket/Kartu Keluar">Pembaca Tiket/Kartu Keluar</option>
             <option value="Lainnya">Lainnya</option>
           </select>
         </label>
-        <label>Jumlah Motor <input type="number" name="motor" min="0" value="0" required></label>
-        <label>Jumlah Mobil <input type="number" name="mobil" min="0" value="0" required></label>
+        <label>Jumlah Motor <input type="number" name="motor" min="0" value="0" required /></label>
+        <label>Jumlah Mobil <input type="number" name="mobil" min="0" value="0" required /></label>
         <label>Intervensi Manual
-          <select name="manual"><option value="Tidak">Tidak</option><option value="Ya">Ya</option></select>
+          <select name="manual">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
         </label>
         <label>Jenis Kendala
           <select name="kendala">
             <option value="Tidak Ada Kendala">Tidak Ada Kendala</option>
-            <option value="Pengendara Kehilangan Tiket/Kartu">Kehilangan Tiket/Kartu</option>
+            <option value="Pengendara Kehilangan Tiket/Kartu">Pengendara Kehilangan Tiket/Kartu</option>
             <option value="Kendaraan Mundur/Menerobos">Kendaraan Mundur/Menerobos</option>
             <option value="Lainnya">Lainnya</option>
           </select>
         </label>
         <label>Ganti Kertas
-          <select name="ganti_kertas"><option value="Tidak">Tidak</option><option value="Ya">Ya</option></select>
+          <select name="ganti_kertas">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
         </label>
-        <label>Total Storan (Rp) <input type="number" name="storan" min="0" value="0" required></label>
-        <label>Temuan Ketika Jaga <input type="text" name="temuan" value="-"></label>
-        <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas"></label>
+        <label>Total Storan (Rp) <input type="number" name="storan" min="0" value="0" required /></label>
+        <label>Temuan Ketika Jaga <input type="text" name="temuan" value="-" /></label>
+        <label>Petugas Shift Selanjutnya <input type="text" name="next_petugas" /></label>
       </div>
-      <label style="margin-top:8px;">Keterangan Gangguan / Catatan
-        <input type="text" name="catatan">
+      <label style="margin-top:8px;">Keterangan Gangguan / Catatan Tambahan
+        <input type="text" name="catatan" placeholder="Detail gangguan alat atau observasi" />
       </label>
-      <div style="margin-top:10px;">
-        <button class="btn btn-primary" type="submit">Simpan Laporan Parkir</button>
-      </div>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Parkir</button></div>
     </form>
   </section>
 
+  <!-- FORM 5: DRIVER -->
   <section id="panel-driver" class="panel card hidden">
     <h2>Input Laporan Kegiatan Driver</h2>
     <form id="form-driver" onsubmit="saveDriver(event)">
       <div class="form-grid">
-        <label>Tanggal <input type="date" name="tanggal" required></label>
-        <label>Jam Berangkat <input type="time" name="jam_berangkat" required></label>
-        <label>Jam Kembali <input type="time" name="jam_kembali" required></label>
+        <label>Tanggal <input type="date" name="tanggal" required /></label>
+        <label>Jam Berangkat <input type="time" name="jam_berangkat" required /></label>
+        <label>Jam Kembali <input type="time" name="jam_kembali" required /></label>
         <label>Jenis Permintaan
           <select name="jenis_permintaan">
             <option>Antar / Jemput Dokter</option>
@@ -514,16 +312,19 @@
             <option>Ambulan Luar ( Sewa )</option>
           </select>
         </label>
-        <label>KM Awal <input type="number" name="km_awal" min="0" required></label>
-        <label>KM Akhir <input type="number" name="km_akhir" min="0" required></label>
-        <label>BBM Dibeli (Liter) <input type="number" step="0.01" name="bbm_beli" value="0"></label>
-        <label>BBM Terpakai (Liter) <input type="number" step="0.01" name="bbm_pakai" value="0"></label>
-        <label>Harga BBM (Rp) <input type="number" name="harga_bbm" value="0"></label>
-        <label>Isi E-Toll (Rp) <input type="number" name="etoll" value="0"></label>
-        <label>Keterangan Unit/Poli <input type="text" name="ket_unit"></label>
-        <label>Tujuan <input type="text" name="tujuan" required></label>
+        <label>KM Awal <input type="number" name="km_awal" min="0" required /></label>
+        <label>KM Akhir <input type="number" name="km_akhir" min="0" required /></label>
+        <label>BBM Dibeli (Liter) <input type="number" step="0.01" name="bbm_beli" value="0" /></label>
+        <label>BBM Terpakai (Liter) <input type="number" step="0.01" name="bbm_pakai" value="0" /></label>
+        <label>Harga BBM (Rp) <input type="number" name="harga_bbm" value="0" /></label>
+        <label>Isi E-Toll (Rp) <input type="number" name="etoll" value="0" /></label>
+        <label>Keterangan Unit/Poli <input type="text" name="ket_unit" placeholder="POLI / IGD / KANTOR" /></label>
+        <label>Tujuan <input type="text" name="tujuan" required placeholder="Kota / RS / Alamat" /></label>
         <label>Status Driver
-          <select name="driver_status"><option>Dinas</option><option>On Call</option></select>
+          <select name="driver_status">
+            <option value="Dinas">Dinas</option>
+            <option value="On Call">On Call</option>
+          </select>
         </label>
         <label>Nama Driver
           <select name="driver_nama">
@@ -531,26 +332,425 @@
           </select>
         </label>
         <label>Insiden di Jalan
-          <select name="insiden"><option value="Tidak">Tidak</option><option value="Ya">Ya</option></select>
+          <select name="insiden">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
         </label>
       </div>
       <label style="margin-top:8px;">Keterangan Hambatan / Kendala
-        <input type="text" name="hambatan" value="tidak ada">
+        <input type="text" name="hambatan" value="tidak ada" />
       </label>
-      <div style="margin-top:10px;">
-        <button class="btn btn-primary" type="submit">Simpan Laporan Driver</button>
-      </div>
+      <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Simpan Laporan Driver</button></div>
     </form>
   </section>
 
+  <!-- TABEL REKAP -->
   <div class="card">
     <h3 id="rekapTableTitle">Rekap Data Tersimpan</h3>
-    <div class="search-box">
-      <input type="search" id="searchData" placeholder="Cari laporan..." oninput="refreshView()">
-    </div>
     <div class="table-wrap">
       <table id="rekapTable"></table>
     </div>
   </div>
-
 </div>
+
+<script>
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V2';
+const AREAS = [
+  'AREA PARKIR','DEPAN IGD','DEPAN POLI','RUANG IGD','RUANG PONEK',
+  'GEDUNG POLI LANTAI 1','GEDUNG POLI LANTAI 2','GEDUNG KANTOR LANTAI 3',
+  'GEDUNG MUSA LANTAI 2','GEDUNG KHADIJAH LANTAI 2','GEDUNG IBRAHIM LANTAI 3',
+  'AREA BELAKANG RS, GIZI , OKSIGEN , TABUNG LIQUID'
+];
+const HOURS = [
+  '07:00 - 08:00','08:00 - 09:00','09:00 - 10:00','10:00 - 11:00','11:00 - 12:00','12:00 - 13:00','13:00 - 14:00',
+  '14:00 - 15:00','15:00 - 16:00','16:00 - 17:00','17:00 - 18:00','18:00 - 19:00','19:00 - 20:00','20:00 - 21:00',
+  '21:00 - 22:00','22:00 - 23:00','23:00 - 00:00','00:00 - 01:00','01:00 - 02:00','02:00 - 03:00','03:00 - 04:00',
+  '04:00 - 05:00','05:00 - 06:00','06:00 - 07:00'
+];
+
+let currentTab = 'patroli';
+let chartMain = null, chartPct = null;
+
+function defaultData() {
+  return {
+    patroli: [
+      { id: 1, tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 2, tanggal: '2026-11-26', dinas: 'PAGI', status: 'Patroli', jam: '12:30', petugas: 'SUWAJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 3, tanggal: '2026-11-26', dinas: 'SIANG', status: 'Patroli', jam: '15:30', petugas: 'JOHAN', kondisi: 'Ada Temuan', temuan: 'Lampu lorong perlu dicek', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) }
+    ],
+    harian: [
+      { id: 1, tanggal: '2026-11-26', nama: 'Suwaji', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Informasi', insiden: 'Tidak Ada Insiden', next_petugas: 'Johan', jam: {} }
+    ],
+    adzan: [
+      { id: 1, tanggal: '2026-11-26', waktu: '03:55', status: 'Adzan Sudah Dilaksanakan', petugas: 'Johan', keterangan: 'Aman' }
+    ],
+    parkir: [
+      { id: 1, tanggal: '2026-11-26', nama: 'Arry', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Parkir', status_sistem: 'Berfungsi Normal Sepanjang Shift', alat: 'Normal', motor: 185, mobil: 22, manual: 'Tidak', kendala: 'Tidak Ada Kendala', ganti_kertas: 'Tidak', storan: 295000, temuan: '-', catatan: 'Normal' }
+    ],
+    driver: [
+      { id: 1, tanggal: '2026-11-26', jam_berangkat: '08:00', jam_kembali: '11:30', jenis_permintaan: 'Antar / Jemput Dokter', kendaraan: 'Mobil Dinas RS ARSY', km_awal: 133100, km_akhir: 133195, jarak: 95, bbm_beli: 15, bbm_pakai: 9, harga_bbm: 150000, etoll: 0, ket_unit: 'POLI', tujuan: 'Lamongan', driver_status: 'Dinas', driver_nama: 'DIMAS', insiden: 'Tidak', hambatan: 'tidak ada' }
+    ]
+  };
+}
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : defaultData();
+  } catch {
+    return defaultData();
+  }
+}
+
+function saveDB(db) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+}
+
+function initForms() {
+  const today = '2026-11-27';
+  document.getElementById('refDate').value = today;
+  document.querySelectorAll('input[type="date"][name="tanggal"]').forEach(el => el.value = today);
+
+  document.getElementById('patroliAreasBox').innerHTML = AREAS.map(a => `
+    <label>${a}
+      <select name="area_${btoa(a).replace(/=/g,'')}">
+        <option value="Aman">Aman</option>
+        <option value="Tidak">Tidak</option>
+      </select>
+    </label>
+  `).join('');
+
+  document.getElementById('harianHoursBox').innerHTML = HOURS.map(h => `
+    <label>Pukul ${h}
+      <input type="text" name="hr_${h.replace(/[^0-9]/g,'')}" placeholder="Kegiatan jam ${h}" />
+    </label>
+  `).join('');
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTab = btn.dataset.tab;
+      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`panel-${currentTab}`).classList.remove('hidden');
+      const labels = {
+        patroli: 'Patroli Keliling (Target 2x/Shift)',
+        harian: 'Laporan Harian Satpam (Target 1x/Shift)',
+        adzan: 'Laporan Adzan Subuh',
+        parkir: 'Unit Parkir',
+        driver: 'Unit Driver'
+      };
+      document.getElementById('activeUnitTitle').textContent = `Unit Aktif: ${labels[currentTab]}`;
+      refreshView();
+    });
+  });
+}
+
+function savePatroli(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  const areas = {};
+  AREAS.forEach(a => {
+    areas[a] = fd.get('area_' + btoa(a).replace(/=/g,'')) || 'Aman';
+  });
+  db.patroli.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    dinas: fd.get('dinas'),
+    status: fd.get('status'),
+    jam: fd.get('jam'),
+    petugas: fd.get('petugas'),
+    kondisi: fd.get('kondisi'),
+    temuan: fd.get('temuan') || '-',
+    areas
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveHarian(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  const jam = {};
+  HOURS.forEach(h => { jam[h] = fd.get('hr_' + h.replace(/[^0-9]/g,'')) || ''; });
+  db.harian.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    nama: fd.get('nama'),
+    shift: fd.get('shift'),
+    lokasi: fd.get('lokasi'),
+    insiden: fd.get('insiden'),
+    next_petugas: fd.get('next_petugas') || '-',
+    jam
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveAdzan(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  db.adzan.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    waktu: fd.get('waktu'),
+    status: fd.get('status'),
+    petugas: fd.get('petugas'),
+    keterangan: fd.get('keterangan') || '-'
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveParkir(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  db.parkir.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    nama: fd.get('nama'),
+    shift: fd.get('shift'),
+    lokasi: fd.get('lokasi'),
+    status_sistem: fd.get('status_sistem'),
+    alat: fd.get('alat'),
+    motor: Number(fd.get('motor') || 0),
+    mobil: Number(fd.get('mobil') || 0),
+    manual: fd.get('manual'),
+    kendala: fd.get('kendala'),
+    ganti_kertas: fd.get('ganti_kertas'),
+    storan: Number(fd.get('storan') || 0),
+    temuan: fd.get('temuan') || '-',
+    catatan: fd.get('catatan') || '-'
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function saveDriver(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const db = loadDB();
+  const kmAwal = Number(fd.get('km_awal') || 0);
+  const kmAkhir = Number(fd.get('km_akhir') || 0);
+  db.driver.unshift({
+    id: Date.now(),
+    tanggal: fd.get('tanggal'),
+    jam_berangkat: fd.get('jam_berangkat'),
+    jam_kembali: fd.get('jam_kembali'),
+    jenis_permintaan: fd.get('jenis_permintaan'),
+    kendaraan: fd.get('kendaraan'),
+    km_awal: kmAwal,
+    km_akhir: kmAkhir,
+    jarak: Math.max(0, kmAkhir - kmAwal),
+    bbm_beli: Number(fd.get('bbm_beli') || 0),
+    bbm_pakai: Number(fd.get('bbm_pakai') || 0),
+    harga_bbm: Number(fd.get('harga_bbm') || 0),
+    etoll: Number(fd.get('etoll') || 0),
+    ket_unit: fd.get('ket_unit') || '-',
+    tujuan: fd.get('tujuan'),
+    driver_status: fd.get('driver_status'),
+    driver_nama: fd.get('driver_nama'),
+    insiden: fd.get('insiden'),
+    hambatan: fd.get('hambatan') || 'tidak ada'
+  });
+  saveDB(db);
+  e.target.reset();
+  e.target.tanggal.value = document.getElementById('refDate').value;
+  refreshView();
+}
+
+function filterByPeriode(rows) {
+  const mode = document.getElementById('periodeMode').value;
+  const ref = new Date(document.getElementById('refDate').value + 'T00:00:00');
+  if (isNaN(ref)) return rows;
+  return rows.filter(r => {
+    const d = new Date((r.tanggal || '') + 'T00:00:00');
+    if (isNaN(d)) return true;
+    if (mode === 'harian') return d.toDateString() === ref.toDateString();
+    if (mode === 'mingguan') {
+      const diff = Math.abs(d - ref) / (1000 * 60 * 60 * 24);
+      return diff <= 3.5;
+    }
+    return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth();
+  });
+}
+
+function pct(part, total) {
+  if (!total) return 0;
+  return Math.round((part / total) * 1000) / 10;
+}
+
+function renderCharts(labels, s1, s2, pctLabels, pctVals, title1, title2) {
+  if (chartMain) chartMain.destroy();
+  if (chartPct) chartPct.destroy();
+  chartMain = new Chart(document.getElementById('chartMain'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: title1, data: s1, backgroundColor: '#0f766e' },
+        { label: title2, data: s2, backgroundColor: '#94a3b8' }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Perbandingan Jumlah' } } }
+  });
+  chartPct = new Chart(document.getElementById('chartPct'), {
+    type: 'bar',
+    data: {
+      labels: pctLabels,
+      datasets: [{ label: 'Persentase (%)', data: pctVals, backgroundColor: ['#0284c7', '#0d9488', '#4f46e5', '#d97706'] }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { y: { min: 0, max: 100 } },
+      plugins: { title: { display: true, text: 'Pembanding Persentase (%)' } }
+    }
+  });
+}
+
+function refreshView() {
+  const db = loadDB();
+  const mode = document.getElementById('periodeMode').value;
+  const rows = filterByPeriode(db[currentTab] || []);
+  const kpiBox = document.getElementById('kpiBox');
+  const table = document.getElementById('rekapTable');
+  document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()}) — ${rows.length} Data`;
+
+  if (currentTab === 'patroli') {
+    const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
+    const targetShift = mode === 'harian' ? 2 : daysCount * 2;
+    const shifts = ['PAGI', 'SIANG', 'MALAM'];
+    const realPerShift = shifts.map(s => rows.filter(r => r.dinas === s && r.status === 'Patroli').length);
+    const pctPerShift = realPerShift.map(v => pct(v, targetShift));
+    const temuanCount = rows.filter(r => r.kondisi === 'Ada Temuan').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Entri Patroli</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Patroli Terlaksana</div><div class="val">${rows.filter(r=>r.status==='Patroli').length}</div></div>
+      <div class="kpi"><div class="lbl">% Temuan vs Aman</div><div class="val">${pct(temuanCount, rows.length)}%</div></div>
+      <div class="kpi"><div class="lbl">Target / Shift (2x)</div><div class="val">${targetShift}</div></div>
+    `;
+    renderCharts(shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'harian') {
+    const shifts = ['Pagi ( 07:00 - 14:00 )', 'Siang ( 14:00 - 21:00 )', 'Malam ( 21:00 - 07:00 )'];
+    const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
+    const target = mode === 'harian' ? 1 : daysCount;
+    const counts = shifts.map(s => rows.filter(r => r.shift === s).length);
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Laporan Harian Masuk</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Insiden Tercatat</div><div class="val">${rows.filter(r=>r.insiden==='Ya').length}</div></div>
+      <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(rows.filter(r=>r.insiden!=='Ya').length, rows.length)}%</div></div>
+    `;
+    renderCharts(['Pagi','Siang','Malam'], counts, [target,target,target], ['Pagi','Siang','Malam'], counts.map(c=>pct(c,target)), 'Laporan Harian', 'Target (1x/Shift)');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'adzan') {
+    const done = rows.filter(r => r.status === 'Adzan Sudah Dilaksanakan').length;
+    const notDone = rows.filter(r => r.status !== 'Adzan Sudah Dilaksanakan').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Entri Subuh</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Sudah Adzan</div><div class="val">${done} (${pct(done, rows.length)}%)</div></div>
+      <div class="kpi"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div></div>
+    `;
+    renderCharts(['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah Hari', 'Total Entri');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'parkir') {
+    const totMotor = rows.reduce((a,b)=>a+(b.motor||0),0);
+    const totMobil = rows.reduce((a,b)=>a+(b.mobil||0),0);
+    const totStoran = rows.reduce((a,b)=>a+(b.storan||0),0);
+    const normalCnt = rows.filter(r => r.status_sistem === 'Berfungsi Normal Sepanjang Shift').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Motor</div><div class="val">${totMotor}</div></div>
+      <div class="kpi"><div class="lbl">Total Mobil</div><div class="val">${totMobil}</div></div>
+      <div class="kpi"><div class="lbl">Total Storan</div><div class="val">Rp ${totStoran.toLocaleString('id-ID')}</div></div>
+      <div class="kpi"><div class="lbl">% Sistem Normal</div><div class="val">${pct(normalCnt, rows.length)}%</div></div>
+    `;
+    renderCharts(['Motor','Mobil'], [totMotor, totMobil], [0,0], ['Sistem Normal','Gangguan/Manual'], [pct(normalCnt, rows.length), pct(rows.length-normalCnt, rows.length)], 'Jumlah Kendaraan', 'Cadangan');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Sistem</th><th>Motor</th><th>Mobil</th><th>Storan</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.status_sistem}</td><td>${r.motor}</td><td>${r.mobil}</td><td>Rp ${(r.storan||0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
+  } else if (currentTab === 'driver') {
+    const totKm = rows.reduce((a,b)=>a+(b.jarak||0),0);
+    const totBbm = rows.reduce((a,b)=>a+(b.bbm_pakai||0),0);
+    const totEtoll = rows.reduce((a,b)=>a+(b.etoll||0),0);
+    const insCnt = rows.filter(r => r.insiden === 'Ya').length;
+    kpiBox.innerHTML = `
+      <div class="kpi"><div class="lbl">Total Perjalanan</div><div class="val">${rows.length}</div></div>
+      <div class="kpi"><div class="lbl">Total Jarak</div><div class="val">${totKm} km</div></div>
+      <div class="kpi"><div class="lbl">BBM Terpakai</div><div class="val">${totBbm} L</div></div>
+      <div class="kpi"><div class="lbl">% Aman (No Insiden)</div><div class="val">${pct(rows.length-insCnt, rows.length)}%</div></div>
+    `;
+    const jenisList = ['Antar / Jemput Dokter','Rujuk','Antar Pasien Gon','Antar / Jemput Kantor'];
+    const jCounts = jenisList.map(j => rows.filter(r => r.jenis_permintaan === j).length);
+    renderCharts(jenisList, jCounts, jenisList.map(()=>rows.length), jenisList, jCounts.map(c=>pct(c, rows.length)), 'Jumlah Trip', 'Total Trip');
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>KM</th><th>BBM (L)</th><th>E-Toll</th></tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak} km</td><td>${r.bbm_pakai}</td><td>Rp ${(r.etoll||0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
+  }
+}
+
+function exportExcel() {
+  const db = loadDB();
+  const wb = XLSX.utils.book_new();
+  Object.keys(db).forEach(k => {
+    const flat = (db[k] || []).map(item => {
+      const copy = { ...item };
+      if (copy.areas) { Object.assign(copy, copy.areas); delete copy.areas; }
+      if (copy.jam) { Object.assign(copy, copy.jam); delete copy.jam; }
+      return copy;
+    });
+    const ws = XLSX.utils.json_to_sheet(flat.length ? flat : [{ info: 'Belum ada data' }]);
+    XLSX.utils.book_append_sheet(wb, ws, k.toUpperCase());
+  });
+  XLSX.writeFile(wb, `Rekap_SIM_KPK_RS_ARSY_${document.getElementById('refDate').value}.xlsx`);
+}
+
+function exportWord() {
+  const db = loadDB();
+  const rows = filterByPeriode(db[currentTab] || []);
+  const html = `<html><head><meta charset="utf-8"><title>Rekap ${currentTab}</title></head><body>
+    <h2>Laporan Rekap ${currentTab.toUpperCase()} - RS ARSY</h2>
+    <p>Periode: ${document.getElementById('periodeMode').value} | Acuan: ${document.getElementById('refDate').value} | Total Data: ${rows.length}</p>
+    <pre>${JSON.stringify(rows, null, 2)}</pre>
+  </body></html>`;
+  const blob = new Blob([html], { type: 'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Rekap_${currentTab}_RS_ARSY.doc`;
+  a.click();
+}
+
+function exportPPT() {
+  const db = loadDB();
+  const rows = filterByPeriode(db[currentTab] || []);
+  const pptx = new PptxGenJS();
+  const slide = pptx.addSlide();
+  slide.addText(`Rekap Laporan ${currentTab.toUpperCase()} — RS ARSY`, { x: 0.5, y: 0.4, fontSize: 20, bold: true, color: '0F766E' });
+  slide.addText(`Periode: ${document.getElementById('periodeMode').value} | Tanggal Acuan: ${document.getElementById('refDate').value}`, { x: 0.5, y: 0.9, fontSize: 12, color: '475569' });
+  slide.addText(`Jumlah Entri Tercatat: ${rows.length}`, { x: 0.5, y: 1.4, fontSize: 14, bold: true });
+  if (chartPct) {
+    const imgData = document.getElementById('chartPct').toDataURL('image/png');
+    slide.addImage({ data: imgData, x: 0.5, y: 2.0, w: 6.0, h: 3.2 });
+  }
+  pptx.writeFile({ fileName: `Rekap_${currentTab}_RS_ARSY.pptx` });
+}
+
+initForms();
+refreshView();
+</script>
+</body>
+</html>
+
