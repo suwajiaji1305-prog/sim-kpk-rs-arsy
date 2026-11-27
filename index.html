@@ -17,7 +17,7 @@
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-700 text-white font-bold text-lg mb-2">RS</div>
         <h1 class="text-xl font-bold text-slate-900">SIM-KPK RS ARSY</h1>
-        <p class="text-xs text-slate-500 mt-1">Login Menggunakan Email Teraktivasi & Password Anggota</p>
+        <p class="text-xs text-slate-500 mt-1">Monitoring Operasional Keamanan, Parkir & Driver</p>
       </div>
       <form id="loginForm" class="space-y-4">
         <div>
@@ -29,12 +29,12 @@
           <input id="loginPass" type="password" required placeholder="Masukkan password" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
         </div>
         <p id="loginError" class="text-xs text-red-600 hidden"></p>
-        <button type="submit" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg text-sm transition">Masuk ke SIM-KPK RS ARSY</button>
+        <button type="submit" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg text-sm transition">Masuk ke Sistem</button>
       </form>
       <div class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-600 space-y-1">
         <p class="font-semibold text-slate-800">Akun Ka. Unit / Operator:</p>
         <p>• Email: <span class="font-mono">suwaji.kpk@rsarsy.id</span> | Password: <span class="font-mono">Suwaji#2026</span></p>
-        <p class="text-[11px] text-slate-500 pt-1">Anggota unit masuk memakai email & password masing-masing setelah diaktivasi oleh Operator.</p>
+        <p class="text-[11px] text-slate-500 pt-1">Anggota unit masuk setelah emailnya diaktivasi oleh Ka. Unit / Operator.</p>
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@
     </header>
 
     <nav class="bg-white border-b border-slate-200 px-4 flex gap-2 overflow-x-auto">
-      <button data-tab="dashboard" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-teal-700 text-teal-800 whitespace-nowrap">Dashboard & Rekap</button>
+      <button data-tab="dashboard" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-teal-700 text-teal-800 whitespace-nowrap">Dashboard Monitoring</button>
       <button data-tab="pelaksana" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Input Laporan Saya</button>
       <button data-tab="keamanan" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Keamanan</button>
       <button data-tab="parkir" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Parkir</button>
@@ -64,11 +64,11 @@
     </nav>
 
     <main class="flex-1 p-4 max-w-7xl w-full mx-auto space-y-4">
-      <!-- TAB 1: DASHBOARD & REKAP (KHUSUS OPERATOR / KA. UNIT) -->
+      <!-- TAB 1: DASHBOARD MONITORING DETAIL (KHUSUS KA. UNIT / OPERATOR) -->
       <section id="tab-dashboard" class="tab-panel space-y-4">
         <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-wrap items-end gap-3 text-xs">
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">Filter Unit</label>
+            <label class="block font-semibold text-slate-700 mb-1">Unit</label>
             <select id="filterUnit" class="px-2.5 py-1.5 border rounded-lg">
               <option value="all">Semua Unit</option>
               <option value="keamanan">Keamanan</option>
@@ -77,48 +77,73 @@
             </select>
           </div>
           <div>
-            <label class="block font-semibold text-slate-700 mb-1">Cari Pelaksana / Email / Keterangan</label>
-            <input id="filterKeyword" type="text" placeholder="Cari nama, email, lokasi, atau tujuan..." class="px-3 py-1.5 border rounded-lg w-64" />
+            <label class="block font-semibold text-slate-700 mb-1">Fokus Monitoring</label>
+            <select id="filterFocus" class="px-2.5 py-1.5 border rounded-lg">
+              <option value="all">Semua Laporan</option>
+              <option value="temuan_sec">Keamanan: Ada Temuan</option>
+              <option value="kendala_park">Parkir: Ada Kendala/Catatan</option>
+              <option value="trip_drv">Driver: Perjalanan Rujuk / Dokter</option>
+            </select>
           </div>
-          <button id="btnResetFilter" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-lg">Reset Filter</button>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Cari Anggota / Lokasi / Rute</label>
+            <input id="filterKeyword" type="text" placeholder="Contoh: Rofi'i, Fyghur, Sidik, RSML..." class="px-3 py-1.5 border rounded-lg w-60" />
+          </div>
+          <button id="btnResetFilter" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-lg">Reset</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Log Keamanan</p>
+            <p class="text-xs text-slate-500">Patroli & Ibadah Keamanan</p>
             <p id="kpiSecCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
-            <p id="kpiSecFinding" class="text-[11px] text-amber-700 mt-1">Ada Temuan: 0</p>
+            <p id="kpiSecFinding" class="text-[11px] text-amber-700 font-medium mt-1">Ada Temuan: 0</p>
           </div>
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Log Shift Parkir</p>
+            <p class="text-xs text-slate-500">Operasional Parkir</p>
             <p id="kpiParkCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
-            <p id="kpiParkVehicles" class="text-[11px] text-sky-700 mt-1">Motor: 0 | Mobil: 0</p>
+            <p id="kpiParkVehicles" class="text-[11px] text-sky-700 font-medium mt-1">Motor: 0 | Mobil: 0</p>
           </div>
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Log Trip Driver</p>
+            <p class="text-xs text-slate-500">Perjalanan Driver</p>
             <p id="kpiDrvCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
-            <p id="kpiDrvFuel" class="text-[11px] text-teal-700 mt-1">BBM: 0 L</p>
+            <p id="kpiDrvFuel" class="text-[11px] text-teal-700 font-medium mt-1">BBM: 0 L</p>
           </div>
           <div class="bg-white p-4 rounded-xl border border-slate-200">
             <p class="text-xs text-slate-500">Total Jarak Driver (KM)</p>
             <p id="kpiKmTotal" class="text-2xl font-bold text-teal-700 mt-1">0</p>
-            <p id="kpiActiveStaff" class="text-[11px] text-slate-500 mt-1">Pelaksana tercatat: 0</p>
+            <p id="kpiActiveStaff" class="text-[11px] text-slate-500 mt-1">Anggota terdata: 0</p>
+          </div>
+        </div>
+
+        <!-- PANEL PERHATIAN / TEMUAN & KENDALA TERBARU -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-amber-200">
+            <h3 class="text-xs font-bold uppercase tracking-wide text-amber-800 mb-2">Perlu Perhatian — Keamanan</h3>
+            <ul id="listAlertSec" class="space-y-2 text-xs"></ul>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-sky-200">
+            <h3 class="text-xs font-bold uppercase tracking-wide text-sky-800 mb-2">Catatan Shift — Parkir</h3>
+            <ul id="listAlertPark" class="space-y-2 text-xs"></ul>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-teal-200">
+            <h3 class="text-xs font-bold uppercase tracking-wide text-teal-800 mb-2">Rute & Jarak — Driver</h3>
+            <ul id="listAlertDrv" class="space-y-2 text-xs"></ul>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200">
             <h3 class="text-sm font-bold text-slate-800 mb-3">Jumlah Laporan Per Unit</h3>
-            <canvas id="unitChart" height="160"></canvas>
+            <canvas id="unitChart" height="150"></canvas>
           </div>
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <h3 class="text-sm font-bold text-slate-800 mb-3">Jarak Tempuh Driver (KM)</h3>
-            <canvas id="driverChart" height="160"></canvas>
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Jarak Tempuh Per Driver (KM)</h3>
+            <canvas id="driverChart" height="150"></canvas>
           </div>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h3 class="text-sm font-bold text-slate-800 mb-3">Rekap Laporan Per Anggota</h3>
+          <h3 class="text-sm font-bold text-slate-800 mb-3">Rekap Kinerja & Akun Per Anggota</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left border-collapse">
               <thead>
@@ -126,8 +151,9 @@
                   <th class="p-2">Anggota</th>
                   <th class="p-2">Email</th>
                   <th class="p-2">Unit</th>
+                  <th class="p-2">Status Akun</th>
                   <th class="p-2">Jumlah Laporan</th>
-                  <th class="p-2">Capaian Utama</th>
+                  <th class="p-2">Ringkasan Capaian</th>
                 </tr>
               </thead>
               <tbody id="tablePelaksanaRekap"></tbody>
@@ -159,20 +185,19 @@
 
           <p id="execLockNotice" class="hidden p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 font-medium"></p>
 
-          <!-- Template Keamanan (Patroli Keliling / Adzan Subuh) -->
           <form id="execFormSec" class="exec-form grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label class="block font-semibold mb-1">Tanggal</label>
               <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div>
-              <label class="block font-semibold mb-1">Jenis / Status Dinas</label>
+              <label class="block font-semibold mb-1">Jenis Dinas</label>
               <select name="dinas" class="w-full px-2.5 py-1.5 border rounded-lg">
                 <option>PAGI</option><option>SIANG</option><option>MALAM</option><option>SUBUH (ADZAN)</option>
               </select>
             </div>
             <div>
-              <label class="block font-semibold mb-1">Status Patroli / Kegiatan</label>
+              <label class="block font-semibold mb-1">Status Kegiatan</label>
               <select name="statusPatroli" class="w-full px-2.5 py-1.5 border rounded-lg">
                 <option>Patroli</option><option>Adzan Subuh & Patroli</option><option>Tidak Patroli</option>
               </select>
@@ -183,7 +208,7 @@
             </div>
             <div>
               <label class="block font-semibold mb-1">Area / Lokasi Pantau</label>
-              <input name="area" type="text" value="Masjid / Seluruh Area RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
+              <input name="area" type="text" value="Masjid & Seluruh Area RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Status Kondisi</label>
@@ -200,7 +225,6 @@
             </div>
           </form>
 
-          <!-- Template Parkir -->
           <form id="execFormPark" class="exec-form hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label class="block font-semibold mb-1">Tanggal</label>
@@ -241,7 +265,6 @@
             </div>
           </form>
 
-          <!-- Template Driver -->
           <form id="execFormDrv" class="exec-form hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label class="block font-semibold mb-1">Tanggal</label>
@@ -290,11 +313,7 @@
             <table class="w-full text-xs text-left border-collapse">
               <thead>
                 <tr class="bg-slate-100 border-b">
-                  <th class="p-2">Tanggal</th>
-                  <th class="p-2">Pelaksana</th>
-                  <th class="p-2">Email</th>
-                  <th class="p-2">Unit</th>
-                  <th class="p-2">Rincian</th>
+                  <th class="p-2">Tanggal</th><th class="p-2">Pelaksana</th><th class="p-2">Email</th><th class="p-2">Unit</th><th class="p-2">Rincian</th>
                 </tr>
               </thead>
               <tbody id="tableExecHistory"></tbody>
@@ -354,7 +373,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h3 class="font-bold text-sm text-slate-900">Kontrol Operator — Aktivasi Email, Password & Hak Akses</h3>
-              <p class="text-slate-500">Kirim email aktivasi ke setiap anggota, aktifkan akun setelah aktivasi, atur password, dan buka/tutup input per unit.</p>
+              <p class="text-slate-500">Siapkan pesan aktivasi untuk dikirim ke email anggota (via Gmail/WA/email kantor), lalu aktifkan akunnya di tabel bawah.</p>
             </div>
             <div class="flex flex-wrap gap-2">
               <button id="btnBackupJson" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg">Backup (.json)</button>
@@ -364,6 +383,19 @@
               </label>
               <button id="btnResetDemoData" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg">Reset Awal</button>
             </div>
+          </div>
+
+          <!-- KOTAK PESAN AKTIVASI SIAP KIRIM (TANPA MAILTO YANG SERING GAGAL) -->
+          <div id="activationBox" class="hidden p-3.5 rounded-xl bg-sky-50 border border-sky-200 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p id="activationTargetLabel" class="font-bold text-sky-950">Pesan Aktivasi Anggota</p>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="btnCopyActivationMsg" class="px-3 py-1 bg-sky-700 hover:bg-sky-800 text-white rounded-lg font-semibold">Salin Pesan Aktivasi</button>
+                <a id="linkGmailCompose" href="https://mail.google.com/mail/?view=cm&fs=1" target="_blank" rel="noopener noreferrer" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold">Buka Gmail Web</a>
+                <button type="button" id="btnConfirmActivateNow" class="px-3 py-1 bg-teal-800 hover:bg-teal-900 text-white rounded-lg font-semibold">Tandai Sudah Teraktivasi</button>
+              </div>
+            </div>
+            <textarea id="activationMessageArea" rows="6" readonly class="w-full p-2.5 bg-white border border-sky-200 rounded-lg font-mono text-[11px] text-slate-800"></textarea>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-slate-50 rounded-xl border">
@@ -403,7 +435,7 @@
               <input name="password" type="text" required value="Arsy#2026" class="w-full px-2.5 py-1.5 border rounded-lg bg-white font-mono" />
             </div>
             <div class="flex items-end">
-              <button type="submit" class="w-full px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">+ Tambah & Kirim Aktivasi</button>
+              <button type="submit" class="w-full px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">+ Tambah & Buat Aktivasi</button>
             </div>
           </form>
 
@@ -415,8 +447,8 @@
                   <th class="p-2">Nama</th>
                   <th class="p-2">Unit</th>
                   <th class="p-2">Password</th>
-                  <th class="p-2">Status Aktivasi</th>
-                  <th class="p-2">Email & Akses</th>
+                  <th class="p-2">Status</th>
+                  <th class="p-2">Aktivasi & Akses</th>
                 </tr>
               </thead>
               <tbody id="tableAccounts"></tbody>
@@ -447,7 +479,7 @@
       "dimas.drv@rsarsy.id": { name: "Dimas", role: "staff", unit: "driver", password: "Dimas#2026", status: "pending" }
     };
 
-    const STORAGE_KEY = "sim_kpk_rs_arsy_v3";
+    const STORAGE_KEY = "sim_kpk_rs_arsy_v4";
     const initialData = {
       accounts: structuredClone(DEFAULT_ACCOUNTS),
       permissions: { keamanan: true, parkir: true, driver: true },
@@ -491,6 +523,7 @@
 
     let stateData = loadState();
     let currentUser = null;
+    let selectedActivationEmail = null;
     let unitChartInstance = null;
     let driverChartInstance = null;
 
@@ -505,18 +538,12 @@
     }
 
     function getScopedData() {
-      const isAdmin = currentUser?.role === "admin";
-      if (isAdmin) {
-        return {
-          keamanan: stateData.keamanan,
-          parkir: stateData.parkir,
-          driver: stateData.driver
-        };
+      if (currentUser?.role === "admin") {
+        return { keamanan: stateData.keamanan, parkir: stateData.parkir, driver: stateData.driver };
       }
       const matchSelf = r =>
         String(r.email || "").toLowerCase() === currentUser.email.toLowerCase() ||
         String(r.petugas || r.driver || "").toLowerCase() === currentUser.name.toLowerCase();
-
       return {
         keamanan: currentUser.unit === "keamanan" ? stateData.keamanan.filter(matchSelf) : [],
         parkir: currentUser.unit === "parkir" ? stateData.parkir.filter(matchSelf) : [],
@@ -527,14 +554,26 @@
     function getFilteredData() {
       const scoped = getScopedData();
       const unitFilter = document.getElementById("filterUnit")?.value || "all";
+      const focusFilter = document.getElementById("filterFocus")?.value || "all";
       const kw = (document.getElementById("filterKeyword")?.value || "").trim().toLowerCase();
       const matchText = obj => !kw || JSON.stringify(obj).toLowerCase().includes(kw);
 
-      return {
-        keamanan: (unitFilter === "all" || unitFilter === "keamanan") ? scoped.keamanan.filter(matchText) : [],
-        parkir: (unitFilter === "all" || unitFilter === "parkir") ? scoped.parkir.filter(matchText) : [],
-        driver: (unitFilter === "all" || unitFilter === "driver") ? scoped.driver.filter(matchText) : []
-      };
+      let sec = (unitFilter === "all" || unitFilter === "keamanan") ? scoped.keamanan.filter(matchText) : [];
+      let park = (unitFilter === "all" || unitFilter === "parkir") ? scoped.parkir.filter(matchText) : [];
+      let drv = (unitFilter === "all" || unitFilter === "driver") ? scoped.driver.filter(matchText) : [];
+
+      if (focusFilter === "temuan_sec") {
+        sec = sec.filter(r => r.kondisi === "Ada Temuan" || String(r.temuan || "").toLowerCase().includes("rusak") || String(r.temuan || "").toLowerCase().includes("mati") || String(r.temuan || "").toLowerCase().includes("nyala"));
+        park = []; drv = [];
+      } else if (focusFilter === "kendala_park") {
+        park = park.filter(r => String(r.kendala || "").toLowerCase() !== "normal");
+        sec = []; drv = [];
+      } else if (focusFilter === "trip_drv") {
+        drv = drv.filter(r => String(r.jenis || "").toLowerCase().includes("rujuk") || String(r.jenis || "").toLowerCase().includes("dokter"));
+        sec = []; park = [];
+      }
+
+      return { keamanan: sec, parkir: park, driver: drv };
     }
 
     function applyRoleAccess() {
@@ -561,12 +600,8 @@
       if (!unitSel || !staffSel || !currentUser) return;
 
       const isAdmin = currentUser.role === "admin";
-      if (!isAdmin) {
-        unitSel.value = currentUser.unit;
-        unitSel.disabled = true;
-      } else {
-        unitSel.disabled = false;
-      }
+      unitSel.disabled = !isAdmin;
+      if (!isAdmin) unitSel.value = currentUser.unit;
 
       const activeUnit = unitSel.value;
       const staffList = Object.entries(stateData.accounts)
@@ -664,9 +699,7 @@
     }
 
     function switchTab(tabName) {
-      if (currentUser?.role !== "admin" && ["dashboard", "operator"].includes(tabName)) {
-        tabName = "pelaksana";
-      }
+      if (currentUser?.role !== "admin" && ["dashboard", "operator"].includes(tabName)) tabName = "pelaksana";
       document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
       document.getElementById("tab-" + tabName)?.classList.remove("hidden");
       document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -745,10 +778,40 @@
       document.getElementById("kpiDrvFuel").textContent = `BBM: ${totalBbm.toLocaleString("id-ID")} L`;
       document.getElementById("kpiKmTotal").textContent = totalKm.toLocaleString("id-ID");
 
+      document.getElementById("listAlertSec").innerHTML = f.keamanan.slice(0, 4).map(r => `
+        <li class="p-2 rounded-lg bg-slate-50 border">
+          <div class="font-semibold text-slate-900">${r.tanggal} • ${r.petugas} (${r.dinas})</div>
+          <div class="text-slate-600">${r.area || "-"} — <span class="${r.kondisi === "Ada Temuan" ? "text-amber-700 font-semibold" : ""}">${r.temuan}</span></div>
+        </li>`).join("") || `<li class="text-slate-400">Tidak ada log keamanan sesuai filter.</li>`;
+
+      document.getElementById("listAlertPark").innerHTML = f.parkir.slice(0, 4).map(r => `
+        <li class="p-2 rounded-lg bg-slate-50 border">
+          <div class="font-semibold text-slate-900">${r.tanggal} • ${r.petugas}</div>
+          <div class="text-slate-600">Motor ${r.motor}, Mobil ${r.mobil}, Storan Rp${r.storan} • ${r.kendala}</div>
+        </li>`).join("") || `<li class="text-slate-400">Tidak ada log parkir sesuai filter.</li>`;
+
+      document.getElementById("listAlertDrv").innerHTML = f.driver.slice(0, 4).map(r => `
+        <li class="p-2 rounded-lg bg-slate-50 border">
+          <div class="font-semibold text-slate-900">${r.tanggal} • ${r.driver} (${r.km} KM)</div>
+          <div class="text-slate-600">${r.jenis} • ${r.kendaraan} — ${r.tujuan}</div>
+        </li>`).join("") || `<li class="text-slate-400">Tidak ada log driver sesuai filter.</li>`;
+
       const rekapMap = new Map();
+      Object.entries(stateData.accounts).forEach(([emailKey, acc]) => {
+        if (acc.role === "admin") return;
+        const unitLabel = acc.unit === "keamanan" ? "Keamanan" : acc.unit === "parkir" ? "Parkir" : "Driver";
+        const statusLabel = acc.status === "active" ? "Teraktivasi" : acc.status === "disabled" ? "Nonaktif" : "Menunggu Aktivasi";
+        rekapMap.set(`${unitLabel}::${acc.name}`, { name: acc.name, email: emailKey, unit: unitLabel, statusLabel, count: 0, km: 0, motor: 0, mobil: 0, temuan: 0 });
+      });
+
       const touchRekap = (name, email, unit, detailFn) => {
         const key = `${unit}::${name}`;
-        if (!rekapMap.has(key)) rekapMap.set(key, { name, email: email || findEmailByName(name), unit, count: 0, km: 0, motor: 0, mobil: 0, temuan: 0 });
+        if (!rekapMap.has(key)) {
+          const foundEmail = email || findEmailByName(name);
+          const acc = stateData.accounts[foundEmail];
+          const statusLabel = acc?.status === "active" ? "Teraktivasi" : acc?.status === "disabled" ? "Nonaktif" : "Menunggu Aktivasi";
+          rekapMap.set(key, { name, email: foundEmail, unit, statusLabel, count: 0, km: 0, motor: 0, mobil: 0, temuan: 0 });
+        }
         const item = rekapMap.get(key);
         item.count += 1;
         detailFn(item);
@@ -759,18 +822,21 @@
       f.driver.forEach(r => touchRekap(r.driver || "Driver", r.email, "Driver", it => { it.km += Number(r.km) || 0; }));
 
       const rekapArr = Array.from(rekapMap.values());
-      document.getElementById("kpiActiveStaff").textContent = `Pelaksana tercatat: ${rekapArr.length}`;
+      document.getElementById("kpiActiveStaff").textContent = `Anggota terdata: ${rekapArr.length}`;
 
-      document.getElementById("tablePelaksanaRekap").innerHTML = rekapArr.length
-        ? rekapArr.map(r => {
-            const metric = r.unit === "Driver"
-              ? `Total ${r.km.toLocaleString("id-ID")} KM`
-              : r.unit === "Parkir"
-                ? `Motor ${r.motor} • Mobil ${r.mobil}`
-                : `Temuan tercatat: ${r.temuan}`;
-            return `<tr class="border-b"><td class="p-2 font-semibold">${r.name}</td><td class="p-2 font-mono text-[11px]">${r.email}</td><td class="p-2">${r.unit}</td><td class="p-2">${r.count}</td><td class="p-2">${metric}</td></tr>`;
-          }).join("")
-        : `<tr><td colspan="5" class="p-3 text-center text-slate-400">Tidak ada data sesuai filter.</td></tr>`;
+      document.getElementById("tablePelaksanaRekap").innerHTML = rekapArr.map(r => {
+        const metric = r.unit === "Driver"
+          ? `Total ${r.km.toLocaleString("id-ID")} KM`
+          : r.unit === "Parkir"
+            ? `Motor ${r.motor} • Mobil ${r.mobil}`
+            : `Temuan tercatat: ${r.temuan}`;
+        const pill = r.statusLabel === "Teraktivasi"
+          ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Teraktivasi</span>`
+          : r.statusLabel === "Nonaktif"
+            ? `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">Nonaktif</span>`
+            : `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Menunggu Aktivasi</span>`;
+        return `<tr class="border-b"><td class="p-2 font-semibold">${r.name}</td><td class="p-2 font-mono text-[11px]">${r.email}</td><td class="p-2">${r.unit}</td><td class="p-2">${pill}</td><td class="p-2">${r.count}</td><td class="p-2">${metric}</td></tr>`;
+      }).join("");
 
       const ctx1 = document.getElementById("unitChart");
       const ctx2 = document.getElementById("driverChart");
@@ -781,11 +847,7 @@
         type: "bar",
         data: {
           labels: ["Keamanan", "Parkir", "Driver"],
-          datasets: [{
-            label: "Jumlah Laporan",
-            data: [secCount, parkCount, drvCount],
-            backgroundColor: ["#0f766e", "#0284c7", "#d97706"]
-          }]
+          datasets: [{ label: "Jumlah Laporan", data: [secCount, parkCount, drvCount], backgroundColor: ["#0f766e", "#0284c7", "#d97706"] }]
         },
         options: { responsive: true, plugins: { legend: { display: false } } }
       });
@@ -801,11 +863,7 @@
         type: "bar",
         data: {
           labels: Object.keys(byDriver),
-          datasets: [{
-            label: "KM Tempuh",
-            data: Object.values(byDriver),
-            backgroundColor: "#0d9488"
-          }]
+          datasets: [{ label: "KM Tempuh", data: Object.values(byDriver), backgroundColor: "#0d9488" }]
         },
         options: { responsive: true, plugins: { legend: { display: false } } }
       });
@@ -840,12 +898,10 @@
           <td class="p-2 font-mono text-[11px] font-semibold">${emailKey}</td>
           <td class="p-2">${acc.name}</td>
           <td class="p-2 uppercase">${acc.unit}</td>
-          <td class="p-2">
-            <input type="text" value="${acc.password}" onchange="updateAccountPassword('${emailKey}', this.value)" class="px-2 py-1 border rounded w-32 font-mono" />
-          </td>
+          <td class="p-2"><input type="text" value="${acc.password}" onchange="updateAccountPassword('${emailKey}', this.value)" class="px-2 py-1 border rounded w-32 font-mono" /></td>
           <td class="p-2">${badge}</td>
           <td class="p-2 flex flex-wrap gap-1.5">
-            <button onclick="sendActivationEmail('${emailKey}')" class="px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-semibold hover:bg-sky-200">Kirim Email Aktivasi</button>
+            <button onclick="openActivationComposer('${emailKey}')" class="px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-semibold hover:bg-sky-200">Siapkan Aktivasi</button>
             ${acc.status !== "active"
               ? `<button onclick="setAccountStatus('${emailKey}', 'active')" class="px-2 py-0.5 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700">Aktifkan</button>`
               : `<button onclick="setAccountStatus('${emailKey}', 'disabled')" class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold hover:bg-amber-200">Nonaktifkan</button>`}
@@ -855,15 +911,35 @@
       }).join("");
     }
 
-    window.sendActivationEmail = function (emailKey) {
+    window.openActivationComposer = function (emailKey) {
       const acc = stateData.accounts[emailKey];
       if (!acc) return;
-      const subject = encodeURIComponent("Aktivasi Akun SIM-KPK RS ARSY");
-      const body = encodeURIComponent(
-        `Halo ${acc.name},\n\nAkun SIM-KPK RS ARSY untuk unit ${acc.unit.toUpperCase()} telah disiapkan.\n\nTautan Aplikasi: ${APP_URL}\nEmail Login: ${emailKey}\nPassword Awal: ${acc.password}\n\nSilakan konfirmasi ke Ka. Unit (Suwaji) setelah membuka email ini agar akun Anda diaktifkan.\n\nSalam,\nOperator SIM-KPK RS ARSY`
-      );
-      window.open(`mailto:${emailKey}?subject=${subject}&body=${body}`, "_blank");
+      selectedActivationEmail = emailKey;
+      const box = document.getElementById("activationBox");
+      box.classList.remove("hidden");
+      document.getElementById("activationTargetLabel").textContent = `Pesan Aktivasi untuk: ${acc.name} (${emailKey})`;
+      const subject = encodeURIComponent(`Aktivasi Akun SIM-KPK RS ARSY — ${acc.name}`);
+      const bodyText =
+        `Kepada ${acc.name} (Unit ${acc.unit.toUpperCase()}),\n` +
+        `Akun SIM-KPK RS ARSY Anda sudah disiapkan.\n` +
+        `Link Aplikasi : ${APP_URL}\n` +
+        `Email Login   : ${emailKey}\n` +
+        `Password Awal : ${acc.password}\n` +
+        `Silakan hubungi Ka. Unit (Suwaji) untuk konfirmasi aktivasi akun agar dapat masuk dan mengisi laporan unit.`;
+      document.getElementById("activationMessageArea").value = bodyText;
+      document.getElementById("linkGmailCompose").href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailKey)}&su=${subject}&body=${encodeURIComponent(bodyText)}`;
     };
+
+    document.getElementById("btnCopyActivationMsg").addEventListener("click", () => {
+      const ta = document.getElementById("activationMessageArea");
+      ta.select();
+      navigator.clipboard?.writeText(ta.value).catch(() => document.execCommand("copy"));
+    });
+
+    document.getElementById("btnConfirmActivateNow").addEventListener("click", () => {
+      if (!selectedActivationEmail) return;
+      setAccountStatus(selectedActivationEmail, "active");
+    });
 
     window.updateAccountPassword = function (emailKey, val) {
       if (currentUser?.role !== "admin" || !stateData.accounts[emailKey]) return;
@@ -878,6 +954,7 @@
       stateData.accounts[emailKey].status = nextStatus;
       saveState();
       renderOperatorPanel();
+      renderDashboardAndCharts();
     };
 
     window.removeAccount = function (emailKey) {
@@ -981,14 +1058,17 @@
       stateData.accounts[email] = { name, role: "staff", unit, password, status: "pending" };
       saveState();
       renderOperatorPanel();
-      sendActivationEmail(email);
+      openActivationComposer(email);
       e.target.reset();
     });
 
-    document.getElementById("filterUnit").addEventListener("change", renderDashboardAndCharts);
+    ["filterUnit", "filterFocus"].forEach(id => {
+      document.getElementById(id).addEventListener("change", renderDashboardAndCharts);
+    });
     document.getElementById("filterKeyword").addEventListener("input", renderDashboardAndCharts);
     document.getElementById("btnResetFilter").addEventListener("click", () => {
       document.getElementById("filterUnit").value = "all";
+      document.getElementById("filterFocus").value = "all";
       document.getElementById("filterKeyword").value = "";
       renderDashboardAndCharts();
     });
