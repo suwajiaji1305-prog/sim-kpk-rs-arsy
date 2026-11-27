@@ -11,13 +11,13 @@
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
-  <!-- LAYAR LOGIN EMAIL & PASSWORD PRIBADI -->
+  <!-- LAYAR LOGIN EMAIL & PASSWORD -->
   <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-6 border border-slate-200">
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-700 text-white font-bold text-lg mb-2">RS</div>
         <h1 class="text-xl font-bold text-slate-900">SIM-KPK RS ARSY</h1>
-        <p class="text-xs text-slate-500 mt-1">Login Menggunakan Email & Password Masing-Masing Anggota</p>
+        <p class="text-xs text-slate-500 mt-1">Login Menggunakan Email Teraktivasi & Password Anggota</p>
       </div>
       <form id="loginForm" class="space-y-4">
         <div>
@@ -26,17 +26,15 @@
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-          <input id="loginPass" type="password" required placeholder="Masukkan password akun Anda" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          <input id="loginPass" type="password" required placeholder="Masukkan password" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
         </div>
         <p id="loginError" class="text-xs text-red-600 hidden"></p>
         <button type="submit" class="w-full py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg text-sm transition">Masuk ke SIM-KPK RS ARSY</button>
       </form>
       <div class="mt-5 pt-4 border-t border-slate-200 text-xs text-slate-600 space-y-1">
-        <p class="font-semibold text-slate-800">Akun Awal (Dapat Diubah Operator di Kontrol Operator):</p>
-        <p>• Operator: <span class="font-mono">suwaji.kpk@rsarsy.id</span> / <span class="font-mono">Suwaji#2026</span></p>
-        <p>• Keamanan: <span class="font-mono">johan.sec@rsarsy.id</span>, <span class="font-mono">agos.sec@rsarsy.id</span>, <span class="font-mono">afif.sec@rsarsy.id</span>, <span class="font-mono">rofii.sec@rsarsy.id</span>, <span class="font-mono">yeni.sec@rsarsy.id</span>, <span class="font-mono">adi.sec@rsarsy.id</span></p>
-        <p>• Parkir: <span class="font-mono">fyghur.park@rsarsy.id</span>, <span class="font-mono">arry.park@rsarsy.id</span>, <span class="font-mono">ahmad.park@rsarsy.id</span></p>
-        <p>• Driver: <span class="font-mono">sumintri.drv@rsarsy.id</span>, <span class="font-mono">sidik.drv@rsarsy.id</span>, <span class="font-mono">zainal.drv@rsarsy.id</span>, <span class="font-mono">dimas.drv@rsarsy.id</span></p>
+        <p class="font-semibold text-slate-800">Akun Ka. Unit / Operator:</p>
+        <p>• Email: <span class="font-mono">suwaji.kpk@rsarsy.id</span> | Password: <span class="font-mono">Suwaji#2026</span></p>
+        <p class="text-[11px] text-slate-500 pt-1">Anggota unit masuk memakai email & password masing-masing setelah diaktivasi oleh Operator.</p>
       </div>
     </div>
   </div>
@@ -58,7 +56,7 @@
 
     <nav class="bg-white border-b border-slate-200 px-4 flex gap-2 overflow-x-auto">
       <button data-tab="dashboard" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-teal-700 text-teal-800 whitespace-nowrap">Dashboard & Rekap</button>
-      <button data-tab="pelaksana" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Input Pelaksana</button>
+      <button data-tab="pelaksana" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Input Laporan Saya</button>
       <button data-tab="keamanan" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Keamanan</button>
       <button data-tab="parkir" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Parkir</button>
       <button data-tab="driver" class="tab-btn px-3 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap">Laporan Driver</button>
@@ -66,7 +64,7 @@
     </nav>
 
     <main class="flex-1 p-4 max-w-7xl w-full mx-auto space-y-4">
-      <!-- TAB 1: DASHBOARD & REKAP -->
+      <!-- TAB 1: DASHBOARD & REKAP (KHUSUS OPERATOR / KA. UNIT) -->
       <section id="tab-dashboard" class="tab-panel space-y-4">
         <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-wrap items-end gap-3 text-xs">
           <div>
@@ -80,14 +78,14 @@
           </div>
           <div>
             <label class="block font-semibold text-slate-700 mb-1">Cari Pelaksana / Email / Keterangan</label>
-            <input id="filterKeyword" type="text" placeholder="Contoh: Johan, Fyghur, Sumintri, RSML..." class="px-3 py-1.5 border rounded-lg w-64" />
+            <input id="filterKeyword" type="text" placeholder="Cari nama, email, lokasi, atau tujuan..." class="px-3 py-1.5 border rounded-lg w-64" />
           </div>
           <button id="btnResetFilter" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold rounded-lg">Reset Filter</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <p class="text-xs text-slate-500">Log Patroli Keamanan</p>
+            <p class="text-xs text-slate-500">Log Keamanan</p>
             <p id="kpiSecCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
             <p id="kpiSecFinding" class="text-[11px] text-amber-700 mt-1">Ada Temuan: 0</p>
           </div>
@@ -110,26 +108,26 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <h3 class="text-sm font-bold text-slate-800 mb-3">Ringkasan Jumlah Laporan Per Unit</h3>
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Jumlah Laporan Per Unit</h3>
             <canvas id="unitChart" height="160"></canvas>
           </div>
           <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <h3 class="text-sm font-bold text-slate-800 mb-3">Jarak Tempuh Per Pelaksana Driver (KM)</h3>
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Jarak Tempuh Driver (KM)</h3>
             <canvas id="driverChart" height="160"></canvas>
           </div>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h3 class="text-sm font-bold text-slate-800 mb-3">Rekap Kinerja Per Pelaksana</h3>
+          <h3 class="text-sm font-bold text-slate-800 mb-3">Rekap Laporan Per Anggota</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left border-collapse">
               <thead>
                 <tr class="bg-slate-100 border-b">
-                  <th class="p-2">Pelaksana</th>
-                  <th class="p-2">Email Akun</th>
+                  <th class="p-2">Anggota</th>
+                  <th class="p-2">Email</th>
                   <th class="p-2">Unit</th>
                   <th class="p-2">Jumlah Laporan</th>
-                  <th class="p-2">Ringkasan Capaian</th>
+                  <th class="p-2">Capaian Utama</th>
                 </tr>
               </thead>
               <tbody id="tablePelaksanaRekap"></tbody>
@@ -138,13 +136,13 @@
         </div>
       </section>
 
-      <!-- TAB 2: INPUT PELAKSANA -->
+      <!-- TAB 2: INPUT LAPORAN SAYA / PELAKSANA -->
       <section id="tab-pelaksana" class="tab-panel hidden space-y-4">
         <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4 text-xs">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
             <div>
-              <h3 class="font-bold text-sm text-slate-900">Form Input Laporan Per Pelaksana</h3>
-              <p class="text-slate-500">Pelaksana mengisi laporan harian sesuai unitnya; Operator dapat memilih pelaksana manapun.</p>
+              <h3 class="font-bold text-sm text-slate-900">Template Form Laporan Unit</h3>
+              <p class="text-slate-500">Anggota mengisi laporan sesuai template unitnya; Ka. Unit dapat memilih unit dan anggota manapun.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <label class="font-semibold">Unit:</label>
@@ -153,38 +151,39 @@
                 <option value="parkir">Parkir</option>
                 <option value="driver">Driver</option>
               </select>
-              <label class="font-semibold">Pelaksana:</label>
+              <label class="font-semibold">Anggota:</label>
               <select id="execStaffSelect" class="px-2.5 py-1.5 border rounded-lg font-semibold"></select>
+              <button type="button" id="btnFillTemplate" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border rounded-lg font-semibold">Isi Template Standar</button>
             </div>
           </div>
 
           <p id="execLockNotice" class="hidden p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 font-medium"></p>
 
-          <!-- Form Pelaksana Keamanan -->
+          <!-- Template Keamanan (Patroli Keliling / Adzan Subuh) -->
           <form id="execFormSec" class="exec-form grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label class="block font-semibold mb-1">Tanggal</label>
               <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div>
-              <label class="block font-semibold mb-1">Status Dinas</label>
+              <label class="block font-semibold mb-1">Jenis / Status Dinas</label>
               <select name="dinas" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>PAGI</option><option>SIANG</option><option>MALAM</option>
+                <option>PAGI</option><option>SIANG</option><option>MALAM</option><option>SUBUH (ADZAN)</option>
               </select>
             </div>
             <div>
-              <label class="block font-semibold mb-1">Status Patroli</label>
+              <label class="block font-semibold mb-1">Status Patroli / Kegiatan</label>
               <select name="statusPatroli" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Patroli</option><option>Tidak Patroli</option>
+                <option>Patroli</option><option>Adzan Subuh & Patroli</option><option>Tidak Patroli</option>
               </select>
             </div>
             <div>
-              <label class="block font-semibold mb-1">Jam Patroli</label>
-              <input name="jam" type="text" value="08:00:00" class="w-full px-2.5 py-1.5 border rounded-lg" />
+              <label class="block font-semibold mb-1">Jam Pelaksanaan</label>
+              <input name="jam" type="text" value="04:30:00" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div>
-              <label class="block font-semibold mb-1">Area / Pos Pantau</label>
-              <input name="area" type="text" value="Seluruh Area RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
+              <label class="block font-semibold mb-1">Area / Lokasi Pantau</label>
+              <input name="area" type="text" value="Masjid / Seluruh Area RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Status Kondisi</label>
@@ -193,15 +192,15 @@
               </select>
             </div>
             <div class="sm:col-span-2">
-              <label class="block font-semibold mb-1">Temuan / Tindak Lanjut</label>
-              <input name="temuan" type="text" value="Aman / tidak ada temuan" class="w-full px-2.5 py-1.5 border rounded-lg" />
+              <label class="block font-semibold mb-1">Temuan / Keterangan / Adzan Subuh</label>
+              <input name="temuan" type="text" value="Terlaksana tepat waktu, area aman" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Patroli</button>
+              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Kirim Laporan Keamanan</button>
             </div>
           </form>
 
-          <!-- Form Pelaksana Parkir -->
+          <!-- Template Parkir -->
           <form id="execFormPark" class="exec-form hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label class="block font-semibold mb-1">Tanggal</label>
@@ -238,11 +237,11 @@
               <input name="kendala" type="text" value="Normal / lancar" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Shift Parkir</button>
+              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Kirim Laporan Parkir</button>
             </div>
           </form>
 
-          <!-- Form Pelaksana Driver -->
+          <!-- Template Driver -->
           <form id="execFormDrv" class="exec-form hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label class="block font-semibold mb-1">Tanggal</label>
@@ -280,13 +279,13 @@
               <input name="tujuan" type="text" value="Operasional RS" class="w-full px-2.5 py-1.5 border rounded-lg" />
             </div>
             <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Trip</button>
+              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Kirim Laporan Driver</button>
             </div>
           </form>
         </div>
 
         <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h4 class="font-bold text-xs text-slate-800 mb-2">Riwayat Laporan Pelaksana Terpilih</h4>
+          <h4 class="font-bold text-xs text-slate-800 mb-2">Riwayat Laporan Terkirim</h4>
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left border-collapse">
               <thead>
@@ -295,7 +294,7 @@
                   <th class="p-2">Pelaksana</th>
                   <th class="p-2">Email</th>
                   <th class="p-2">Unit</th>
-                  <th class="p-2">Ringkasan Laporan</th>
+                  <th class="p-2">Rincian</th>
                 </tr>
               </thead>
               <tbody id="tableExecHistory"></tbody>
@@ -306,57 +305,12 @@
 
       <!-- TAB 3: LAPORAN KEAMANAN -->
       <section id="tab-keamanan" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h3 class="font-bold text-sm mb-3">Input Laporan Patroli Keamanan</h3>
-          <form id="formSec" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            <div>
-              <label class="block font-semibold mb-1">Tanggal</label>
-              <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Dinas</label>
-              <select name="dinas" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>PAGI</option><option>SIANG</option><option>MALAM</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Patroli</label>
-              <select name="statusPatroli" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Patroli</option><option>Tidak Patroli</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jam Patroli</label>
-              <input name="jam" type="text" value="08:00:00" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Petugas</label>
-              <input name="petugas" type="text" required class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Area Pantau</label>
-              <input name="area" type="text" value="Seluruh Area RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Kondisi</label>
-              <select name="kondisi" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Tidak Ada Temuan</option><option>Ada Temuan</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Temuan / Keterangan</label>
-              <input name="temuan" type="text" value="Aman / tidak ada temuan" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Keamanan</button>
-            </div>
-          </form>
-        </div>
         <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
+          <h3 class="font-bold text-sm mb-3">Rekap Laporan Unit Keamanan</h3>
           <table class="w-full text-xs text-left border-collapse">
             <thead>
               <tr class="bg-slate-100 border-b">
-                <th class="p-2">Tanggal</th><th class="p-2">Dinas</th><th class="p-2">Status</th><th class="p-2">Jam</th><th class="p-2">Petugas</th><th class="p-2">Area</th><th class="p-2">Kondisi</th><th class="p-2">Temuan</th><th class="p-2">Aksi</th>
+                <th class="p-2">Tanggal</th><th class="p-2">Dinas</th><th class="p-2">Kegiatan</th><th class="p-2">Jam</th><th class="p-2">Petugas</th><th class="p-2">Area</th><th class="p-2">Kondisi</th><th class="p-2">Keterangan</th><th class="p-2">Aksi</th>
               </tr>
             </thead>
             <tbody id="tableSec"></tbody>
@@ -366,49 +320,8 @@
 
       <!-- TAB 4: LAPORAN PARKIR -->
       <section id="tab-parkir" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h3 class="font-bold text-sm mb-3">Input Laporan Shift Parkir</h3>
-          <form id="formPark" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            <div>
-              <label class="block font-semibold mb-1">Petugas Jaga</label>
-              <input name="petugas" type="text" required class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Tanggal</label>
-              <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Waktu Shift</label>
-              <input name="shift" type="text" value="Pagi ( 07:00 - 14:00 )" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Lokasi Jaga</label>
-              <select name="lokasi" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Pos Parkir</option><option>Menata Area Parkir</option><option>Gate Masuk / Keluar</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Motor</label>
-              <input name="motor" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Mobil</label>
-              <input name="mobil" type="number" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Total Storan (Rp)</label>
-              <input name="storan" type="text" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Kendala / Catatan</label>
-              <input name="kendala" type="text" value="Normal" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Parkir</button>
-            </div>
-          </form>
-        </div>
         <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
+          <h3 class="font-bold text-sm mb-3">Rekap Laporan Unit Parkir</h3>
           <table class="w-full text-xs text-left border-collapse">
             <thead>
               <tr class="bg-slate-100 border-b">
@@ -422,49 +335,8 @@
 
       <!-- TAB 5: LAPORAN DRIVER -->
       <section id="tab-driver" class="tab-panel hidden space-y-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200">
-          <h3 class="font-bold text-sm mb-3">Input Laporan Kegiatan Driver</h3>
-          <form id="formDrv" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            <div>
-              <label class="block font-semibold mb-1">Tanggal</label>
-              <input name="tanggal" type="text" required value="27/11/2026" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Driver</label>
-              <input name="driver" type="text" required class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jenis Permintaan</label>
-              <input name="jenis" type="text" value="Antar / Jemput Dokter" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Kendaraan</label>
-              <input name="kendaraan" type="text" value="Mobil Dinas RS ARSY" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Jarak Tempuh (KM)</label>
-              <input name="km" type="number" step="0.1" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">BBM Terpakai (L)</label>
-              <input name="bbm" type="number" step="0.01" value="0" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Status Trip</label>
-              <select name="statusTrip" class="w-full px-2.5 py-1.5 border rounded-lg">
-                <option>Selesai</option><option>Dalam Perjalanan</option><option>Standby</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Tujuan / Keterangan</label>
-              <input name="tujuan" type="text" value="Operasional RS" class="w-full px-2.5 py-1.5 border rounded-lg" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-4">
-              <button type="submit" class="px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">Simpan Laporan Driver</button>
-            </div>
-          </form>
-        </div>
         <div class="bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto">
+          <h3 class="font-bold text-sm mb-3">Rekap Laporan Unit Driver</h3>
           <table class="w-full text-xs text-left border-collapse">
             <thead>
               <tr class="bg-slate-100 border-b">
@@ -476,21 +348,21 @@
         </div>
       </section>
 
-      <!-- TAB 6: KONTROL OPERATOR -->
+      <!-- TAB 6: KONTROL OPERATOR (KHUSUS KA. UNIT) -->
       <section id="tab-operator" class="tab-panel hidden space-y-4">
         <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4 text-xs">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 class="font-bold text-sm text-slate-900">Panel Kontrol Operator — Email, Password & Hak Akses</h3>
-              <p class="text-slate-500">Atur email login, password pribadi per anggota, status aktif akun, dan izin input per unit.</p>
+              <h3 class="font-bold text-sm text-slate-900">Kontrol Operator — Aktivasi Email, Password & Hak Akses</h3>
+              <p class="text-slate-500">Kirim email aktivasi ke setiap anggota, aktifkan akun setelah aktivasi, atur password, dan buka/tutup input per unit.</p>
             </div>
             <div class="flex flex-wrap gap-2">
-              <button id="btnBackupJson" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg">Backup Data (.json)</button>
+              <button id="btnBackupJson" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg">Backup (.json)</button>
               <label class="px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg cursor-pointer">
-                Restore Data (.json)
+                Restore (.json)
                 <input id="inputRestoreJson" type="file" accept=".json" class="hidden" />
               </label>
-              <button id="btnResetDemoData" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg">Reset Data Awal</button>
+              <button id="btnResetDemoData" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg">Reset Awal</button>
             </div>
           </div>
 
@@ -512,11 +384,11 @@
           <form id="formAddAccount" class="grid grid-cols-1 sm:grid-cols-5 gap-3 p-3 bg-teal-50/60 rounded-xl border border-teal-200">
             <div>
               <label class="block font-semibold mb-1">Email Anggota</label>
-              <input name="email" type="email" required placeholder="budi.sec@rsarsy.id" class="w-full px-2.5 py-1.5 border rounded-lg bg-white" />
+              <input name="email" type="email" required placeholder="nama.unit@rsarsy.id" class="w-full px-2.5 py-1.5 border rounded-lg bg-white" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Nama Lengkap</label>
-              <input name="name" type="text" required placeholder="Budi Santoso" class="w-full px-2.5 py-1.5 border rounded-lg bg-white" />
+              <input name="name" type="text" required placeholder="Nama Anggota" class="w-full px-2.5 py-1.5 border rounded-lg bg-white" />
             </div>
             <div>
               <label class="block font-semibold mb-1">Unit</label>
@@ -531,7 +403,7 @@
               <input name="password" type="text" required value="Arsy#2026" class="w-full px-2.5 py-1.5 border rounded-lg bg-white font-mono" />
             </div>
             <div class="flex items-end">
-              <button type="submit" class="w-full px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">+ Tambah Anggota</button>
+              <button type="submit" class="w-full px-3 py-1.5 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg">+ Tambah & Kirim Aktivasi</button>
             </div>
           </form>
 
@@ -539,12 +411,12 @@
             <table class="w-full text-xs text-left border-collapse">
               <thead>
                 <tr class="bg-slate-100 border-b">
-                  <th class="p-2">Email Login</th>
-                  <th class="p-2">Nama Anggota</th>
+                  <th class="p-2">Email Anggota</th>
+                  <th class="p-2">Nama</th>
                   <th class="p-2">Unit</th>
                   <th class="p-2">Password</th>
-                  <th class="p-2">Status Akses</th>
-                  <th class="p-2">Aksi</th>
+                  <th class="p-2">Status Aktivasi</th>
+                  <th class="p-2">Email & Akses</th>
                 </tr>
               </thead>
               <tbody id="tableAccounts"></tbody>
@@ -556,24 +428,26 @@
   </div>
 
   <script>
+    const APP_URL = "https://suwajiaji1305-prog.github.io/sim-kpk-rs-arsy/";
+
     const DEFAULT_ACCOUNTS = {
-      "suwaji.kpk@rsarsy.id": { name: "Suwaji (Operator / Ka. Unit)", role: "admin", unit: "all", password: "Suwaji#2026", active: true },
-      "johan.sec@rsarsy.id": { name: "Johan", role: "staff", unit: "keamanan", password: "Johan#2026", active: true },
-      "agos.sec@rsarsy.id": { name: "Agos", role: "staff", unit: "keamanan", password: "Agos#2026", active: true },
-      "afif.sec@rsarsy.id": { name: "Afif", role: "staff", unit: "keamanan", password: "Afif#2026", active: true },
-      "rofii.sec@rsarsy.id": { name: "Rofi'i", role: "staff", unit: "keamanan", password: "Rofii#2026", active: true },
-      "yeni.sec@rsarsy.id": { name: "Yeni", role: "staff", unit: "keamanan", password: "Yeni#2026", active: true },
-      "adi.sec@rsarsy.id": { name: "Adi", role: "staff", unit: "keamanan", password: "Adi#2026", active: true },
-      "fyghur.park@rsarsy.id": { name: "Fyghur Nanda", role: "staff", unit: "parkir", password: "Fyghur#2026", active: true },
-      "arry.park@rsarsy.id": { name: "Arry Adhi A.", role: "staff", unit: "parkir", password: "Arry#2026", active: true },
-      "ahmad.park@rsarsy.id": { name: "Ahmad Roisul", role: "staff", unit: "parkir", password: "Ahmad#2026", active: true },
-      "sumintri.drv@rsarsy.id": { name: "Sumintri", role: "staff", unit: "driver", password: "Sumintri#2026", active: true },
-      "sidik.drv@rsarsy.id": { name: "Sidik", role: "staff", unit: "driver", password: "Sidik#2026", active: true },
-      "zainal.drv@rsarsy.id": { name: "Zainal Arifin", role: "staff", unit: "driver", password: "Zainal#2026", active: true },
-      "dimas.drv@rsarsy.id": { name: "Dimas", role: "staff", unit: "driver", password: "Dimas#2026", active: true }
+      "suwaji.kpk@rsarsy.id": { name: "Suwaji (Ka. Unit / Operator)", role: "admin", unit: "all", password: "Suwaji#2026", status: "active" },
+      "johan.sec@rsarsy.id": { name: "Johan", role: "staff", unit: "keamanan", password: "Johan#2026", status: "pending" },
+      "agos.sec@rsarsy.id": { name: "Agos", role: "staff", unit: "keamanan", password: "Agos#2026", status: "pending" },
+      "afif.sec@rsarsy.id": { name: "Afif", role: "staff", unit: "keamanan", password: "Afif#2026", status: "pending" },
+      "rofii.sec@rsarsy.id": { name: "Rofi'i", role: "staff", unit: "keamanan", password: "Rofii#2026", status: "pending" },
+      "yeni.sec@rsarsy.id": { name: "Yeni", role: "staff", unit: "keamanan", password: "Yeni#2026", status: "pending" },
+      "adi.sec@rsarsy.id": { name: "Adi", role: "staff", unit: "keamanan", password: "Adi#2026", status: "pending" },
+      "fyghur.park@rsarsy.id": { name: "Fyghur Nanda", role: "staff", unit: "parkir", password: "Fyghur#2026", status: "pending" },
+      "arry.park@rsarsy.id": { name: "Arry Adhi A.", role: "staff", unit: "parkir", password: "Arry#2026", status: "pending" },
+      "ahmad.park@rsarsy.id": { name: "Ahmad Roisul", role: "staff", unit: "parkir", password: "Ahmad#2026", status: "pending" },
+      "sumintri.drv@rsarsy.id": { name: "Sumintri", role: "staff", unit: "driver", password: "Sumintri#2026", status: "pending" },
+      "sidik.drv@rsarsy.id": { name: "Sidik", role: "staff", unit: "driver", password: "Sidik#2026", status: "pending" },
+      "zainal.drv@rsarsy.id": { name: "Zainal Arifin", role: "staff", unit: "driver", password: "Zainal#2026", status: "pending" },
+      "dimas.drv@rsarsy.id": { name: "Dimas", role: "staff", unit: "driver", password: "Dimas#2026", status: "pending" }
     };
 
-    const STORAGE_KEY = "sim_kpk_rs_arsy_email_v1";
+    const STORAGE_KEY = "sim_kpk_rs_arsy_v3";
     const initialData = {
       accounts: structuredClone(DEFAULT_ACCOUNTS),
       permissions: { keamanan: true, parkir: true, driver: true },
@@ -630,15 +504,36 @@
       return found ? found[0] : "-";
     }
 
+    function getScopedData() {
+      const isAdmin = currentUser?.role === "admin";
+      if (isAdmin) {
+        return {
+          keamanan: stateData.keamanan,
+          parkir: stateData.parkir,
+          driver: stateData.driver
+        };
+      }
+      const matchSelf = r =>
+        String(r.email || "").toLowerCase() === currentUser.email.toLowerCase() ||
+        String(r.petugas || r.driver || "").toLowerCase() === currentUser.name.toLowerCase();
+
+      return {
+        keamanan: currentUser.unit === "keamanan" ? stateData.keamanan.filter(matchSelf) : [],
+        parkir: currentUser.unit === "parkir" ? stateData.parkir.filter(matchSelf) : [],
+        driver: currentUser.unit === "driver" ? stateData.driver.filter(matchSelf) : []
+      };
+    }
+
     function getFilteredData() {
+      const scoped = getScopedData();
       const unitFilter = document.getElementById("filterUnit")?.value || "all";
       const kw = (document.getElementById("filterKeyword")?.value || "").trim().toLowerCase();
       const matchText = obj => !kw || JSON.stringify(obj).toLowerCase().includes(kw);
 
       return {
-        keamanan: (unitFilter === "all" || unitFilter === "keamanan") ? stateData.keamanan.filter(matchText) : [],
-        parkir: (unitFilter === "all" || unitFilter === "parkir") ? stateData.parkir.filter(matchText) : [],
-        driver: (unitFilter === "all" || unitFilter === "driver") ? stateData.driver.filter(matchText) : []
+        keamanan: (unitFilter === "all" || unitFilter === "keamanan") ? scoped.keamanan.filter(matchText) : [],
+        parkir: (unitFilter === "all" || unitFilter === "parkir") ? scoped.parkir.filter(matchText) : [],
+        driver: (unitFilter === "all" || unitFilter === "driver") ? scoped.driver.filter(matchText) : []
       };
     }
 
@@ -675,7 +570,7 @@
 
       const activeUnit = unitSel.value;
       const staffList = Object.entries(stateData.accounts)
-        .filter(([, acc]) => acc.role === "staff" && acc.unit === activeUnit && acc.active !== false);
+        .filter(([, acc]) => acc.role === "staff" && acc.unit === activeUnit && acc.status !== "disabled");
 
       if (!isAdmin) {
         staffSel.innerHTML = `<option value="${currentUser.name}">${currentUser.name}</option>`;
@@ -704,7 +599,7 @@
       const notice = document.getElementById("execLockNotice");
       if (!isOpen) {
         notice.classList.remove("hidden");
-        notice.textContent = `Input untuk unit ${unit.toUpperCase()} sedang dikunci oleh Operator.`;
+        notice.textContent = `Input untuk unit ${unit.toUpperCase()} sedang dikunci oleh Ka. Unit / Operator.`;
         activeForm.querySelectorAll("button[type=submit]").forEach(b => b.disabled = true);
       } else {
         notice.classList.add("hidden");
@@ -714,31 +609,64 @@
       renderExecutorHistory(unit, staffName);
     }
 
+    function fillStandardTemplate() {
+      const unit = document.getElementById("execUnitSelect").value;
+      if (unit === "keamanan") {
+        const f = document.getElementById("execFormSec");
+        f.dinas.value = "SUBUH (ADZAN)";
+        f.statusPatroli.value = "Adzan Subuh & Patroli";
+        f.jam.value = "04:30:00";
+        f.area.value = "Masjid & Seluruh Area RS ARSY";
+        f.kondisi.value = "Tidak Ada Temuan";
+        f.temuan.value = "Adzan subuh dikumandangkan tepat waktu, patroli keliling aman";
+      } else if (unit === "parkir") {
+        const f = document.getElementById("execFormPark");
+        f.shift.value = "Pagi ( 07:00 - 14:00 )";
+        f.lokasi.value = "Pos Parkir";
+        f.motor.value = "0";
+        f.mobil.value = "0";
+        f.storan.value = "0";
+        f.kendala.value = "Area parkir tertib, tidak ada kendala";
+      } else {
+        const f = document.getElementById("execFormDrv");
+        f.jenis.value = "Antar / Jemput Dokter";
+        f.kendaraan.value = "Mobil Dinas RS ARSY";
+        f.statusTrip.value = "Selesai";
+        f.km.value = "0";
+        f.bbm.value = "0";
+        f.tujuan.value = "Operasional RS ARSY";
+      }
+    }
+
     function renderExecutorHistory(unit, staffName) {
       const tbody = document.getElementById("tableExecHistory");
       if (!tbody) return;
+      const scoped = getScopedData();
       const rows = [];
 
       if (unit === "keamanan") {
-        stateData.keamanan
-          .filter(r => !staffName || r.petugas.toLowerCase().includes(staffName.toLowerCase()))
+        scoped.keamanan
+          .filter(r => currentUser.role !== "admin" || !staffName || r.petugas.toLowerCase().includes(staffName.toLowerCase()))
           .forEach(r => rows.push({ tanggal: r.tanggal, nama: r.petugas, email: r.email || findEmailByName(r.petugas), unit: "Keamanan", ringkasan: `${r.dinas} (${r.jam}) • ${r.area || "-"} • ${r.kondisi}: ${r.temuan}` }));
       } else if (unit === "parkir") {
-        stateData.parkir
-          .filter(r => !staffName || r.petugas.toLowerCase().includes(staffName.toLowerCase()))
+        scoped.parkir
+          .filter(r => currentUser.role !== "admin" || !staffName || r.petugas.toLowerCase().includes(staffName.toLowerCase()))
           .forEach(r => rows.push({ tanggal: r.tanggal, nama: r.petugas, email: r.email || findEmailByName(r.petugas), unit: "Parkir", ringkasan: `${r.shift} • Motor: ${r.motor}, Mobil: ${r.mobil}, Storan: Rp${r.storan} (${r.kendala})` }));
       } else {
-        stateData.driver
-          .filter(r => !staffName || r.driver.toLowerCase().includes(staffName.toLowerCase()))
+        scoped.driver
+          .filter(r => currentUser.role !== "admin" || !staffName || r.driver.toLowerCase().includes(staffName.toLowerCase()))
           .forEach(r => rows.push({ tanggal: r.tanggal, nama: r.driver, email: r.email || findEmailByName(r.driver), unit: "Driver", ringkasan: `${r.jenis} • ${r.kendaraan} • ${r.km} KM / ${r.bbm} L • ${r.tujuan}` }));
       }
 
       tbody.innerHTML = rows.length
         ? rows.map(r => `<tr class="border-b"><td class="p-2">${r.tanggal}</td><td class="p-2 font-medium">${r.nama}</td><td class="p-2 font-mono text-[11px]">${r.email}</td><td class="p-2">${r.unit}</td><td class="p-2">${r.ringkasan}</td></tr>`).join("")
-        : `<tr><td colspan="5" class="p-3 text-center text-slate-400">Belum ada laporan tercatat untuk pelaksana/filter ini.</td></tr>`;
+        : `<tr><td colspan="5" class="p-3 text-center text-slate-400">Belum ada laporan tercatat.</td></tr>`;
     }
 
     function switchTab(tabName) {
+      if (currentUser?.role !== "admin" && ["dashboard", "operator"].includes(tabName)) {
+        tabName = "pelaksana";
+      }
       document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
       document.getElementById("tab-" + tabName)?.classList.remove("hidden");
       document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -748,37 +676,44 @@
         btn.classList.toggle("border-transparent", !active);
         btn.classList.toggle("text-slate-600", !active);
       });
-      if (tabName === "dashboard") renderDashboardAndCharts();
+      if (tabName === "dashboard" && currentUser?.role === "admin") renderDashboardAndCharts();
       if (tabName === "pelaksana") populateExecutorSelectors();
-      if (tabName === "operator") renderOperatorPanel();
+      if (tabName === "operator" && currentUser?.role === "admin") renderOperatorPanel();
     }
 
     function renderAllTables() {
       const isAdmin = currentUser?.role === "admin";
+      const scoped = getScopedData();
 
-      document.getElementById("tableSec").innerHTML = stateData.keamanan.map((r, idx) => `
-        <tr class="border-b hover:bg-slate-50">
+      document.getElementById("tableSec").innerHTML = scoped.keamanan.map(r => {
+        const realIdx = stateData.keamanan.indexOf(r);
+        return `<tr class="border-b hover:bg-slate-50">
           <td class="p-2">${r.tanggal}</td><td class="p-2">${r.dinas}</td><td class="p-2">${r.statusPatroli}</td>
           <td class="p-2">${r.jam}</td><td class="p-2">${r.petugas}</td><td class="p-2">${r.area || "-"}</td>
           <td class="p-2">${r.kondisi}</td><td class="p-2">${r.temuan}</td>
-          <td class="p-2">${isAdmin ? `<button onclick="deleteRow('keamanan', ${idx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
-        </tr>`).join("");
+          <td class="p-2">${isAdmin && realIdx >= 0 ? `<button onclick="deleteRow('keamanan', ${realIdx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
+        </tr>`;
+      }).join("");
 
-      document.getElementById("tablePark").innerHTML = stateData.parkir.map((r, idx) => `
-        <tr class="border-b hover:bg-slate-50">
+      document.getElementById("tablePark").innerHTML = scoped.parkir.map(r => {
+        const realIdx = stateData.parkir.indexOf(r);
+        return `<tr class="border-b hover:bg-slate-50">
           <td class="p-2">${r.tanggal}</td><td class="p-2">${r.petugas}</td><td class="p-2">${r.shift}</td>
           <td class="p-2">${r.lokasi || "-"}</td><td class="p-2">${r.motor}</td><td class="p-2">${r.mobil}</td>
           <td class="p-2">${r.storan}</td><td class="p-2">${r.kendala}</td>
-          <td class="p-2">${isAdmin ? `<button onclick="deleteRow('parkir', ${idx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
-        </tr>`).join("");
+          <td class="p-2">${isAdmin && realIdx >= 0 ? `<button onclick="deleteRow('parkir', ${realIdx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
+        </tr>`;
+      }).join("");
 
-      document.getElementById("tableDrv").innerHTML = stateData.driver.map((r, idx) => `
-        <tr class="border-b hover:bg-slate-50">
+      document.getElementById("tableDrv").innerHTML = scoped.driver.map(r => {
+        const realIdx = stateData.driver.indexOf(r);
+        return `<tr class="border-b hover:bg-slate-50">
           <td class="p-2">${r.tanggal}</td><td class="p-2">${r.driver}</td><td class="p-2">${r.jenis}</td>
           <td class="p-2">${r.kendaraan}</td><td class="p-2">${r.km}</td><td class="p-2">${r.bbm}</td>
           <td class="p-2">${r.statusTrip || "Selesai"}</td><td class="p-2">${r.tujuan}</td>
-          <td class="p-2">${isAdmin ? `<button onclick="deleteRow('driver', ${idx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
-        </tr>`).join("");
+          <td class="p-2">${isAdmin && realIdx >= 0 ? `<button onclick="deleteRow('driver', ${realIdx})" class="text-rose-600 hover:underline">Hapus</button>` : "-"}</td>
+        </tr>`;
+      }).join("");
     }
 
     window.deleteRow = function (unit, index) {
@@ -790,6 +725,7 @@
     };
 
     function renderDashboardAndCharts() {
+      if (currentUser?.role !== "admin") return;
       const f = getFilteredData();
       const secCount = f.keamanan.length;
       const parkCount = f.parkir.length;
@@ -882,24 +818,52 @@
       document.getElementById("permDrvInput").checked = stateData.permissions.driver !== false;
 
       const tbody = document.getElementById("tableAccounts");
-      tbody.innerHTML = Object.entries(stateData.accounts).map(([emailKey, acc]) => `
-        <tr class="border-b">
+      tbody.innerHTML = Object.entries(stateData.accounts).map(([emailKey, acc]) => {
+        if (emailKey === "suwaji.kpk@rsarsy.id") {
+          return `<tr class="border-b">
+            <td class="p-2 font-mono text-[11px] font-semibold">${emailKey}</td>
+            <td class="p-2">${acc.name}</td>
+            <td class="p-2 uppercase">SEMUA</td>
+            <td class="p-2"><input type="text" value="${acc.password}" onchange="updateAccountPassword('${emailKey}', this.value)" class="px-2 py-1 border rounded w-32 font-mono" /></td>
+            <td class="p-2"><span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold">Operator Aktif</span></td>
+            <td class="p-2">-</td>
+          </tr>`;
+        }
+
+        const badge = acc.status === "active"
+          ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Teraktivasi</span>`
+          : acc.status === "disabled"
+            ? `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-semibold">Nonaktif</span>`
+            : `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Menunggu Aktivasi</span>`;
+
+        return `<tr class="border-b">
           <td class="p-2 font-mono text-[11px] font-semibold">${emailKey}</td>
           <td class="p-2">${acc.name}</td>
           <td class="p-2 uppercase">${acc.unit}</td>
           <td class="p-2">
             <input type="text" value="${acc.password}" onchange="updateAccountPassword('${emailKey}', this.value)" class="px-2 py-1 border rounded w-32 font-mono" />
           </td>
-          <td class="p-2">
-            ${emailKey === "suwaji.kpk@rsarsy.id"
-              ? `<span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 font-semibold">Operator Aktif</span>`
-              : `<button onclick="toggleAccountActive('${emailKey}')" class="px-2 py-0.5 rounded font-semibold ${acc.active !== false ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}">${acc.active !== false ? "Aktif" : "Nonaktif"}</button>`}
+          <td class="p-2">${badge}</td>
+          <td class="p-2 flex flex-wrap gap-1.5">
+            <button onclick="sendActivationEmail('${emailKey}')" class="px-2 py-0.5 bg-sky-100 text-sky-800 rounded font-semibold hover:bg-sky-200">Kirim Email Aktivasi</button>
+            ${acc.status !== "active"
+              ? `<button onclick="setAccountStatus('${emailKey}', 'active')" class="px-2 py-0.5 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700">Aktifkan</button>`
+              : `<button onclick="setAccountStatus('${emailKey}', 'disabled')" class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold hover:bg-amber-200">Nonaktifkan</button>`}
+            <button onclick="removeAccount('${emailKey}')" class="px-2 py-0.5 text-rose-600 hover:underline">Hapus</button>
           </td>
-          <td class="p-2">
-            ${emailKey !== "suwaji.kpk@rsarsy.id" ? `<button onclick="removeAccount('${emailKey}')" class="text-rose-600 hover:underline">Hapus</button>` : "-"}
-          </td>
-        </tr>`).join("");
+        </tr>`;
+      }).join("");
     }
+
+    window.sendActivationEmail = function (emailKey) {
+      const acc = stateData.accounts[emailKey];
+      if (!acc) return;
+      const subject = encodeURIComponent("Aktivasi Akun SIM-KPK RS ARSY");
+      const body = encodeURIComponent(
+        `Halo ${acc.name},\n\nAkun SIM-KPK RS ARSY untuk unit ${acc.unit.toUpperCase()} telah disiapkan.\n\nTautan Aplikasi: ${APP_URL}\nEmail Login: ${emailKey}\nPassword Awal: ${acc.password}\n\nSilakan konfirmasi ke Ka. Unit (Suwaji) setelah membuka email ini agar akun Anda diaktifkan.\n\nSalam,\nOperator SIM-KPK RS ARSY`
+      );
+      window.open(`mailto:${emailKey}?subject=${subject}&body=${body}`, "_blank");
+    };
 
     window.updateAccountPassword = function (emailKey, val) {
       if (currentUser?.role !== "admin" || !stateData.accounts[emailKey]) return;
@@ -909,9 +873,9 @@
       saveState();
     };
 
-    window.toggleAccountActive = function (emailKey) {
+    window.setAccountStatus = function (emailKey, nextStatus) {
       if (currentUser?.role !== "admin" || !stateData.accounts[emailKey] || emailKey === "suwaji.kpk@rsarsy.id") return;
-      stateData.accounts[emailKey].active = stateData.accounts[emailKey].active === false;
+      stateData.accounts[emailKey].status = nextStatus;
       saveState();
       renderOperatorPanel();
     };
@@ -935,8 +899,13 @@
         errEl.classList.remove("hidden");
         return;
       }
-      if (acc.active === false) {
-        errEl.textContent = "Akun email ini sedang dinonaktifkan oleh Operator.";
+      if (acc.status === "pending") {
+        errEl.textContent = "Akun email ini masih menunggu aktivasi oleh Ka. Unit / Operator.";
+        errEl.classList.remove("hidden");
+        return;
+      }
+      if (acc.status === "disabled") {
+        errEl.textContent = "Akun email ini sedang dinonaktifkan oleh Ka. Unit / Operator.";
         errEl.classList.remove("hidden");
         return;
       }
@@ -945,7 +914,7 @@
       errEl.classList.add("hidden");
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("appShell").classList.remove("hidden");
-      document.getElementById("userBadge").textContent = `${currentUser.name} (${currentUser.email}) • Akses: ${currentUser.role === "admin" ? "Operator / Semua Unit" : currentUser.unit.toUpperCase()}`;
+      document.getElementById("userBadge").textContent = `${currentUser.name} (${currentUser.email}) • Akses: ${currentUser.role === "admin" ? "Operator / Semua Laporan" : "Unit " + currentUser.unit.toUpperCase()}`;
       renderAllTables();
       applyRoleAccess();
       if (currentUser.role === "admin") renderDashboardAndCharts();
@@ -964,56 +933,33 @@
 
     document.getElementById("execUnitSelect").addEventListener("change", populateExecutorSelectors);
     document.getElementById("execStaffSelect").addEventListener("change", updateExecutorFormVisibility);
+    document.getElementById("btnFillTemplate").addEventListener("click", fillStandardTemplate);
 
     document.getElementById("execFormSec").addEventListener("submit", e => {
       e.preventDefault();
       const fd = new FormData(e.target);
-      const petugas = document.getElementById("execStaffSelect").value || currentUser.name;
+      const petugas = currentUser.role === "admin" ? (document.getElementById("execStaffSelect").value || currentUser.name) : currentUser.name;
       const email = currentUser.role === "admin" ? findEmailByName(petugas) : currentUser.email;
       stateData.keamanan.unshift({ ...Object.fromEntries(fd.entries()), petugas, email });
-      saveState(); renderAllTables(); updateExecutorFormVisibility(); e.target.reset();
+      saveState(); renderAllTables(); updateExecutorFormVisibility();
     });
 
     document.getElementById("execFormPark").addEventListener("submit", e => {
       e.preventDefault();
       const fd = new FormData(e.target);
-      const petugas = document.getElementById("execStaffSelect").value || currentUser.name;
+      const petugas = currentUser.role === "admin" ? (document.getElementById("execStaffSelect").value || currentUser.name) : currentUser.name;
       const email = currentUser.role === "admin" ? findEmailByName(petugas) : currentUser.email;
       stateData.parkir.unshift({ ...Object.fromEntries(fd.entries()), petugas, email });
-      saveState(); renderAllTables(); updateExecutorFormVisibility(); e.target.reset();
+      saveState(); renderAllTables(); updateExecutorFormVisibility();
     });
 
     document.getElementById("execFormDrv").addEventListener("submit", e => {
       e.preventDefault();
       const fd = new FormData(e.target);
-      const driver = document.getElementById("execStaffSelect").value || currentUser.name;
+      const driver = currentUser.role === "admin" ? (document.getElementById("execStaffSelect").value || currentUser.name) : currentUser.name;
       const email = currentUser.role === "admin" ? findEmailByName(driver) : currentUser.email;
       stateData.driver.unshift({ ...Object.fromEntries(fd.entries()), driver, email });
-      saveState(); renderAllTables(); updateExecutorFormVisibility(); e.target.reset();
-    });
-
-    document.getElementById("formSec").addEventListener("submit", e => {
-      e.preventDefault();
-      const entry = Object.fromEntries(new FormData(e.target).entries());
-      entry.email = findEmailByName(entry.petugas);
-      stateData.keamanan.unshift(entry);
-      saveState(); renderAllTables(); renderDashboardAndCharts(); e.target.reset();
-    });
-
-    document.getElementById("formPark").addEventListener("submit", e => {
-      e.preventDefault();
-      const entry = Object.fromEntries(new FormData(e.target).entries());
-      entry.email = findEmailByName(entry.petugas);
-      stateData.parkir.unshift(entry);
-      saveState(); renderAllTables(); renderDashboardAndCharts(); e.target.reset();
-    });
-
-    document.getElementById("formDrv").addEventListener("submit", e => {
-      e.preventDefault();
-      const entry = Object.fromEntries(new FormData(e.target).entries());
-      entry.email = findEmailByName(entry.driver);
-      stateData.driver.unshift(entry);
-      saveState(); renderAllTables(); renderDashboardAndCharts(); e.target.reset();
+      saveState(); renderAllTables(); updateExecutorFormVisibility();
     });
 
     ["permSecInput", "permParkInput", "permDrvInput"].forEach((id, idx) => {
@@ -1032,9 +978,10 @@
       const unit = String(fd.get("unit") || "keamanan");
       const password = String(fd.get("password") || "Arsy#2026").trim();
       if (!email || !name) return;
-      stateData.accounts[email] = { name, role: "staff", unit, password, active: true };
+      stateData.accounts[email] = { name, role: "staff", unit, password, status: "pending" };
       saveState();
       renderOperatorPanel();
+      sendActivationEmail(email);
       e.target.reset();
     });
 
@@ -1047,6 +994,7 @@
     });
 
     document.getElementById("btnBackupJson").addEventListener("click", () => {
+      if (currentUser?.role !== "admin") return;
       const blob = new Blob([JSON.stringify(stateData, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -1055,6 +1003,7 @@
     });
 
     document.getElementById("inputRestoreJson").addEventListener("change", e => {
+      if (currentUser?.role !== "admin") return;
       const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
@@ -1075,6 +1024,7 @@
     });
 
     document.getElementById("btnResetDemoData").addEventListener("click", () => {
+      if (currentUser?.role !== "admin") return;
       if (!confirm("Kembalikan seluruh data dan akun ke pengaturan awal?")) return;
       stateData = structuredClone(initialData);
       saveState();
@@ -1084,7 +1034,7 @@
     });
 
     document.getElementById("btnExportXlsx").addEventListener("click", () => {
-      if (typeof XLSX === "undefined") return;
+      if (currentUser?.role !== "admin" || typeof XLSX === "undefined") return;
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.keamanan), "Keamanan");
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(stateData.parkir), "Parkir");
@@ -1093,13 +1043,14 @@
     });
 
     document.getElementById("btnExportDoc").addEventListener("click", () => {
+      if (currentUser?.role !== "admin") return;
       const secRows = stateData.keamanan.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join("");
       const parkRows = stateData.parkir.map(r => `<tr><td>${r.tanggal}</td><td>${r.petugas}</td><td>${r.shift}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.storan}</td></tr>`).join("");
       const drvRows = stateData.driver.map(r => `<tr><td>${r.tanggal}</td><td>${r.driver}</td><td>${r.jenis}</td><td>${r.kendaraan}</td><td>${r.km}</td><td>${r.bbm}</td><td>${r.tujuan}</td></tr>`).join("");
 
       const html = `<html><head><meta charset="utf-8"><title>Laporan SIM-KPK RS ARSY</title></head><body>
         <h2>LAPORAN UNIT KEAMANAN, PARKIR & KENDARAAN — RS ARSY</h2>
-        <p>Operator / Kepala Unit: Suwaji (suwaji.kpk@rsarsy.id)</p>
+        <p>Operator / Ka. Unit: Suwaji (suwaji.kpk@rsarsy.id)</p>
         <h3>1. Laporan Keamanan (${stateData.keamanan.length})</h3>
         <table border="1" cellpadding="4" cellspacing="0"><tr><th>Tanggal</th><th>Dinas</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr>${secRows}</table>
         <h3>2. Laporan Parkir (${stateData.parkir.length})</h3>
@@ -1115,7 +1066,7 @@
     });
 
     document.getElementById("btnExportPpt").addEventListener("click", () => {
-      if (typeof PptxGenJS === "undefined") return;
+      if (currentUser?.role !== "admin" || typeof PptxGenJS === "undefined") return;
       const totalKm = stateData.driver.reduce((a, b) => a + (Number(b.km) || 0), 0);
       const pptx = new PptxGenJS();
       const slide = pptx.addSlide();
