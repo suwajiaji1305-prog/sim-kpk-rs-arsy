@@ -128,7 +128,7 @@
     }
     header h1 { margin: 0; font-size: 1.05rem; }
     header small { opacity: 0.9; display: block; font-size: 0.78rem; }
-    .container { max-width: 1360px; margin: 14px auto; padding: 0 12px 36px; }
+    .container { max-width: 1380px; margin: 14px auto; padding: 0 12px 36px; }
     .tabs {
       display: flex;
       flex-wrap: nowrap;
@@ -152,7 +152,11 @@
     }
     .tab-btn:hover { border-color: var(--primary); }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 14px;
+    }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -206,11 +210,23 @@
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--border); }
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
     .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 11px; }
-    .kpi .val { font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); }
+    .kpi.kpi-ok { border-left: 4px solid #0f766e; background: #f0fdfa; }
+    .kpi.kpi-warn { border-left: 4px solid #dc2626; background: #fef2f2; }
+    .kpi .val { font-size: 1.15rem; font-weight: 800; color: var(--primary-dark); }
+    .kpi.kpi-warn .val { color: #b91c1c; }
     .kpi .lbl { font-size: 0.75rem; color: var(--muted); }
-    .chart-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; height: 260px; position: relative; }
+    .kpi .sub-val { font-size: 0.74rem; font-weight: 700; color: #334155; margin-top: 2px; }
+    .chart-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px;
+      height: 300px;
+      position: relative;
+    }
+    .chart-box.wide { grid-column: 1 / -1; height: 290px; }
     .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
@@ -326,7 +342,6 @@
         <span class="status-badge st-active">Akses Penuh Semua Laporan & Data</span>
       </div>
 
-      <!-- KONEKSI CLOUD GOOGLE SHEETS ANTAR-HP -->
       <div class="cloud-box">
         <div style="font-weight:700;color:var(--primary-dark);margin-bottom:6px;">
           Sinkronisasi Cloud Google Sheets (Agar Semua HP Anggota Terhubung Otomatis)
@@ -387,7 +402,7 @@
       <button class="tab-btn" data-tab="driver" data-unit="driver">5. Unit Driver</button>
     </div>
 
-    <!-- FILTER REKAP & MONITORING DIAGRAM -->
+    <!-- FILTER REKAP & MONITORING DIAGRAM DETAIL -->
     <div id="monitoringCard" class="card">
       <div class="toolbar">
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
@@ -409,10 +424,12 @@
 
       <div id="alertSummaryBox" class="alert-card"></div>
       <div class="kpis" id="kpiBox"></div>
-      <div class="grid-3">
-        <div class="chart-box"><canvas id="chartTrend"></canvas></div>
-        <div class="chart-box"><canvas id="chartMain"></canvas></div>
+
+      <div class="charts-grid">
+        <div class="chart-box"><canvas id="chartTemuanCompare"></canvas></div>
         <div class="chart-box"><canvas id="chartPct"></canvas></div>
+        <div class="chart-box"><canvas id="chartMain"></canvas></div>
+        <div class="chart-box wide"><canvas id="chartTrend"></canvas></div>
       </div>
     </div>
 
@@ -693,9 +710,9 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V11';
-const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V11';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V11';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V12';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V12';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V12';
 const CLOUD_URL_KEY = 'SIM_KPK_RS_ARSY_CLOUD_URL';
 
 const DEFAULT_CLOUD_URL = '';
@@ -717,8 +734,55 @@ const HOURS = [
 
 let currentSession = null;
 let currentTab = 'patroli';
-let chartTrend = null, chartMain = null, chartPct = null;
+let chartTemuanCompare = null, chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
+
+/* PLUGIN LABEL ANGKA & PERSEN LANGSUNG DI ATAS BATANG / DONAT */
+const valuePercentLabelPlugin = {
+  id: 'valuePercentLabelPlugin',
+  afterDatasetsDraw(chart) {
+    if (!chart.config.options.plugins?.showValuePercent) return;
+    const { ctx } = chart;
+    ctx.save();
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+      if (meta.hidden) return;
+      const total = dataset.data.reduce((acc, v) => acc + Number(v || 0), 0);
+
+      meta.data.forEach((element, index) => {
+        const val = Number(dataset.data[index] || 0);
+        if (chart.config.type === 'doughnut') {
+          if (val <= 0) return;
+          const pctVal = total ? ((val / total) * 100).toFixed(1) : '0.0';
+          const pos = element.tooltipPosition();
+          ctx.fillStyle = '#ffffff';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${val} (${pctVal}%)`, pos.x, pos.y);
+        } else if (chart.config.type === 'bar') {
+          const customPcts = dataset.customPcts;
+          const labelStr = Array.isArray(customPcts)
+            ? `${val} (${customPcts[index]}%)`
+            : `${val}`;
+          ctx.fillStyle = '#0f172a';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(labelStr, element.x, element.y - 4);
+        } else if (chart.config.type === 'line') {
+          ctx.fillStyle = dataset.borderColor || '#0f766e';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(`${val}`, element.x, element.y - 6);
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+if (typeof Chart !== 'undefined') {
+  Chart.register(valuePercentLabelPlugin);
+}
 
 function getCloudUrl() {
   const urlParam = new URLSearchParams(window.location.search).get('cloud');
@@ -1113,8 +1177,10 @@ function renderMembersTable() {
 function defaultData() {
   return {
     patroli: [
-      { id: 1, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-27', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI AJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
-      { id: 2, authorEmail: 'aji.elek1305@gmail.com', tanggal: '2026-11-27', dinas: 'SIANG', status: 'Patroli', jam: '14:30', petugas: 'satpam new', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) }
+      { id: 1, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-25', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI AJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 2, authorEmail: 'johan@rsarsy.id', tanggal: '2026-11-26', dinas: 'SIANG', status: 'Patroli', jam: '15:00', petugas: 'JOHAN', kondisi: 'Ada Temuan', temuan: 'Lampu lorong belakang redup', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 3, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-27', dinas: 'PAGI', status: 'Patroli', jam: '08:00', petugas: 'SUWAJI AJI', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) },
+      { id: 4, authorEmail: 'aji.elek1305@gmail.com', tanggal: '2026-11-27', dinas: 'SIANG', status: 'Patroli', jam: '14:30', petugas: 'satpam new', kondisi: 'Tidak Ada Temuan', temuan: 'Aman', areas: Object.fromEntries(AREAS.map(a => [a, 'Aman'])) }
     ],
     harian: [
       { id: 1, authorEmail: 'suwaji.aji1305@gmail.com', tanggal: '2026-11-27', nama: 'SUWAJI AJI', shift: 'Pagi ( 07:00 - 14:00 )', lokasi: 'Pos Informasi', insiden: 'Tidak Ada Insiden', next_petugas: 'Johan', jam: {} }
@@ -1413,75 +1479,79 @@ function pct(part, total) {
   return Math.round((part / total) * 1000) / 10;
 }
 
-function renderMonitoringCharts(rows, labels, s1, s2, pctLabels, pctVals, title1, title2) {
+function renderMonitoringCharts(rows, compareCfg, mainCfg) {
   if (typeof Chart === 'undefined') return;
-  if (chartTrend) chartTrend.destroy();
-  if (chartMain) chartMain.destroy();
+  if (chartTemuanCompare) chartTemuanCompare.destroy();
   if (chartPct) chartPct.destroy();
+  if (chartMain) chartMain.destroy();
+  if (chartTrend) chartTrend.destroy();
 
-  const byDate = {};
-  rows.forEach(r => {
-    if (!r.tanggal) return;
-    byDate[r.tanggal] = (byDate[r.tanggal] || 0) + 1;
-  });
-  const sortedDates = Object.keys(byDate).sort();
-  const trendLabels = sortedDates.length ? sortedDates : ['Tidak Ada Data'];
-  const trendValues = sortedDates.length ? sortedDates.map(dt => byDate[dt]) : [0];
+  const total = rows.length;
+  const issueCount = compareCfg.issueCount;
+  const cleanCount = compareCfg.cleanCount;
+  const pctClean = pct(cleanCount, total);
+  const pctIssue = pct(issueCount, total);
 
-  const ctxTrend = document.getElementById('chartTrend').getContext('2d');
-  const grad = ctxTrend.createLinearGradient(0, 0, 0, 240);
-  grad.addColorStop(0, 'rgba(15, 118, 110, 0.35)');
-  grad.addColorStop(1, 'rgba(15, 118, 110, 0.02)');
-
-  chartTrend = new Chart(ctxTrend, {
-    type: 'line',
+  /* 1. DIAGRAM BATANG DETAIL PERBANDINGAN: TIDAK ADA TEMUAN VS ADA TEMUAN (ANGKA & PERSEN) */
+  chartTemuanCompare = new Chart(document.getElementById('chartTemuanCompare'), {
+    type: 'bar',
     data: {
-      labels: trendLabels,
+      labels: [
+        `${compareCfg.cleanLabel} (${cleanCount} | ${pctClean}%)`,
+        `${compareCfg.issueLabel} (${issueCount} | ${pctIssue}%)`
+      ],
       datasets: [{
-        label: 'Tren Jumlah Laporan',
-        data: trendValues,
-        borderColor: '#0f766e',
-        backgroundColor: grad,
-        borderWidth: 2.5,
-        fill: true,
-        tension: 0.35,
-        pointRadius: 4,
-        pointBackgroundColor: '#0f766e'
+        label: 'Jumlah Laporan',
+        data: [cleanCount, issueCount],
+        customPcts: [pctClean, pctIssue],
+        backgroundColor: ['#0f766e', '#dc2626'],
+        borderRadius: 8,
+        maxBarThickness: 68
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { title: { display: true, text: 'Monitoring Tren Harian Laporan', font: { size: 13, weight: 'bold' } }, legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      layout: { padding: { top: 24 } },
+      plugins: {
+        showValuePercent: true,
+        title: {
+          display: true,
+          text: compareCfg.barTitle,
+          font: { size: 13, weight: 'bold' }
+        },
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.y;
+              const p = pct(v, total);
+              return `Jumlah: ${v} laporan (${p}% dari ${total} total)`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          suggestedMax: Math.max(cleanCount, issueCount, 1) + 1,
+          ticks: { precision: 0 }
+        }
+      }
     }
   });
 
-  chartMain = new Chart(document.getElementById('chartMain'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: title1, data: s1, backgroundColor: '#0f766e', borderRadius: 6 },
-        { label: title2, data: s2, backgroundColor: '#cbd5e1', borderRadius: 6 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { title: { display: true, text: 'Perbandingan Realisasi vs Acuan', font: { size: 13, weight: 'bold' } } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
+  /* 2. DIAGRAM DONAT PERSENTASE & ANGKA PROPORSI */
   chartPct = new Chart(document.getElementById('chartPct'), {
     type: 'doughnut',
     data: {
-      labels: pctLabels,
+      labels: [
+        `${compareCfg.cleanLabel}: ${cleanCount} (${pctClean}%)`,
+        `${compareCfg.issueLabel}: ${issueCount} (${pctIssue}%)`
+      ],
       datasets: [{
-        label: 'Persentase (%)',
-        data: pctVals,
-        backgroundColor: ['#0f766e', '#0284c7', '#f59e0b', '#ef4444'],
+        data: [cleanCount, issueCount],
+        backgroundColor: ['#0f766e', '#dc2626'],
         borderWidth: 2,
         borderColor: '#ffffff'
       }]
@@ -1489,11 +1559,137 @@ function renderMonitoringCharts(rows, labels, s1, s2, pctLabels, pctVals, title1
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      cutout: '58%',
+      cutout: '52%',
       plugins: {
-        title: { display: true, text: 'Komposisi / Persentase Capaian (%)', font: { size: 13, weight: 'bold' } },
-        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+        showValuePercent: true,
+        title: {
+          display: true,
+          text: 'Persentase & Jumlah Temuan vs Aman',
+          font: { size: 13, weight: 'bold' }
+        },
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.label}`
+          }
+        }
       }
+    }
+  });
+
+  /* 3. DIAGRAM CAPAIAN OPERASIONAL / SHIFT */
+  chartMain = new Chart(document.getElementById('chartMain'), {
+    type: 'bar',
+    data: {
+      labels: mainCfg.labels,
+      datasets: [
+        {
+          label: mainCfg.title1,
+          data: mainCfg.s1,
+          customPcts: mainCfg.pct1 || null,
+          backgroundColor: '#0284c7',
+          borderRadius: 6
+        },
+        {
+          label: mainCfg.title2,
+          data: mainCfg.s2,
+          backgroundColor: '#cbd5e1',
+          borderRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 22 } },
+      plugins: {
+        showValuePercent: true,
+        title: { display: true, text: mainCfg.chartTitle, font: { size: 13, weight: 'bold' } }
+      },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  /* 4. DIAGRAM TREN KENAIKAN DETAIL MULTI-GARIS (TOTAL, AMAN, ADA TEMUAN) */
+  const dayStats = {};
+  rows.forEach(r => {
+    if (!r.tanggal) return;
+    if (!dayStats[r.tanggal]) dayStats[r.tanggal] = { total: 0, clean: 0, issue: 0 };
+    dayStats[r.tanggal].total += 1;
+    if (compareCfg.isIssueFn(r)) dayStats[r.tanggal].issue += 1;
+    else dayStats[r.tanggal].clean += 1;
+  });
+  const sortedDates = Object.keys(dayStats).sort();
+  const trendLabels = sortedDates.length
+    ? sortedDates.map((dt, i) => {
+        if (i === 0) return `${dt} (Awal)`;
+        const diff = dayStats[dt].total - dayStats[sortedDates[i - 1]].total;
+        const sign = diff > 0 ? `+${diff}` : `${diff}`;
+        return `${dt} (${sign})`;
+      })
+    : ['Tidak Ada Data'];
+
+  const totalSeries = sortedDates.length ? sortedDates.map(dt => dayStats[dt].total) : [0];
+  const cleanSeries = sortedDates.length ? sortedDates.map(dt => dayStats[dt].clean) : [0];
+  const issueSeries = sortedDates.length ? sortedDates.map(dt => dayStats[dt].issue) : [0];
+
+  const ctxTrend = document.getElementById('chartTrend').getContext('2d');
+  const gradTotal = ctxTrend.createLinearGradient(0, 0, 0, 240);
+  gradTotal.addColorStop(0, 'rgba(2, 132, 199, 0.25)');
+  gradTotal.addColorStop(1, 'rgba(2, 132, 199, 0.02)');
+
+  chartTrend = new Chart(ctxTrend, {
+    type: 'line',
+    data: {
+      labels: trendLabels,
+      datasets: [
+        {
+          label: 'Total Laporan Masuk',
+          data: totalSeries,
+          borderColor: '#0284c7',
+          backgroundColor: gradTotal,
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        },
+        {
+          label: compareCfg.cleanLabel,
+          data: cleanSeries,
+          borderColor: '#0f766e',
+          backgroundColor: '#0f766e',
+          borderWidth: 2.2,
+          fill: false,
+          tension: 0.3,
+          pointRadius: 4
+        },
+        {
+          label: compareCfg.issueLabel,
+          data: issueSeries,
+          borderColor: '#dc2626',
+          backgroundColor: '#dc2626',
+          borderWidth: 2.2,
+          borderDash: [5, 4],
+          fill: false,
+          tension: 0.3,
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 20 } },
+      plugins: {
+        showValuePercent: true,
+        title: {
+          display: true,
+          text: 'Grafik Tren Kenaikan Harian (Total vs Tidak Ada Temuan vs Ada Temuan)',
+          font: { size: 13, weight: 'bold' }
+        },
+        legend: { position: 'bottom', labels: { boxWidth: 14, font: { size: 11 } } }
+      },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
     }
   });
 }
@@ -1528,13 +1724,36 @@ function refreshView() {
     const realPerShift = shifts.map(s => rows.filter(r => r.dinas === s && r.status === 'Patroli').length);
     const pctPerShift = realPerShift.map(v => pct(v, targetShift));
     const temuanCount = rows.filter(r => r.kondisi === 'Ada Temuan').length;
+    const amanCount = rows.filter(r => r.kondisi !== 'Ada Temuan').length;
+
     kpiBox.innerHTML = `
-      <div class="kpi"><div class="lbl">Total Entri Patroli</div><div class="val">${rows.length}</div></div>
-      <div class="kpi"><div class="lbl">Patroli Terlaksana</div><div class="val">${rows.filter(r=>r.status==='Patroli').length}</div></div>
-      <div class="kpi"><div class="lbl">% Ada Temuan</div><div class="val">${pct(temuanCount, rows.length)}%</div></div>
-      <div class="kpi"><div class="lbl">Target / Shift (2x)</div><div class="val">${targetShift}</div></div>
+      <div class="kpi"><div class="lbl">Total Entri Patroli</div><div class="val">${rows.length}</div><div class="sub-val">100% Data Masuk</div></div>
+      <div class="kpi kpi-ok"><div class="lbl">Tidak Ada Temuan</div><div class="val">${amanCount} (${pct(amanCount, rows.length)}%)</div><div class="sub-val">Kondisi Area Aman</div></div>
+      <div class="kpi kpi-warn"><div class="lbl">Ada Temuan</div><div class="val">${temuanCount} (${pct(temuanCount, rows.length)}%)</div><div class="sub-val">Perlu Tindak Lanjut</div></div>
+      <div class="kpi"><div class="lbl">Patroli Terlaksana</div><div class="val">${rows.filter(r=>r.status==='Patroli').length}</div><div class="sub-val">Target / Shift: ${targetShift}</div></div>
     `;
-    renderMonitoringCharts(rows, shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
+
+    renderMonitoringCharts(
+      rows,
+      {
+        cleanLabel: 'Tidak Ada Temuan',
+        issueLabel: 'Ada Temuan',
+        cleanCount: amanCount,
+        issueCount: temuanCount,
+        barTitle: 'Perbandingan Ada Temuan vs Tidak Ada Temuan (Angka & %)',
+        isIssueFn: (r) => r.kondisi === 'Ada Temuan'
+      },
+      {
+        labels: shifts,
+        s1: realPerShift,
+        s2: shifts.map(() => targetShift),
+        pct1: pctPerShift,
+        title1: 'Realisasi Patroli',
+        title2: 'Target (2x/Shift)',
+        chartTitle: 'Realisasi Patroli per Shift vs Target'
+      }
+    );
+
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td>${renderRowActions('patroli', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'harian') {
@@ -1544,38 +1763,105 @@ function refreshView() {
     const counts = shifts.map(s => rows.filter(r => r.shift === s).length);
     const amanCount = rows.filter(r => r.insiden !== 'Ya').length;
     const insidenCount = rows.filter(r => r.insiden === 'Ya').length;
+
     kpiBox.innerHTML = `
-      <div class="kpi"><div class="lbl">Laporan Harian Masuk</div><div class="val">${rows.length}</div></div>
-      <div class="kpi"><div class="lbl">Insiden Tercatat</div><div class="val">${insidenCount}</div></div>
-      <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(amanCount, rows.length)}%</div></div>
+      <div class="kpi"><div class="lbl">Laporan Harian Masuk</div><div class="val">${rows.length}</div><div class="sub-val">100% Data Shift</div></div>
+      <div class="kpi kpi-ok"><div class="lbl">Tidak Ada Insiden</div><div class="val">${amanCount} (${pct(amanCount, rows.length)}%)</div><div class="sub-val">Situasi Terkendali</div></div>
+      <div class="kpi kpi-warn"><div class="lbl">Ada Insiden / Temuan</div><div class="val">${insidenCount} (${pct(insidenCount, rows.length)}%)</div><div class="sub-val">Perlu Evaluasi</div></div>
     `;
-    renderMonitoringCharts(rows, ['Pagi','Siang','Malam'], counts, [target,target,target], ['Tanpa Insiden','Ada Insiden'], [pct(amanCount, rows.length), pct(insidenCount, rows.length)], 'Laporan Harian', 'Target (1x/Shift)');
+
+    renderMonitoringCharts(
+      rows,
+      {
+        cleanLabel: 'Tidak Ada Insiden',
+        issueLabel: 'Ada Insiden',
+        cleanCount: amanCount,
+        issueCount: insidenCount,
+        barTitle: 'Perbandingan Tidak Ada Insiden vs Ada Insiden (Angka & %)',
+        isIssueFn: (r) => r.insiden === 'Ya'
+      },
+      {
+        labels: ['Pagi', 'Siang', 'Malam'],
+        s1: counts,
+        s2: [target, target, target],
+        pct1: counts.map(v => pct(v, target)),
+        title1: 'Laporan Harian',
+        title2: 'Target (1x/Shift)',
+        chartTitle: 'Laporan Harian per Shift vs Target'
+      }
+    );
+
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td>${renderRowActions('harian', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'adzan') {
     const done = rows.filter(r => r.status === 'Adzan Sudah Dilaksanakan').length;
     const notDone = rows.filter(r => r.status !== 'Adzan Sudah Dilaksanakan').length;
+
     kpiBox.innerHTML = `
-      <div class="kpi"><div class="lbl">Total Entri Subuh</div><div class="val">${rows.length}</div></div>
-      <div class="kpi"><div class="lbl">Sudah Adzan</div><div class="val">${done} (${pct(done, rows.length)}%)</div></div>
-      <div class="kpi"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div></div>
+      <div class="kpi"><div class="lbl">Total Entri Subuh</div><div class="val">${rows.length}</div><div class="sub-val">100% Data Subuh</div></div>
+      <div class="kpi kpi-ok"><div class="lbl">Sudah Dilaksanakan</div><div class="val">${done} (${pct(done, rows.length)}%)</div><div class="sub-val">Terlaksana Tepat Waktu</div></div>
+      <div class="kpi kpi-warn"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div><div class="sub-val">Kendala / Terlewat</div></div>
     `;
-    renderMonitoringCharts(rows, ['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah', 'Total Entri');
+
+    renderMonitoringCharts(
+      rows,
+      {
+        cleanLabel: 'Sudah Adzan',
+        issueLabel: 'Tidak Dilaksanakan',
+        cleanCount: done,
+        issueCount: notDone,
+        barTitle: 'Perbandingan Pelaksanaan Adzan Subuh (Angka & %)',
+        isIssueFn: (r) => r.status !== 'Adzan Sudah Dilaksanakan'
+      },
+      {
+        labels: ['Sudah Adzan', 'Tidak Dilaksanakan'],
+        s1: [done, notDone],
+        s2: [rows.length, rows.length],
+        pct1: [pct(done, rows.length), pct(notDone, rows.length)],
+        title1: 'Realisasi',
+        title2: 'Total Entri',
+        chartTitle: 'Capaian Pelaksanaan Adzan Subuh'
+      }
+    );
+
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td>${renderRowActions('adzan', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'parkir') {
     const totalMotor = rows.reduce((a, b) => a + Number(b.motor || 0), 0);
     const totalMobil = rows.reduce((a, b) => a + Number(b.mobil || 0), 0);
     const totalStoran = rows.reduce((a, b) => a + Number(b.storan || 0), 0);
-    const normalCount = rows.filter(r => r.status_sistem === 'Berfungsi Normal Sepanjang Shift').length;
-    const kendalaCount = rows.filter(r => r.kendala !== 'Tidak Ada Kendala').length;
+    const isParkirIssue = (r) => r.kendala !== 'Tidak Ada Kendala' || r.status_sistem !== 'Berfungsi Normal Sepanjang Shift';
+    const kendalaCount = rows.filter(isParkirIssue).length;
+    const normalCount = rows.length - kendalaCount;
+
     kpiBox.innerHTML = `
-      <div class="kpi"><div class="lbl">Total Motor</div><div class="val">${totalMotor}</div></div>
-      <div class="kpi"><div class="lbl">Total Mobil</div><div class="val">${totalMobil}</div></div>
-      <div class="kpi"><div class="lbl">Total Storan</div><div class="val">Rp ${totalStoran.toLocaleString('id-ID')}</div></div>
-      <div class="kpi"><div class="lbl">% Sistem Normal</div><div class="val">${pct(normalCount, rows.length)}%</div></div>
+      <div class="kpi kpi-ok"><div class="lbl">Tidak Ada Kendala</div><div class="val">${normalCount} (${pct(normalCount, rows.length)}%)</div><div class="sub-val">Sistem & Area Normal</div></div>
+      <div class="kpi kpi-warn"><div class="lbl">Ada Kendala / Gangguan</div><div class="val">${kendalaCount} (${pct(kendalaCount, rows.length)}%)</div><div class="sub-val">Perlu Pengecekan</div></div>
+      <div class="kpi"><div class="lbl">Motor / Mobil</div><div class="val">${totalMotor} / ${totalMobil}</div><div class="sub-val">Total Kendaraan: ${totalMotor + totalMobil}</div></div>
+      <div class="kpi"><div class="lbl">Total Storan</div><div class="val">Rp ${totalStoran.toLocaleString('id-ID')}</div><div class="sub-val">${rows.length} Shift Tercatat</div></div>
     `;
-    renderMonitoringCharts(rows, ['Motor', 'Mobil', 'Sistem Normal'], [totalMotor, totalMobil, normalCount], [totalMotor, totalMobil, rows.length], ['Sistem Normal', 'Ada Kendala'], [pct(normalCount, rows.length), pct(kendalaCount, rows.length)], 'Realisasi', 'Acuan');
+
+    renderMonitoringCharts(
+      rows,
+      {
+        cleanLabel: 'Tidak Ada Kendala',
+        issueLabel: 'Ada Kendala/Gangguan',
+        cleanCount: normalCount,
+        issueCount: kendalaCount,
+        barTitle: 'Perbandingan Tidak Ada Kendala vs Ada Kendala Parkir (Angka & %)',
+        isIssueFn: isParkirIssue
+      },
+      {
+        labels: ['Motor', 'Mobil', 'Shift Normal'],
+        s1: [totalMotor, totalMobil, normalCount],
+        s2: [totalMotor + totalMobil, totalMotor + totalMobil, rows.length],
+        pct1: [pct(totalMotor, totalMotor + totalMobil), pct(totalMobil, totalMotor + totalMobil), pct(normalCount, rows.length)],
+        title1: 'Jumlah',
+        title2: 'Total Acuan',
+        chartTitle: 'Volume Kendaraan & Kesiapan Sistem Parkir'
+      }
+    );
+
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td>${renderRowActions('parkir', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'driver') {
@@ -1584,13 +1870,35 @@ function refreshView() {
     const totalBBM = rows.reduce((a, b) => a + Number(b.bbm_pakai || 0), 0);
     const totalBiaya = rows.reduce((a, b) => a + Number(b.harga_bbm || 0) + Number(b.etoll || 0), 0);
     const insidenCount = rows.filter(r => r.insiden === 'Ya').length;
+    const amanTrip = totalTrip - insidenCount;
+
     kpiBox.innerHTML = `
-      <div class="kpi"><div class="lbl">Total Perjalanan</div><div class="val">${totalTrip}</div></div>
-      <div class="kpi"><div class="lbl">Total Jarak (KM)</div><div class="val">${totalJarak} KM</div></div>
-      <div class="kpi"><div class="lbl">BBM Terpakai</div><div class="val">${totalBBM} L</div></div>
-      <div class="kpi"><div class="lbl">Total Biaya (BBM+Toll)</div><div class="val">Rp ${totalBiaya.toLocaleString('id-ID')}</div></div>
+      <div class="kpi kpi-ok"><div class="lbl">Perjalanan Aman</div><div class="val">${amanTrip} (${pct(amanTrip, totalTrip)}%)</div><div class="sub-val">Tanpa Insiden Jalan</div></div>
+      <div class="kpi kpi-warn"><div class="lbl">Ada Insiden</div><div class="val">${insidenCount} (${pct(insidenCount, totalTrip)}%)</div><div class="sub-val">Perlu Tindak Lanjut</div></div>
+      <div class="kpi"><div class="lbl">Total Jarak & BBM</div><div class="val">${totalJarak} KM</div><div class="sub-val">BBM Terpakai: ${totalBBM} L</div></div>
+      <div class="kpi"><div class="lbl">Total Biaya (BBM+Toll)</div><div class="val">Rp ${totalBiaya.toLocaleString('id-ID')}</div><div class="sub-val">${totalTrip} Perjalanan</div></div>
     `;
-    renderMonitoringCharts(rows, ['Perjalanan', 'Jarak (KM)', 'BBM (L)'], [totalTrip, totalJarak, totalBBM], [totalTrip, totalJarak, totalBBM], ['Tanpa Insiden', 'Ada Insiden'], [pct(totalTrip - insidenCount, totalTrip), pct(insidenCount, totalTrip)], 'Capaian', 'Acuan');
+
+    renderMonitoringCharts(
+      rows,
+      {
+        cleanLabel: 'Tanpa Insiden',
+        issueLabel: 'Ada Insiden',
+        cleanCount: amanTrip,
+        issueCount: insidenCount,
+        barTitle: 'Perbandingan Perjalanan Aman vs Ada Insiden (Angka & %)',
+        isIssueFn: (r) => r.insiden === 'Ya'
+      },
+      {
+        labels: ['Perjalanan', 'Jarak (KM)', 'BBM (L)'],
+        s1: [totalTrip, totalJarak, totalBBM],
+        s2: [totalTrip, totalJarak, totalBBM],
+        title1: 'Capaian',
+        title2: 'Acuan',
+        chartTitle: 'Ringkasan Operasional Driver'
+      }
+    );
+
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => {
         const biaya = Number(r.harga_bbm || 0) + Number(r.etoll || 0);
