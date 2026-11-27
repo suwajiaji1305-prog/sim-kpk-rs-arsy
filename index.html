@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIM-KPK RS ARSY - Portal Login & Kontrol Operator</title>
+  <title>SIM-KPK RS ARSY</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
@@ -41,9 +41,9 @@
     }
     .login-card {
       width: 100%;
-      max-width: 920px;
+      max-width: 900px;
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-columns: 1fr 1fr;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 18px;
@@ -53,43 +53,23 @@
     .login-brand {
       background: linear-gradient(155deg, #0f766e 0%, #115e59 55%, #0c4a6e 100%);
       color: #fff;
-      padding: 32px 28px;
+      padding: 36px 30px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
     }
-    .brand-tag {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.16);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      width: fit-content;
+    .login-brand h1 {
+      margin: 0 0 12px;
+      font-size: 1.9rem;
+      letter-spacing: 0.02em;
+      line-height: 1.15;
     }
-    .login-brand h2 {
-      margin: 16px 0 8px;
-      font-size: 1.55rem;
-      line-height: 1.25;
-    }
-    .login-brand p {
-      margin: 0 0 18px;
-      font-size: 0.88rem;
+    .login-brand .meaning {
+      margin: 0;
+      font-size: 1rem;
       line-height: 1.55;
-      color: rgba(255, 255, 255, 0.9);
-    }
-    .brand-features {
-      display: grid;
-      gap: 9px;
-      font-size: 0.82rem;
-    }
-    .brand-feat {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 9px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 500;
     }
     .login-form-pane {
       padding: 32px 28px;
@@ -97,7 +77,7 @@
       flex-direction: column;
       justify-content: center;
     }
-    .login-form-pane h3 {
+    .login-form-pane h2 {
       margin: 0 0 6px;
       font-size: 1.25rem;
     }
@@ -126,7 +106,7 @@
 
     @media (max-width: 760px) {
       .login-card { grid-template-columns: 1fr; }
-      .login-brand { padding: 24px 20px; }
+      .login-brand { padding: 28px 22px; }
       .login-form-pane { padding: 24px 20px; }
     }
 
@@ -230,20 +210,12 @@
 <div id="loginScreen" class="login-shell">
   <div class="login-card">
     <div class="login-brand">
-      <div>
-        <span class="brand-tag">RS ARSY • SIM-KPK PORTAL</span>
-        <h2>Sistem Informasi Keamanan, Parkir & Driver</h2>
-        <p>Pemantauan laporan operasional terpisah per unit dengan monitoring grafik real-time dan kontrol akses berbasis email.</p>
-        <div class="brand-features">
-          <div class="brand-feat"><b>Operator:</b> Akses seluruh data laporan, ekspor dokumen, serta tambah & nonaktifkan email anggota.</div>
-          <div class="brand-feat"><b>Anggota Unit:</b> Akses form laporan sesuai unit tugas dan melihat laporan yang ditulis sendiri.</div>
-        </div>
-      </div>
-      <small style="opacity:0.8;">Keamanan & Rekap Operasional Rumah Sakit</small>
+      <h1>SIM-KPK RS ARSY</h1>
+      <p class="meaning">Sistem Informasi Keamanan, Parkir &amp; Driver RS ARSY</p>
     </div>
 
     <div class="login-form-pane">
-      <h3>Masuk ke SIM-KPK</h3>
+      <h2>Masuk</h2>
       <p class="login-sub">Gunakan <b>Email</b> dan <b>Sandi</b> akun Anda untuk melanjutkan.</p>
       <form id="formLogin" onsubmit="handleLogin(event)">
         <div class="form-grid" style="grid-template-columns:1fr;">
@@ -272,7 +244,7 @@
 <div id="appScreen" class="hidden">
   <header>
     <div>
-      <h1>SIM-KPK RS ARSY — Sistem Laporan, Rekap & Monitoring</h1>
+      <h1>SIM-KPK RS ARSY — Sistem Informasi Keamanan, Parkir &amp; Driver RS ARSY</h1>
       <small>Patroli Keliling (2x/Shift) • Harian Satpam (1x/Shift) • Adzan Subuh • Parkir • Driver</small>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -285,11 +257,11 @@
   </header>
 
   <div class="container">
-    <!-- PANEL KONTROL OPERATOR LANGSUNG TERSEDIA -->
+    <!-- PANEL KONTROL OPERATOR -->
     <section id="operatorControlBox" class="card op-card operator-only hidden">
       <div class="toolbar">
-        <h2 style="margin:0;color:var(--primary-dark);">Panel Kontrol Operator — Tambah & Nonaktifkan Email Anggota</h2>
-        <span class="status-badge st-active">Akses Penuh Semua Laporan & Data</span>
+        <h2 style="margin:0;color:var(--primary-dark);">Panel Kontrol Operator — Tambah &amp; Nonaktifkan Email Anggota</h2>
+        <span class="status-badge st-active">Akses Penuh Semua Laporan &amp; Data</span>
       </div>
       <form id="form-member" onsubmit="saveMemberAccount(event)" style="margin-bottom:12px;">
         <div class="form-grid">
@@ -600,7 +572,10 @@
 
     <!-- TABEL REKAP -->
     <div id="rekapCard" class="card">
-      <h3 id="rekapTableTitle">Rekap Data Tersimpan</h3>
+      <div class="toolbar">
+        <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
+        <span class="op-msg" id="rekapDeleteMsg"></span>
+      </div>
       <div class="table-wrap">
         <table id="rekapTable"></table>
       </div>
@@ -609,9 +584,9 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V7';
-const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V7';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V7';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V9';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V9';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V9';
 const OPERATOR_EMAIL = 'suwaji.aji1305@gmail.com';
 const OPERATOR_PASS = 'Suwaji@1305';
 
@@ -632,6 +607,10 @@ let currentSession = null;
 let currentTab = 'patroli';
 let chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
+
+function isOperatorUser() {
+  return Boolean(currentSession && currentSession.level === 'operator');
+}
 
 function defaultMembers() {
   return [
@@ -821,9 +800,16 @@ function setOperatorMsg(msg) {
   setTimeout(() => { el.textContent = ''; }, 3000);
 }
 
+function setRekapDeleteMsg(msg) {
+  const el = document.getElementById('rekapDeleteMsg');
+  if (!el) return;
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
 function saveMemberAccount(e) {
   e.preventDefault();
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const fd = new FormData(e.target);
   const name = (fd.get('member_name') || '').trim();
   const email = (fd.get('member_email') || '').trim().toLowerCase();
@@ -853,7 +839,7 @@ function saveMemberAccount(e) {
 }
 
 function toggleMemberStatus(email) {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const members = loadMembers();
   const target = members.find(m => (m.email || '').toLowerCase() === email.toLowerCase());
   if (target) {
@@ -865,7 +851,7 @@ function toggleMemberStatus(email) {
 }
 
 function removeMemberAccount(email) {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const members = loadMembers().filter(m => (m.email || '').toLowerCase() !== email.toLowerCase());
   saveMembers(members);
   renderMembersTable();
@@ -938,6 +924,23 @@ function loadDB() {
 
 function saveDB(db) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+}
+
+function deleteReportRow(category, id) {
+  if (!isOperatorUser()) return;
+  const db = loadDB();
+  const list = db[category] || [];
+  const nextList = list.filter(item => String(item.id) !== String(id));
+  if (nextList.length === list.length) return;
+  db[category] = nextList;
+  saveDB(db);
+  setRekapDeleteMsg('Baris laporan berhasil dihapus.');
+  refreshView();
+}
+
+function renderOperatorDeleteBtn(category, id) {
+  if (!isOperatorUser()) return '';
+  return `<td><button class="btn btn-sm btn-danger" onclick="deleteReportRow('${category}', '${String(id).replace(/'/g, "\\'")}')">Hapus</button></td>`;
 }
 
 function initForms() {
@@ -1227,7 +1230,9 @@ function refreshView() {
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
   const kpiBox = document.getElementById('kpiBox');
   const table = document.getElementById('rekapTable');
-  const scopeNote = currentSession.level === 'anggota' ? ' — Laporan Milik Anda' : ' — Semua Laporan';
+  const isOp = isOperatorUser();
+  const actionTh = isOp ? '<th>Aksi</th>' : '';
+  const scopeNote = isOp ? ' — Semua Laporan' : ' — Laporan Milik Anda';
   document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()})${scopeNote} — ${rows.length} Data`;
 
   if (currentTab === 'patroli') {
@@ -1244,8 +1249,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Target / Shift (2x)</div><div class="val">${targetShift}</div></div>
     `;
     renderMonitoringCharts(rows, shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td>${renderOperatorDeleteBtn('patroli', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'harian') {
     const shifts = ['Pagi ( 07:00 - 14:00 )', 'Siang ( 14:00 - 21:00 )', 'Malam ( 21:00 - 07:00 )'];
     const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
@@ -1259,8 +1264,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">% Tanpa Insiden</div><div class="val">${pct(amanCount, rows.length)}%</div></div>
     `;
     renderMonitoringCharts(rows, ['Pagi','Siang','Malam'], counts, [target,target,target], ['Tanpa Insiden','Ada Insiden'], [pct(amanCount, rows.length), pct(insidenCount, rows.length)], 'Laporan Harian', 'Target (1x/Shift)');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td>${renderOperatorDeleteBtn('harian', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'adzan') {
     const done = rows.filter(r => r.status === 'Adzan Sudah Dilaksanakan').length;
     const notDone = rows.filter(r => r.status !== 'Adzan Sudah Dilaksanakan').length;
@@ -1270,8 +1275,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Tidak Dilaksanakan</div><div class="val">${notDone} (${pct(notDone, rows.length)}%)</div></div>
     `;
     renderMonitoringCharts(rows, ['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah', 'Total Entri');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td>${renderOperatorDeleteBtn('adzan', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'parkir') {
     const totalMotor = rows.reduce((a, b) => a + Number(b.motor || 0), 0);
     const totalMobil = rows.reduce((a, b) => a + Number(b.mobil || 0), 0);
@@ -1285,8 +1290,8 @@ function refreshView() {
       <div class="kpi"><div class="lbl">% Sistem Normal</div><div class="val">${pct(normalCount, rows.length)}%</div></div>
     `;
     renderMonitoringCharts(rows, ['Motor', 'Mobil', 'Sistem Normal'], [totalMotor, totalMobil, normalCount], [totalMotor, totalMobil, rows.length], ['Sistem Normal', 'Ada Kendala'], [pct(normalCount, rows.length), pct(kendalaCount, rows.length)], 'Realisasi', 'Acuan');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th></tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td></tr>`).join('') + '</tbody>';
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th>${actionTh}</tr></thead><tbody>` +
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td>${renderOperatorDeleteBtn('parkir', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'driver') {
     const totalTrip = rows.length;
     const totalJarak = rows.reduce((a, b) => a + Number(b.jarak || 0), 0);
@@ -1300,16 +1305,16 @@ function refreshView() {
       <div class="kpi"><div class="lbl">Total Biaya (BBM+Toll)</div><div class="val">Rp ${totalBiaya.toLocaleString('id-ID')}</div></div>
     `;
     renderMonitoringCharts(rows, ['Perjalanan', 'Jarak (KM)', 'BBM (L)'], [totalTrip, totalJarak, totalBBM], [totalTrip, totalJarak, totalBBM], ['Tanpa Insiden', 'Ada Insiden'], [pct(totalTrip - insidenCount, totalTrip), pct(insidenCount, totalTrip)], 'Capaian', 'Acuan');
-    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th></tr></thead><tbody>` +
+    table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => {
         const biaya = Number(r.harga_bbm || 0) + Number(r.etoll || 0);
-        return `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak}</td><td>${r.bbm_pakai}</td><td>Rp ${biaya.toLocaleString('id-ID')}</td><td>${r.insiden}</td></tr>`;
+        return `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak}</td><td>${r.bbm_pakai}</td><td>Rp ${biaya.toLocaleString('id-ID')}</td><td>${r.insiden}</td>${renderOperatorDeleteBtn('driver', r.id)}</tr>`;
       }).join('') + '</tbody>';
   }
 }
 
 function exportExcel() {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const db = loadDB();
   const wb = XLSX.utils.book_new();
   Object.keys(db).forEach(key => {
@@ -1326,7 +1331,7 @@ function exportExcel() {
 }
 
 function exportWord() {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
@@ -1349,7 +1354,7 @@ function exportWord() {
 }
 
 function exportPPT() {
-  if (!currentSession || currentSession.level !== 'operator') return;
+  if (!isOperatorUser()) return;
   if (typeof PptxGenJS === 'undefined') return alert('Library PptxGenJS belum termuat.');
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
