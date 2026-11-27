@@ -77,15 +77,8 @@
       flex-direction: column;
       justify-content: center;
     }
-    .login-form-pane h2 {
-      margin: 0 0 6px;
-      font-size: 1.25rem;
-    }
-    .login-sub {
-      margin: 0 0 16px;
-      font-size: 0.83rem;
-      color: var(--muted);
-    }
+    .login-form-pane h2 { margin: 0 0 6px; font-size: 1.25rem; }
+    .login-sub { margin: 0 0 16px; font-size: 0.83rem; color: var(--muted); }
     .login-err {
       color: var(--danger);
       font-size: 0.82rem;
@@ -168,9 +161,14 @@
       margin-bottom: 14px;
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
     }
-    .op-card {
-      border: 2px solid var(--primary);
-      background: #f8fffe;
+    .op-card { border: 2px solid var(--primary); background: #f8fffe; }
+    .alert-card {
+      border-left: 4px solid var(--warn);
+      background: #fffbeb;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
     }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 1rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 10px; }
@@ -206,6 +204,7 @@
     .btn-export { background: var(--accent); color: #fff; }
     .btn-warn { background: var(--warn); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--border); }
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; margin-bottom: 12px; }
     .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 11px; }
@@ -229,6 +228,38 @@
       padding: 10px 12px;
       margin-bottom: 12px;
       font-size: 0.8rem;
+    }
+
+    /* DETAIL MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      z-index: 999;
+    }
+    .modal-card {
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 18px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+    }
+    .detail-pre {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      margin: 0;
     }
   </style>
 </head>
@@ -303,6 +334,11 @@
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
           <input type="url" id="cloudUrlInput" placeholder="Tempel URL Web App Google Apps Script (https://script.google.com/macros/s/.../exec)" style="flex:1;min-width:240px;" />
           <button class="btn btn-primary btn-sm" type="button" onclick="saveCloudUrl()">Simpan & Hubungkan Cloud</button>
+          <button class="btn btn-outline btn-sm" type="button" onclick="exportBackupJson()">Cadangkan JSON</button>
+          <label class="btn btn-outline btn-sm" style="flex-direction:row;align-items:center;gap:4px;cursor:pointer;margin:0;">
+            Pulihkan JSON
+            <input type="file" accept=".json,application/json" onchange="importBackupJson(event)" style="display:none;" />
+          </label>
         </div>
         <div id="cloudConnInfo" style="margin-top:5px;color:#0f766e;font-weight:600;"></div>
       </div>
@@ -370,6 +406,8 @@
         </div>
         <div id="activeUnitTitle" style="font-weight:700;color:var(--primary-dark);">Unit Aktif: Patroli Keliling</div>
       </div>
+
+      <div id="alertSummaryBox" class="alert-card"></div>
       <div class="kpis" id="kpiBox"></div>
       <div class="grid-3">
         <div class="chart-box"><canvas id="chartTrend"></canvas></div>
@@ -380,7 +418,10 @@
 
     <!-- FORM 1: PATROLI KELILING -->
     <section id="panel-patroli" class="panel card">
-      <h2>Input Laporan Mutu Patroli Keliling (Target 2x / Shift)</h2>
+      <div class="toolbar">
+        <h2 style="margin:0;">Input Laporan Mutu Patroli Keliling (Target 2x / Shift)</h2>
+        <button class="btn btn-outline btn-sm" type="button" onclick="setAllPatroliAman()">Set Semua Area = Aman</button>
+      </div>
       <form id="form-patroli" onsubmit="savePatroli(event)">
         <div class="form-grid">
           <label>Tanggal <input type="date" name="tanggal" required /></label>
@@ -418,7 +459,10 @@
 
     <!-- FORM 2: HARIAN SATPAM -->
     <section id="panel-harian" class="panel card hidden">
-      <h2>Input Laporan Kegiatan Harian Satpam (Target 1x / Shift)</h2>
+      <div class="toolbar">
+        <h2 style="margin:0;">Input Laporan Kegiatan Harian Satpam (Target 1x / Shift)</h2>
+        <button class="btn btn-outline btn-sm" type="button" onclick="setHarianNormal()">Set Inventaris = Normal/Aman</button>
+      </div>
       <form id="form-harian" onsubmit="saveHarian(event)">
         <div class="form-grid">
           <label>Nama Satpam Jaga <input type="text" name="nama" required placeholder="Nama petugas" /></label>
@@ -617,8 +661,18 @@
     <!-- TABEL REKAP -->
     <div id="rekapCard" class="card">
       <div class="toolbar">
-        <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
-        <span class="op-msg" id="rekapDeleteMsg"></span>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
+          <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
+          <span class="op-msg" id="rekapDeleteMsg"></span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <input type="search" id="searchKeyword" oninput="refreshView()" placeholder="Cari petugas / catatan / tujuan..." style="width:220px;" />
+          <select id="filterFlag" onchange="refreshView()" style="width:auto;">
+            <option value="all">Semua Status</option>
+            <option value="issue">Hanya Temuan / Kendala / Insiden</option>
+            <option value="normal">Hanya Normal / Aman</option>
+          </select>
+        </div>
       </div>
       <div class="table-wrap">
         <table id="rekapTable"></table>
@@ -627,15 +681,24 @@
   </div>
 </div>
 
+<!-- MODAL DETAIL LAPORAN -->
+<div id="detailModal" class="modal-backdrop hidden" onclick="closeDetailModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="toolbar">
+      <h3 id="detailTitle" style="margin:0;">Detail Laporan</h3>
+      <button class="btn btn-danger btn-sm" type="button" onclick="closeDetailModal()">Tutup</button>
+    </div>
+    <pre id="detailContent" class="detail-pre"></pre>
+  </div>
+</div>
+
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V10';
-const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V10';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V10';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V11';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V11';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V11';
 const CLOUD_URL_KEY = 'SIM_KPK_RS_ARSY_CLOUD_URL';
 
-// Opsional: isi URL Web App Google Apps Script di bawah jika ingin sinkronisasi lintas HP via Google Sheets
 const DEFAULT_CLOUD_URL = '';
-
 const OPERATOR_EMAIL = 'suwaji.aji1305@gmail.com';
 const OPERATOR_PASS = 'Suwaji@1305';
 
@@ -671,9 +734,7 @@ function saveCloudUrl() {
   const val = (input.value || '').trim();
   localStorage.setItem(CLOUD_URL_KEY, val);
   updateCloudIndicator();
-  if (val) {
-    pushAllToCloud();
-  }
+  if (val) pushAllToCloud();
 }
 
 function updateCloudIndicator() {
@@ -688,7 +749,7 @@ function updateCloudIndicator() {
     if (infoEl) infoEl.textContent = 'Terhubung ke Cloud: Semua HP yang membuka aplikasi akan menyinkronkan akun & laporan.';
   } else {
     if (loginPill) loginPill.textContent = 'Status Server: Mode Bawaan + Lokal HP';
-    if (infoEl) infoEl.textContent = 'Belum ada URL Cloud. Isi URL Apps Script di atas (atau di DEFAULT_CLOUD_URL kode) agar semua HP sinkron.';
+    if (infoEl) infoEl.textContent = 'Belum ada URL Cloud. Isi URL Apps Script di atas agar semua HP sinkron otomatis.';
   }
 }
 
@@ -702,12 +763,8 @@ async function syncFromCloud(showAlert = false) {
     const res = await fetch(`${url}?action=getAll&t=${Date.now()}`, { cache: 'no-store' });
     const data = await res.json();
     if (data && data.ok) {
-      if (Array.isArray(data.members) && data.members.length > 0) {
-        saveMembers(data.members, false);
-      }
-      if (data.db && typeof data.db === 'object') {
-        saveDB(data.db, false);
-      }
+      if (Array.isArray(data.members) && data.members.length > 0) saveMembers(data.members, false);
+      if (data.db && typeof data.db === 'object') saveDB(data.db, false);
       if (currentSession) {
         if (isOperatorUser()) renderMembersTable();
         refreshView();
@@ -715,7 +772,7 @@ async function syncFromCloud(showAlert = false) {
       if (showAlert) setOperatorMsg('Sinkronisasi data dari Cloud berhasil.');
       return true;
     }
-  } catch (err) {
+  } catch {
     if (showAlert) setOperatorMsg('Gagal menyinkronkan dari Cloud (menggunakan data lokal).');
   }
   return false;
@@ -729,13 +786,44 @@ async function pushAllToCloud() {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'saveAll',
-        members: loadMembers(),
-        db: loadDB()
-      })
+      body: JSON.stringify({ action: 'saveAll', members: loadMembers(), db: loadDB() })
     });
   } catch {}
+}
+
+function exportBackupJson() {
+  if (!isOperatorUser()) return;
+  const payload = { exportedAt: new Date().toISOString(), members: loadMembers(), db: loadDB() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `SIM_KPK_BACKUP_${document.getElementById('refDate').value || 'data'}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  setOperatorMsg('File cadangan JSON berhasil diunduh.');
+}
+
+function importBackupJson(event) {
+  if (!isOperatorUser()) return;
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(String(reader.result || '{}'));
+      if (Array.isArray(parsed.members)) saveMembers(parsed.members, false);
+      if (parsed.db && typeof parsed.db === 'object') saveDB(parsed.db, false);
+      pushAllToCloud();
+      renderMembersTable();
+      refreshView();
+      setOperatorMsg('Data cadangan JSON berhasil dipulihkan.');
+    } catch {
+      setOperatorMsg('File JSON tidak valid.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 function isOperatorUser() {
@@ -761,9 +849,7 @@ function loadMembers() {
     if (!Array.isArray(saved) || saved.length === 0) return defaults;
     const map = new Map();
     defaults.forEach(d => map.set(d.email.toLowerCase(), d));
-    saved.forEach(s => {
-      if (s && s.email) map.set(s.email.toLowerCase(), s);
-    });
+    saved.forEach(s => { if (s && s.email) map.set(s.email.toLowerCase(), s); });
     return Array.from(map.values());
   } catch {
     return defaults;
@@ -809,13 +895,7 @@ async function handleLogin(e) {
       return;
     }
     errEl.textContent = '';
-    const session = {
-      email,
-      name: 'SUWAJI AJI',
-      level: 'operator',
-      unit: 'all',
-      roleLabel: 'Operator'
-    };
+    const session = { email, name: 'SUWAJI AJI', level: 'operator', unit: 'all', roleLabel: 'Operator' };
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
     showApp(session);
     return;
@@ -837,11 +917,7 @@ async function handleLogin(e) {
   }
 
   errEl.textContent = '';
-  const unitRoleMap = {
-    keamanan: 'Anggota Keamanan',
-    parkir: 'Anggota Parkir',
-    driver: 'Anggota Driver'
-  };
+  const unitRoleMap = { keamanan: 'Anggota Keamanan', parkir: 'Anggota Parkir', driver: 'Anggota Driver' };
   const session = {
     email: found.email.toLowerCase(),
     name: found.name,
@@ -863,20 +939,14 @@ function handleLogout() {
 
 function prefillAuthorFields(session) {
   document.querySelectorAll('input[name="petugas"], input[name="nama"], input[name="driver_nama"]').forEach(el => {
-    if (!el.value.trim()) {
-      el.value = session.name;
-    }
+    if (!el.value.trim()) el.value = session.name;
   });
 }
 
 function applyRolePermissions(session) {
   const isOperator = session.level === 'operator';
-  document.querySelectorAll('.export-only').forEach(btn => {
-    btn.classList.toggle('hidden', !isOperator);
-  });
-  document.querySelectorAll('.operator-only').forEach(el => {
-    el.classList.toggle('hidden', !isOperator);
-  });
+  document.querySelectorAll('.export-only').forEach(btn => btn.classList.toggle('hidden', !isOperator));
+  document.querySelectorAll('.operator-only').forEach(el => el.classList.toggle('hidden', !isOperator));
 
   if (isOperator) {
     updateCloudIndicator();
@@ -887,12 +957,9 @@ function applyRolePermissions(session) {
   let firstAllowedTab = null;
 
   tabButtons.forEach(btn => {
-    const btnUnit = btn.dataset.unit;
-    const allowed = isOperator ? true : (btnUnit === session.unit);
+    const allowed = isOperator ? true : (btn.dataset.unit === session.unit);
     btn.classList.toggle('hidden', !allowed);
-    if (allowed && !firstAllowedTab) {
-      firstAllowedTab = btn.dataset.tab;
-    }
+    if (allowed && !firstAllowedTab) firstAllowedTab = btn.dataset.tab;
   });
 
   switchTab(firstAllowedTab || 'patroli');
@@ -1078,6 +1145,44 @@ function saveDB(db, pushCloud = true) {
   if (pushCloud) pushAllToCloud();
 }
 
+function setAllPatroliAman() {
+  const form = document.getElementById('form-patroli');
+  AREAS.forEach(a => {
+    const sel = form.elements['area_' + btoa(a).replace(/=/g, '')];
+    if (sel) sel.value = 'Aman';
+  });
+  form.elements['kondisi'].value = 'Tidak Ada Temuan';
+  if (!form.elements['temuan'].value.trim()) form.elements['temuan'].value = 'Aman';
+}
+
+function setHarianNormal() {
+  const form = document.getElementById('form-harian');
+  form.elements['insiden'].value = 'Tidak Ada Insiden';
+  form.elements['komputer'].value = 'Ada, Berfungsi Baik';
+  form.elements['kipas'].value = 'Ada, Berfungsi Baik';
+  form.elements['cctv'].value = 'Ada, Berfungsi Baik';
+  form.elements['ampli'].value = 'Ada, Berfungsi Baik';
+  form.elements['telpon'].value = 'Ada, Berfungsi Baik';
+  form.elements['kunci'].value = 'Lengkap dan Aman';
+  form.elements['apar'].value = 'Lengkap dan Aman';
+  form.elements['ket_insiden'].value = 'Tidak ada insiden';
+  form.elements['cat_inv'].value = 'Aman';
+}
+
+function openDetailModal(category, id) {
+  const db = loadDB();
+  const item = (db[category] || []).find(r => String(r.id) === String(id));
+  if (!item) return;
+  document.getElementById('detailTitle').textContent = `Detail Laporan ${category.toUpperCase()} (${item.tanggal || '-'})`;
+  document.getElementById('detailContent').textContent = JSON.stringify(item, null, 2);
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
+function closeDetailModal(event) {
+  if (event && event.target && event.target.id !== 'detailModal') return;
+  document.getElementById('detailModal').classList.add('hidden');
+}
+
 function deleteReportRow(category, id) {
   if (!isOperatorUser()) return;
   const db = loadDB();
@@ -1090,9 +1195,12 @@ function deleteReportRow(category, id) {
   refreshView();
 }
 
-function renderOperatorDeleteBtn(category, id) {
-  if (!isOperatorUser()) return '';
-  return `<td><button class="btn btn-sm btn-danger" onclick="deleteReportRow('${category}', '${String(id).replace(/'/g, "\\'")}')">Hapus</button></td>`;
+function renderRowActions(category, id) {
+  const detailBtn = `<button class="btn btn-sm btn-outline" onclick="openDetailModal('${category}', '${String(id).replace(/'/g, "\\'")}')">Detail</button>`;
+  const delBtn = isOperatorUser()
+    ? `<button class="btn btn-sm btn-danger" onclick="deleteReportRow('${category}', '${String(id).replace(/'/g, "\\'")}')">Hapus</button>`
+    : '';
+  return `<td><div style="display:flex;gap:6px;">${detailBtn}${delBtn}</div></td>`;
 }
 
 function initForms() {
@@ -1122,9 +1230,7 @@ function initForms() {
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (!btn.classList.contains('hidden')) {
-        switchTab(btn.dataset.tab);
-      }
+      if (!btn.classList.contains('hidden')) switchTab(btn.dataset.tab);
     });
   });
 }
@@ -1134,9 +1240,7 @@ function savePatroli(e) {
   const fd = new FormData(e.target);
   const db = loadDB();
   const areas = {};
-  AREAS.forEach(a => {
-    areas[a] = fd.get('area_' + btoa(a).replace(/=/g,'')) || 'Aman';
-  });
+  AREAS.forEach(a => { areas[a] = fd.get('area_' + btoa(a).replace(/=/g,'')) || 'Aman'; });
   db.patroli.unshift({
     id: Date.now(),
     authorEmail: currentSession ? currentSession.email : 'unknown',
@@ -1265,9 +1369,22 @@ function saveDriver(e) {
   refreshView();
 }
 
+function isIssueRow(r) {
+  return (
+    r.kondisi === 'Ada Temuan' ||
+    r.status === 'Tidak Patroli' ||
+    r.status === 'Tidak Dilaksanakan' ||
+    r.insiden === 'Ya' ||
+    (r.kendala && r.kendala !== 'Tidak Ada Kendala') ||
+    (r.status_sistem && r.status_sistem !== 'Berfungsi Normal Sepanjang Shift')
+  );
+}
+
 function filterByRoleAndPeriode(rows) {
   const mode = document.getElementById('periodeMode').value;
   const ref = new Date(document.getElementById('refDate').value + 'T00:00:00');
+  const kw = (document.getElementById('searchKeyword')?.value || '').trim().toLowerCase();
+  const flag = document.getElementById('filterFlag')?.value || 'all';
   const isAnggota = currentSession && currentSession.level === 'anggota';
 
   return rows.filter(r => {
@@ -1276,15 +1393,18 @@ function filterByRoleAndPeriode(rows) {
       const nameMatch = (r.petugas || r.nama || r.driver_nama || '').toLowerCase() === (currentSession.name || '').toLowerCase();
       if (!emailMatch && !nameMatch) return false;
     }
-    if (isNaN(ref)) return true;
-    const d = new Date((r.tanggal || '') + 'T00:00:00');
-    if (isNaN(d)) return true;
-    if (mode === 'harian') return d.toDateString() === ref.toDateString();
-    if (mode === 'mingguan') {
-      const diff = Math.abs(d - ref) / (1000 * 60 * 60 * 24);
-      return diff <= 3.5;
+    if (!isNaN(ref)) {
+      const d = new Date((r.tanggal || '') + 'T00:00:00');
+      if (!isNaN(d)) {
+        if (mode === 'harian' && d.toDateString() !== ref.toDateString()) return false;
+        if (mode === 'mingguan' && (Math.abs(d - ref) / (1000 * 60 * 60 * 24)) > 3.5) return false;
+        if (mode === 'bulanan' && (d.getFullYear() !== ref.getFullYear() || d.getMonth() !== ref.getMonth())) return false;
+      }
     }
-    return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth();
+    if (flag === 'issue' && !isIssueRow(r)) return false;
+    if (flag === 'normal' && isIssueRow(r)) return false;
+    if (kw && !JSON.stringify(r).toLowerCase().includes(kw)) return false;
+    return true;
   });
 }
 
@@ -1332,10 +1452,7 @@ function renderMonitoringCharts(rows, labels, s1, s2, pctLabels, pctVals, title1
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        title: { display: true, text: 'Monitoring Tren Harian Laporan', font: { size: 13, weight: 'bold' } },
-        legend: { display: false }
-      },
+      plugins: { title: { display: true, text: 'Monitoring Tren Harian Laporan', font: { size: 13, weight: 'bold' } }, legend: { display: false } },
       scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
     }
   });
@@ -1386,12 +1503,23 @@ function refreshView() {
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
+  const issueRows = rows.filter(isIssueRow);
   const kpiBox = document.getElementById('kpiBox');
   const table = document.getElementById('rekapTable');
-  const isOp = isOperatorUser();
-  const actionTh = isOp ? '<th>Aksi</th>' : '';
-  const scopeNote = isOp ? ' — Semua Laporan' : ' — Laporan Milik Anda';
+  const alertBox = document.getElementById('alertSummaryBox');
+  const actionTh = '<th>Aksi</th>';
+  const scopeNote = isOperatorUser() ? ' — Semua Laporan' : ' — Laporan Milik Anda';
   document.getElementById('rekapTableTitle').textContent = `Rekap ${currentTab.toUpperCase()} (${mode.toUpperCase()})${scopeNote} — ${rows.length} Data`;
+
+  if (alertBox) {
+    if (issueRows.length > 0) {
+      const sample = issueRows[0];
+      const detailText = sample.temuan || sample.ket_insiden || sample.keterangan || sample.kendala || sample.hambatan || '-';
+      alertBox.innerHTML = `<b>Perhatian (${issueRows.length} catatan temuan/kendala/insiden):</b> Terbaru pada ${sample.tanggal || '-'} oleh <b>${sample.petugas || sample.nama || sample.driver_nama || '-'}</b> — ${detailText}`;
+    } else {
+      alertBox.innerHTML = `<b>Status Operasional Aman:</b> Tidak ada temuan, kendala, atau insiden pada filter laporan saat ini.`;
+    }
+  }
 
   if (currentTab === 'patroli') {
     const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
@@ -1408,7 +1536,7 @@ function refreshView() {
     `;
     renderMonitoringCharts(rows, shifts, realPerShift, shifts.map(()=>targetShift), shifts, pctPerShift, 'Realisasi Patroli', 'Target (2x/Shift)');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Dinas</th><th>Status</th><th>Jam</th><th>Petugas</th><th>Kondisi</th><th>Temuan</th>${actionTh}</tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td>${renderOperatorDeleteBtn('patroli', r.id)}</tr>`).join('') + '</tbody>';
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.dinas}</td><td>${r.status}</td><td>${r.jam}</td><td>${r.petugas}</td><td>${r.kondisi}</td><td>${r.temuan}</td>${renderRowActions('patroli', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'harian') {
     const shifts = ['Pagi ( 07:00 - 14:00 )', 'Siang ( 14:00 - 21:00 )', 'Malam ( 21:00 - 07:00 )'];
     const daysCount = Math.max(1, new Set(rows.map(r => r.tanggal)).size);
@@ -1423,7 +1551,7 @@ function refreshView() {
     `;
     renderMonitoringCharts(rows, ['Pagi','Siang','Malam'], counts, [target,target,target], ['Tanpa Insiden','Ada Insiden'], [pct(amanCount, rows.length), pct(insidenCount, rows.length)], 'Laporan Harian', 'Target (1x/Shift)');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Nama Satpam</th><th>Shift</th><th>Lokasi</th><th>Insiden</th><th>Petugas Berikut</th>${actionTh}</tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td>${renderOperatorDeleteBtn('harian', r.id)}</tr>`).join('') + '</tbody>';
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.insiden}</td><td>${r.next_petugas}</td>${renderRowActions('harian', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'adzan') {
     const done = rows.filter(r => r.status === 'Adzan Sudah Dilaksanakan').length;
     const notDone = rows.filter(r => r.status !== 'Adzan Sudah Dilaksanakan').length;
@@ -1434,7 +1562,7 @@ function refreshView() {
     `;
     renderMonitoringCharts(rows, ['Sudah Adzan','Tidak Dilaksanakan'], [done, notDone], [rows.length, rows.length], ['Sudah Adzan','Tidak Dilaksanakan'], [pct(done, rows.length), pct(notDone, rows.length)], 'Jumlah', 'Total Entri');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Waktu</th><th>Status</th><th>Petugas</th><th>Keterangan</th>${actionTh}</tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td>${renderOperatorDeleteBtn('adzan', r.id)}</tr>`).join('') + '</tbody>';
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.waktu}</td><td>${r.status}</td><td>${r.petugas}</td><td>${r.keterangan}</td>${renderRowActions('adzan', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'parkir') {
     const totalMotor = rows.reduce((a, b) => a + Number(b.motor || 0), 0);
     const totalMobil = rows.reduce((a, b) => a + Number(b.mobil || 0), 0);
@@ -1449,7 +1577,7 @@ function refreshView() {
     `;
     renderMonitoringCharts(rows, ['Motor', 'Mobil', 'Sistem Normal'], [totalMotor, totalMobil, normalCount], [totalMotor, totalMobil, rows.length], ['Sistem Normal', 'Ada Kendala'], [pct(normalCount, rows.length), pct(kendalaCount, rows.length)], 'Realisasi', 'Acuan');
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Petugas</th><th>Shift</th><th>Lokasi</th><th>Motor</th><th>Mobil</th><th>Sistem</th><th>Kendala</th><th>Storan (Rp)</th>${actionTh}</tr></thead><tbody>` +
-      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td>${renderOperatorDeleteBtn('parkir', r.id)}</tr>`).join('') + '</tbody>';
+      rows.map(r => `<tr><td>${r.tanggal}</td><td>${r.nama}</td><td>${r.shift}</td><td>${r.lokasi}</td><td>${r.motor}</td><td>${r.mobil}</td><td>${r.status_sistem}</td><td>${r.kendala}</td><td>Rp ${Number(r.storan || 0).toLocaleString('id-ID')}</td>${renderRowActions('parkir', r.id)}</tr>`).join('') + '</tbody>';
   } else if (currentTab === 'driver') {
     const totalTrip = rows.length;
     const totalJarak = rows.reduce((a, b) => a + Number(b.jarak || 0), 0);
@@ -1466,7 +1594,7 @@ function refreshView() {
     table.innerHTML = `<thead><tr><th>Tanggal</th><th>Driver</th><th>Jenis</th><th>Kendaraan</th><th>Tujuan</th><th>Jarak (KM)</th><th>BBM (L)</th><th>Biaya (Rp)</th><th>Insiden</th>${actionTh}</tr></thead><tbody>` +
       rows.map(r => {
         const biaya = Number(r.harga_bbm || 0) + Number(r.etoll || 0);
-        return `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak}</td><td>${r.bbm_pakai}</td><td>Rp ${biaya.toLocaleString('id-ID')}</td><td>${r.insiden}</td>${renderOperatorDeleteBtn('driver', r.id)}</tr>`;
+        return `<tr><td>${r.tanggal}</td><td>${r.driver_nama}</td><td>${r.jenis_permintaan}</td><td>${r.kendaraan}</td><td>${r.tujuan}</td><td>${r.jarak}</td><td>${r.bbm_pakai}</td><td>Rp ${biaya.toLocaleString('id-ID')}</td><td>${r.insiden}</td>${renderRowActions('driver', r.id)}</tr>`;
       }).join('') + '</tbody>';
   }
 }
@@ -1478,8 +1606,8 @@ function exportExcel() {
   Object.keys(db).forEach(key => {
     const flatRows = (db[key] || []).map(item => {
       const copy = { ...item };
-      if (copy.areas) { copy.areas = JSON.stringify(copy.areas); }
-      if (copy.jam) { copy.jam = JSON.stringify(copy.jam); }
+      if (copy.areas) copy.areas = JSON.stringify(copy.areas);
+      if (copy.jam) copy.jam = JSON.stringify(copy.jam);
       return copy;
     });
     const ws = XLSX.utils.json_to_sheet(flatRows);
