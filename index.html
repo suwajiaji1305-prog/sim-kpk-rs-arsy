@@ -3,36 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIM-KPK RS ARSY - Login Email/Password, Akses Role & Monitoring Diagram</title>
+  <title>SIM-KPK RS ARSY - Portal Login & Kontrol Laporan</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
   <style>
     :root {
-      --bg: #f1f5f9; --card: #ffffff; --ink: #0f172a; --muted: #64748b;
-      --primary: #0f766e; --primary-dark: #115e59; --accent: #0284c7;
-      --warn: #d97706; --danger: #dc2626; --border: #cbd5e1;
+      --bg: #eef2f6;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-soft: #ccfbf1;
+      --accent: #0284c7;
+      --warn: #d97706;
+      --danger: #dc2626;
+      --border: #cbd5e1;
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); }
-    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: #fff; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    /* LOGIN PORTAL */
+    .login-shell {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(2, 132, 199, 0.14), transparent 45%),
+        var(--bg);
+    }
+    .login-card {
+      width: 100%;
+      max-width: 920px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px -18px rgba(15, 23, 42, 0.25);
+    }
+    .login-brand {
+      background: linear-gradient(155deg, #0f766e 0%, #115e59 55%, #0c4a6e 100%);
+      color: #fff;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .brand-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      width: fit-content;
+    }
+    .login-brand h2 {
+      margin: 16px 0 8px;
+      font-size: 1.55rem;
+      line-height: 1.25;
+    }
+    .login-brand p {
+      margin: 0 0 18px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .brand-features {
+      display: grid;
+      gap: 9px;
+      font-size: 0.82rem;
+    }
+    .brand-feat {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .login-form-pane {
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-form-pane h3 {
+      margin: 0 0 6px;
+      font-size: 1.25rem;
+    }
+    .login-sub {
+      margin: 0 0 18px;
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+    .login-err {
+      color: var(--danger);
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+    .cred-note {
+      margin-top: 14px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px dashed var(--border);
+      font-size: 0.78rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 760px) {
+      .login-card { grid-template-columns: 1fr; }
+      .login-brand { padding: 24px 20px; }
+      .login-form-pane { padding: 24px 20px; }
+    }
+
+    /* APLIKASI UTAMA */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    }
     header h1 { margin: 0; font-size: 1.1rem; }
-    header small { opacity: .9; display: block; }
+    header small { opacity: 0.9; display: block; }
     .container { max-width: 1360px; margin: 14px auto; padding: 0 14px 36px; }
     .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-    .tab-btn { border: 1px solid var(--border); background: #fff; color: var(--ink); padding: 9px 13px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; transition: .15s; }
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--ink);
+      padding: 9px 13px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.86rem;
+      transition: 0.15s;
+    }
+    .tab-btn:hover { border-color: var(--primary); }
     .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
     .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 1rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
-    label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: #334155; }
-    input, select, textarea { width: 100%; padding: 8px 9px; border: 1px solid var(--border); border-radius: 7px; font-size: .86rem; background: #fff; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; font-weight: 600; color: #334155; }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      background: #fff;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
     textarea { min-height: 64px; resize: vertical; }
     .areas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin: 10px 0; }
     .hours-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; margin: 10px 0; }
-    .btn { border: none; border-radius: 8px; padding: 9px 14px; font-weight: 700; cursor: pointer; font-size: .85rem; }
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.84rem;
+      transition: 0.15s;
+    }
+    .btn-sm { padding: 5px 10px; font-size: 0.76rem; border-radius: 6px; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-dark); }
     .btn-export { background: var(--accent); color: #fff; }
@@ -42,58 +208,60 @@
     .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 10px; margin-bottom: 12px; }
     .kpi { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 11px; }
     .kpi .val { font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); }
-    .kpi .lbl { font-size: .76rem; color: var(--muted); }
+    .kpi .lbl { font-size: 0.76rem; color: var(--muted); }
     .chart-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; height: 270px; position: relative; }
     .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; }
-    table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
     th { background: #f8fafc; position: sticky; top: 0; z-index: 1; }
     .hidden { display: none; }
-    .login-wrap { max-width: 460px; margin: 40px auto; padding: 0 14px; }
-    .login-err { color: var(--danger); font-size: .82rem; font-weight: 600; margin-top: 8px; min-height: 18px; }
-    .user-pill { background: rgba(255,255,255,.16); padding: 6px 10px; border-radius: 8px; font-size: .8rem; font-weight: 600; }
-    .hint-box { margin-top: 12px; padding: 10px; background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; font-size: .78rem; color: #334155; }
+    .user-pill { background: rgba(255, 255, 255, 0.16); padding: 6px 11px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; }
+    .status-badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.73rem; font-weight: 700; }
+    .st-active { background: #dcfce7; color: #166534; }
+    .st-inactive { background: #fee2e2; color: #991b1b; }
   </style>
 </head>
 <body>
 
-<!-- HALAMAN LOGIN EMAIL & PASSWORD -->
-<div id="loginScreen" class="login-wrap">
-  <div class="card">
-    <h2>Login SIM-KPK RS ARSY</h2>
-    <p style="margin:0 0 12px;font-size:.82rem;color:var(--muted);">Masuk menggunakan <b>Email</b> dan <b>Password</b> sesuai hak akses (Operator / Ka. Unit atau Anggota Unit).</p>
-    <form id="formLogin" onsubmit="handleLogin(event)">
-      <div class="form-grid" style="grid-template-columns:1fr;">
-        <label>Email Petugas / Operator
-          <input type="email" id="loginEmail" required placeholder="suwaji.aji1305@gmail.com" />
-        </label>
-        <label>Password
-          <input type="password" id="loginPassword" required placeholder="Masukkan password" />
-        </label>
-        <label>Level Akses Login
-          <select id="loginLevel">
-            <option value="ka_unit">Ka. Unit / Operator (Akses Semua Laporan)</option>
-            <option value="anggota">Anggota (Sesuai Unit & Laporan Sendiri)</option>
-          </select>
-        </label>
-        <label id="unitSelectGroup" class="hidden">Unit Tugas Anggota
-          <select id="loginUnit">
-            <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
-            <option value="parkir">Unit Parkir</option>
-            <option value="driver">Unit Driver</option>
-          </select>
-        </label>
+<!-- HALAMAN LOGIN PORTAL -->
+<div id="loginScreen" class="login-shell">
+  <div class="login-card">
+    <div class="login-brand">
+      <div>
+        <span class="brand-tag">RS ARSY • SIM-KPK PORTAL</span>
+        <h2>Sistem Informasi Keamanan, Parkir & Driver</h2>
+        <p>Pemantauan laporan operasional terpisah per unit dengan monitoring grafik real-time dan kontrol akses berbasis email.</p>
+        <div class="brand-features">
+          <div class="brand-feat"><b>Operator / Ka. Unit:</b> Akses seluruh laporan, rekap, ekspor dokumen, serta tambah & nonaktifkan email anggota.</div>
+          <div class="brand-feat"><b>Anggota Unit:</b> Akses form laporan sesuai unit tugas dan riwayat laporan yang ditulis sendiri.</div>
+        </div>
       </div>
-      <div class="login-err" id="loginErr"></div>
-      <div style="margin-top:10px;">
-        <button class="btn btn-primary" type="submit" style="width:100%;">Masuk Sistem</button>
-      </div>
-      <div class="hint-box">
-        <b>Akun Terdaftar:</b><br/>
-        • Operator / Ka. Unit: <code>suwaji.aji1305@gmail.com</code> (sandi khusus operator)<br/>
-        • Anggota Unit (sandi <code>arsy123</code>): <code>parkir@rsarsy.id</code>, <code>driver@rsarsy.id</code>, atau email anggota lainnya.
-      </div>
-    </form>
+      <small style="opacity:0.8;">Keamanan & Rekap Operasional Rumah Sakit</small>
+    </div>
+
+    <div class="login-form-pane">
+      <h3>Masuk ke SIM-KPK</h3>
+      <p class="login-sub">Gunakan <b>Email</b> dan <b>Sandi</b> akun Anda untuk melanjutkan.</p>
+      <form id="formLogin" onsubmit="handleLogin(event)">
+        <div class="form-grid" style="grid-template-columns:1fr;">
+          <label>Alamat Email
+            <input type="email" id="loginEmail" required placeholder="suwaji.aji1305@gmail.com" />
+          </label>
+          <label>Sandi / Password
+            <input type="password" id="loginPassword" required placeholder="Masukkan sandi akun" />
+          </label>
+        </div>
+        <div class="login-err" id="loginErr"></div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-primary" type="submit" style="width:100%;padding:11px 14px;">Masuk ke Sistem</button>
+        </div>
+        <div class="cred-note">
+          <b>Akun Operator Utama:</b><br/>
+          Email: <code>suwaji.aji1305@gmail.com</code> • Sandi: <code>Suwaji@1305</code><br/>
+          <b>Anggota Unit:</b> Gunakan email anggota yang terdaftar & aktif (sandi bawaan anggota: <code>arsy123</code>).
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -120,10 +288,11 @@
       <button class="tab-btn" data-tab="adzan" data-unit="keamanan">3. Laporan Adzan Subuh</button>
       <button class="tab-btn" data-tab="parkir" data-unit="parkir">4. Unit Parkir</button>
       <button class="tab-btn" data-tab="driver" data-unit="driver">5. Unit Driver</button>
+      <button class="tab-btn operator-only hidden" data-tab="kontrol" data-unit="operator">6. Kontrol Akun Anggota</button>
     </div>
 
     <!-- FILTER REKAP & MONITORING DIAGRAM -->
-    <div class="card">
+    <div id="monitoringCard" class="card">
       <div class="toolbar">
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
           <label style="flex-direction:row;align-items:center;gap:6px;">
@@ -385,8 +554,47 @@
       </form>
     </section>
 
+    <!-- PANEL 6: KONTROL AKUN ANGGOTA (KHUSUS OPERATOR) -->
+    <section id="panel-kontrol" class="panel card hidden">
+      <h2>Kontrol Akun Anggota (Operator)</h2>
+      <p style="margin:0 0 12px;font-size:0.83rem;color:var(--muted);">Tambah email anggota baru, atur unit tugas, reset sandi, atau aktifkan / nonaktifkan akses email anggota.</p>
+      <form id="form-member" onsubmit="saveMemberAccount(event)" style="margin-bottom:16px;">
+        <div class="form-grid">
+          <label>Nama Anggota
+            <input type="text" name="member_name" required placeholder="Contoh: Johan" />
+          </label>
+          <label>Email Anggota
+            <input type="email" name="member_email" required placeholder="contoh: johan@rsarsy.id" />
+          </label>
+          <label>Sandi Anggota
+            <input type="text" name="member_pass" value="arsy123" required />
+          </label>
+          <label>Unit Tugas
+            <select name="member_unit">
+              <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
+              <option value="parkir">Unit Parkir</option>
+              <option value="driver">Unit Driver</option>
+            </select>
+          </label>
+          <label>Status Akun
+            <select name="member_active">
+              <option value="true">Aktif</option>
+              <option value="false">Nonaktif</option>
+            </select>
+          </label>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-primary" type="submit">Tambah / Simpan Email Anggota</button>
+        </div>
+      </form>
+
+      <div class="table-wrap">
+        <table id="membersTable"></table>
+      </div>
+    </section>
+
     <!-- TABEL REKAP -->
-    <div class="card">
+    <div id="rekapCard" class="card">
       <h3 id="rekapTableTitle">Rekap Data Tersimpan</h3>
       <div class="table-wrap">
         <table id="rekapTable"></table>
@@ -396,11 +604,11 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V5';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V5';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V6';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V6';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V6';
 const OPERATOR_EMAIL = 'suwaji.aji1305@gmail.com';
 const OPERATOR_PASS = 'Suwaji@1305';
-const MEMBER_PASS = 'arsy123';
 
 const AREAS = [
   'AREA PARKIR','DEPAN IGD','DEPAN POLI','RUANG IGD','RUANG PONEK',
@@ -420,87 +628,95 @@ let currentTab = 'patroli';
 let chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
 
-document.getElementById('loginLevel').addEventListener('change', (e) => {
-  document.getElementById('unitSelectGroup').classList.toggle('hidden', e.target.value !== 'anggota');
-});
-
-function resolveAccount(email, level, selectedUnit) {
-  const cleanEmail = email.toLowerCase().trim();
-  const rawPrefix = cleanEmail.split('@')[0] || 'PETUGAS';
-  const formattedName = rawPrefix.replace(/[._-]+/g, ' ').trim().toUpperCase() || 'PETUGAS';
-
-  if (cleanEmail === OPERATOR_EMAIL.toLowerCase()) {
-    return {
-      email: cleanEmail,
-      name: 'SUWAJI AJI',
-      level: 'ka_unit',
-      unit: 'all',
-      roleLabel: 'Operator / Ka. Unit'
-    };
-  }
-
-  if (level === 'ka_unit') {
-    return {
-      email: cleanEmail,
-      name: formattedName,
-      level: 'ka_unit',
-      unit: 'all',
-      roleLabel: 'Ka. Unit / Operator'
-    };
-  }
-
-  const unitLabels = {
-    keamanan: 'Anggota Keamanan',
-    parkir: 'Anggota Parkir',
-    driver: 'Anggota Driver'
-  };
-  return {
-    email: cleanEmail,
-    name: formattedName,
-    level: 'anggota',
-    unit: selectedUnit || 'keamanan',
-    roleLabel: unitLabels[selectedUnit || 'keamanan']
-  };
+function defaultMembers() {
+  return [
+    { name: 'SUWAJI', email: 'suwaji@rsarsy.id', password: 'arsy123', unit: 'keamanan', active: true },
+    { name: 'JOHAN', email: 'johan@rsarsy.id', password: 'arsy123', unit: 'keamanan', active: true },
+    { name: 'Arry', email: 'parkir@rsarsy.id', password: 'arsy123', unit: 'parkir', active: true },
+    { name: 'DIMAS', email: 'driver@rsarsy.id', password: 'arsy123', unit: 'driver', active: true }
+  ];
 }
 
-function prefillAuthorFields(session) {
-  document.querySelectorAll('input[name="petugas"], input[name="nama"], input[name="driver_nama"]').forEach(el => {
-    if (!el.value.trim()) {
-      el.value = session.name;
-    }
-  });
+function loadMembers() {
+  try {
+    const raw = localStorage.getItem(USERS_KEY);
+    return raw ? JSON.parse(raw) : defaultMembers();
+  } catch {
+    return defaultMembers();
+  }
+}
+
+function saveMembers(list) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(list));
+}
+
+function unitLabel(unit) {
+  const map = {
+    keamanan: 'Keamanan (Patroli, Harian, Adzan)',
+    parkir: 'Unit Parkir',
+    driver: 'Unit Driver',
+    all: 'Semua Unit'
+  };
+  return map[unit] || unit;
 }
 
 function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass = document.getElementById('loginPassword').value;
-  const level = document.getElementById('loginLevel').value;
-  const selectedUnit = document.getElementById('loginUnit').value;
   const errEl = document.getElementById('loginErr');
 
-  const cleanEmail = email.toLowerCase();
-  const isOperatorEmail = cleanEmail === OPERATOR_EMAIL.toLowerCase();
-
-  if (!email) {
-    errEl.textContent = 'Email wajib diisi.';
+  if (!email || !pass) {
+    errEl.textContent = 'Email dan sandi wajib diisi.';
     return;
   }
 
-  if (isOperatorEmail) {
+  if (email === OPERATOR_EMAIL.toLowerCase()) {
     if (pass !== OPERATOR_PASS) {
-      errEl.textContent = 'Password operator salah.';
+      errEl.textContent = 'Sandi operator salah.';
       return;
     }
-  } else {
-    if (pass !== MEMBER_PASS && pass !== OPERATOR_PASS) {
-      errEl.textContent = 'Password tidak valid. Gunakan password anggota (arsy123).';
-      return;
-    }
+    errEl.textContent = '';
+    const session = {
+      email,
+      name: 'SUWAJI AJI',
+      level: 'operator',
+      unit: 'all',
+      roleLabel: 'Operator / Ka. Unit'
+    };
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    showApp(session);
+    return;
+  }
+
+  const members = loadMembers();
+  const found = members.find(m => (m.email || '').toLowerCase() === email);
+  if (!found) {
+    errEl.textContent = 'Email anggota belum terdaftar. Hubungi operator untuk menambahkan email.';
+    return;
+  }
+  if (!found.active) {
+    errEl.textContent = 'Akun email ini sedang dinonaktifkan oleh operator.';
+    return;
+  }
+  if (found.password !== pass) {
+    errEl.textContent = 'Sandi anggota salah.';
+    return;
   }
 
   errEl.textContent = '';
-  const session = resolveAccount(email, level, selectedUnit);
+  const unitRoleMap = {
+    keamanan: 'Anggota Keamanan',
+    parkir: 'Anggota Parkir',
+    driver: 'Anggota Driver'
+  };
+  const session = {
+    email: found.email.toLowerCase(),
+    name: found.name,
+    level: 'anggota',
+    unit: found.unit,
+    roleLabel: unitRoleMap[found.unit] || 'Anggota Unit'
+  };
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
   showApp(session);
 }
@@ -511,13 +727,23 @@ function handleLogout() {
   document.getElementById('appScreen').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('formLogin').reset();
-  document.getElementById('unitSelectGroup').classList.add('hidden');
+}
+
+function prefillAuthorFields(session) {
+  document.querySelectorAll('input[name="petugas"], input[name="nama"], input[name="driver_nama"]').forEach(el => {
+    if (!el.value.trim()) {
+      el.value = session.name;
+    }
+  });
 }
 
 function applyRolePermissions(session) {
-  const isKaUnit = session.level === 'ka_unit';
+  const isOperator = session.level === 'operator';
   document.querySelectorAll('.export-only').forEach(btn => {
-    btn.classList.toggle('hidden', !isKaUnit);
+    btn.classList.toggle('hidden', !isOperator);
+  });
+  document.querySelectorAll('.operator-only').forEach(el => {
+    el.classList.toggle('hidden', !isOperator);
   });
 
   const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
@@ -525,15 +751,14 @@ function applyRolePermissions(session) {
 
   tabButtons.forEach(btn => {
     const btnUnit = btn.dataset.unit;
-    const allowed = isKaUnit || btnUnit === session.unit;
+    const allowed = isOperator ? true : (btnUnit === session.unit);
     btn.classList.toggle('hidden', !allowed);
     if (allowed && !firstAllowedTab) {
       firstAllowedTab = btn.dataset.tab;
     }
   });
 
-  currentTab = firstAllowedTab || 'patroli';
-  switchTab(currentTab);
+  switchTab(firstAllowedTab || 'patroli');
 }
 
 function switchTab(tabName) {
@@ -543,6 +768,15 @@ function switchTab(tabName) {
   const targetPanel = document.getElementById(`panel-${tabName}`);
   if (targetPanel) targetPanel.classList.remove('hidden');
   if (currentSession) prefillAuthorFields(currentSession);
+
+  const isKontrol = tabName === 'kontrol';
+  document.getElementById('monitoringCard').classList.toggle('hidden', isKontrol);
+  document.getElementById('rekapCard').classList.toggle('hidden', isKontrol);
+
+  if (isKontrol) {
+    renderMembersTable();
+    return;
+  }
 
   const labels = {
     patroli: 'Patroli Keliling (Target 2x/Shift)',
@@ -578,6 +812,85 @@ function checkSession() {
   } catch {}
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('appScreen').classList.add('hidden');
+}
+
+function saveMemberAccount(e) {
+  e.preventDefault();
+  if (!currentSession || currentSession.level !== 'operator') return;
+  const fd = new FormData(e.target);
+  const name = (fd.get('member_name') || '').trim();
+  const email = (fd.get('member_email') || '').trim().toLowerCase();
+  const password = (fd.get('member_pass') || 'arsy123').trim();
+  const unit = fd.get('member_unit') || 'keamanan';
+  const active = fd.get('member_active') === 'true';
+
+  if (email === OPERATOR_EMAIL.toLowerCase()) {
+    alert('Email tersebut adalah akun Operator utama.');
+    return;
+  }
+
+  const members = loadMembers();
+  const idx = members.findIndex(m => (m.email || '').toLowerCase() === email);
+  const entry = { name, email, password, unit, active };
+  if (idx >= 0) {
+    members[idx] = entry;
+  } else {
+    members.unshift(entry);
+  }
+  saveMembers(members);
+  e.target.reset();
+  e.target.member_pass.value = 'arsy123';
+  renderMembersTable();
+}
+
+function toggleMemberStatus(email) {
+  if (!currentSession || currentSession.level !== 'operator') return;
+  const members = loadMembers();
+  const target = members.find(m => (m.email || '').toLowerCase() === email.toLowerCase());
+  if (target) {
+    target.active = !target.active;
+    saveMembers(members);
+    renderMembersTable();
+  }
+}
+
+function removeMemberAccount(email) {
+  if (!currentSession || currentSession.level !== 'operator') return;
+  const members = loadMembers().filter(m => (m.email || '').toLowerCase() !== email.toLowerCase());
+  saveMembers(members);
+  renderMembersTable();
+}
+
+function renderMembersTable() {
+  const members = loadMembers();
+  const tbl = document.getElementById('membersTable');
+  tbl.innerHTML = `
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Email Anggota</th>
+        <th>Sandi</th>
+        <th>Unit Tugas</th>
+        <th>Status</th>
+        <th>Aksi Operator</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${members.length ? members.map(m => `
+        <tr>
+          <td>${m.name}</td>
+          <td>${m.email}</td>
+          <td>${m.password}</td>
+          <td>${unitLabel(m.unit)}</td>
+          <td><span class="status-badge ${m.active ? 'st-active' : 'st-inactive'}">${m.active ? 'Aktif' : 'Nonaktif'}</span></td>
+          <td style="display:flex;gap:6px;">
+            <button class="btn btn-sm ${m.active ? 'btn-warn' : 'btn-primary'}" onclick="toggleMemberStatus('${m.email.replace(/'/g, "\\'")}')">${m.active ? 'Nonaktifkan' : 'Aktifkan'}</button>
+            <button class="btn btn-sm btn-danger" onclick="removeMemberAccount('${m.email.replace(/'/g, "\\'")}')">Hapus</button>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="6">Belum ada akun anggota terdaftar.</td></tr>'}
+    </tbody>
+  `;
 }
 
 function defaultData() {
@@ -896,7 +1209,7 @@ function renderMonitoringCharts(rows, labels, s1, s2, pctLabels, pctVals, title1
 }
 
 function refreshView() {
-  if (!currentSession) return;
+  if (!currentSession || currentTab === 'kontrol') return;
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
@@ -984,7 +1297,7 @@ function refreshView() {
 }
 
 function exportExcel() {
-  if (!currentSession || currentSession.level !== 'ka_unit') return;
+  if (!currentSession || currentSession.level !== 'operator') return;
   const db = loadDB();
   const wb = XLSX.utils.book_new();
   Object.keys(db).forEach(key => {
@@ -1001,7 +1314,7 @@ function exportExcel() {
 }
 
 function exportWord() {
-  if (!currentSession || currentSession.level !== 'ka_unit') return;
+  if (!currentSession || currentSession.level !== 'operator') return;
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
   const rows = filterByRoleAndPeriode(db[currentTab] || []);
@@ -1024,7 +1337,7 @@ function exportWord() {
 }
 
 function exportPPT() {
-  if (!currentSession || currentSession.level !== 'ka_unit') return;
+  if (!currentSession || currentSession.level !== 'operator') return;
   if (typeof PptxGenJS === 'undefined') return alert('Library PptxGenJS belum termuat.');
   const db = loadDB();
   const mode = document.getElementById('periodeMode').value;
