@@ -68,6 +68,17 @@
     .login-sub { margin: 0 0 16px; font-size: 0.83rem; color: var(--muted); }
     .login-err { color: var(--danger); font-size: 0.82rem; font-weight: 700; margin-top: 8px; min-height: 18px; }
     .login-ok { color: var(--primary-dark); font-size: 0.82rem; font-weight: 700; margin-top: 8px; min-height: 18px; }
+    .pending-notice-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      padding: 10px 12px;
+      border-radius: 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-top: 10px;
+      line-height: 1.45;
+    }
     .otp-banner {
       background: var(--primary-soft);
       border: 1px solid #99f6e4;
@@ -78,11 +89,7 @@
       margin: 8px 0;
       line-height: 1.45;
     }
-    .auth-row-between {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 6px;
-    }
+    .auth-row-between { display: flex; justify-content: flex-end; margin-top: 6px; }
     .auth-switch-wrap {
       margin-top: 14px;
       padding-top: 12px;
@@ -280,7 +287,7 @@
       .sidebar.open { transform: translateX(0); }
     }
 
-    /* GOOGLE FORM STYLE CARDS (UNTUK ANGGOTA & INPUT) */
+    /* GOOGLE FORM STYLE CARDS (PILIHAN ABJAD) */
     .gcard {
       background: #ffffff;
       border: 1px solid var(--border);
@@ -331,10 +338,7 @@
       place-items: center;
       flex-shrink: 0;
     }
-    .alpha-opt.selected .alpha-badge {
-      background: var(--primary);
-      color: #fff;
-    }
+    .alpha-opt.selected .alpha-badge { background: var(--primary); color: #fff; }
     .area-q-card {
       border: 1px solid #e2e8f0;
       border-radius: 10px;
@@ -356,18 +360,10 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .mini-ab-btn.active {
-      border-color: var(--primary);
-      background: var(--primary);
-      color: #fff;
-    }
-    .mini-ab-btn.active-warn {
-      border-color: var(--danger);
-      background: var(--danger);
-      color: #fff;
-    }
+    .mini-ab-btn.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .mini-ab-btn.active-warn { border-color: var(--danger); background: var(--danger); color: #fff; }
 
-    /* KARTU & KOMPONEN */
+    /* KARTU & MINIMIZE PANEL */
     .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
     .card {
       background: var(--card);
@@ -377,36 +373,29 @@
       margin-bottom: 14px;
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
     }
-    .op-card { border: 2px solid var(--primary); background: #f8fffe; }
-    .op-nav-tabs {
+    .section-head {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #cbd5e1;
+      margin-bottom: 10px;
     }
-    .op-sub-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--ink);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .op-sub-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
+    .section-head h2, .section-head h3 { margin: 0; font-size: 0.98rem; }
+    .op-card { border: 2px solid var(--primary); background: #f8fffe; }
+    .op-module-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 11px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
     }
     .pending-box {
       background: #fffbeb;
       border: 1px solid #fcd34d;
       border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
     }
     .alert-card {
       border-left: 4px solid var(--warn);
@@ -416,7 +405,6 @@
       margin-bottom: 12px;
       font-size: 0.82rem;
     }
-    .card h2, .card h3 { margin: 0 0 10px; font-size: 1rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 10px; }
     label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; font-weight: 600; color: #334155; }
     input, select, textarea {
@@ -468,7 +456,7 @@
       position: relative;
     }
     .chart-box.wide { grid-column: 1 / -1; height: 285px; }
-    .table-wrap { overflow-x: auto; max-height: 380px; border: 1px solid var(--border); border-radius: 8px; -webkit-overflow-scrolling: touch; }
+    .table-wrap { overflow-x: auto; max-height: 360px; border: 1px solid var(--border); border-radius: 8px; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     th, td { border-bottom: 1px solid #e2e8f0; padding: 7px 8px; text-align: left; white-space: nowrap; }
     th { background: #f8fafc; position: sticky; top: 0; z-index: 1; }
@@ -478,9 +466,9 @@
     .st-pending { background: #fef3c7; color: #92400e; }
     .st-inactive { background: #fee2e2; color: #991b1b; }
     .op-msg { font-size: 0.8rem; font-weight: 700; color: var(--primary-dark); margin-left: 8px; }
-    .cloud-box { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.8rem; }
+    .cloud-box { background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; }
 
-    /* MODAL DETAIL */
+    /* MODAL DETAIL & OPERATOR */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); display: grid; place-items: center; padding: 16px; z-index: 999; }
     .modal-card { width: 100%; max-width: 720px; max-height: 85vh; overflow-y: auto; background: #fff; border-radius: 14px; border: 1px solid var(--border); padding: 18px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35); }
     .detail-pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; font-size: 0.8rem; line-height: 1.55; white-space: pre-wrap; margin: 0; }
@@ -528,7 +516,7 @@
       <!-- 2. FORM DAFTAR AKUN -->
       <div id="registerBox" class="hidden">
         <h2>Daftar Akun</h2>
-        <p class="login-sub">Pengajuan akun akan diproses melalui persetujuan operator sebelum aktif.</p>
+        <p class="login-sub">Lengkapi data di bawah untuk mengajukan pembuatan akun anggota.</p>
         <form id="formRegister" onsubmit="handleRegister(event)">
           <div class="form-grid" style="grid-template-columns:1fr;">
             <label>Nama Lengkap
@@ -549,7 +537,9 @@
             </label>
           </div>
           <div class="login-err" id="regErr"></div>
-          <div class="login-ok" id="regOk"></div>
+          <div id="regPendingBanner" class="pending-notice-box hidden">
+            Permintaan Anda sedang diproses, harap tunggu persetujuan operator.
+          </div>
           <div style="margin-top:10px;">
             <button class="btn btn-primary" type="submit" style="width:100%;padding:11px 14px;">Ajukan Pendaftaran Akun</button>
           </div>
@@ -619,7 +609,7 @@
         <div class="sub">Sistem Informasi Keamanan, Parkir & Driver RS ARSY</div>
       </div>
 
-      <div class="sidebar-section-lbl">Menu Unit & Laporan</div>
+      <div class="sidebar-section-lbl">Menu Unit</div>
       <nav class="nav-list" id="mainTabs">
         <button class="nav-btn active" data-tab="patroli" data-unit="keamanan"><span>1. Patroli Keliling (2x/Shift)</span></button>
         <button class="nav-btn" data-tab="harian" data-unit="keamanan"><span>2. Harian Satpam (1x/Shift)</span></button>
@@ -628,7 +618,7 @@
         <button class="nav-btn" data-tab="driver" data-unit="driver"><span>5. Unit Driver</span></button>
       </nav>
 
-      <div class="sidebar-section-lbl operator-only hidden">Filter Periode Rekap</div>
+      <div class="sidebar-section-lbl operator-only hidden">Filter Periode</div>
       <div class="sidebar-controls operator-only hidden">
         <label>Periode Rekap
           <select id="periodeMode" onchange="refreshView()">
@@ -637,12 +627,12 @@
             <option value="bulanan" selected>Bulanan (Per Bulan)</option>
           </select>
         </label>
-        <label>Tanggal / Bulan Acuan
+        <label>Tanggal Acuan
           <input type="date" id="refDate" onchange="refreshView()" />
         </label>
       </div>
 
-      <div class="sidebar-section-lbl operator-only hidden">Kelola Operator</div>
+      <div class="sidebar-section-lbl operator-only hidden">Menu Operator</div>
       <div class="nav-list operator-only hidden">
         <button class="nav-btn" type="button" onclick="openOperatorModal('approvals')">
           <span>Persetujuan Akun</span>
@@ -688,7 +678,7 @@
     </header>
 
     <main class="content-wrap">
-      <!-- FORM INPUT GAYA GOOGLE FORM (TERBUKA LANGSUNG UNTUK ANGGOTA, BISA DI-TOGGLE UNTUK OPERATOR) -->
+      <!-- FORM INPUT GAYA GOOGLE FORM (PILIHAN ABJAD) -->
       <div id="formDrawerContainer">
         <!-- FORM 1: PATROLI KELILING -->
         <section id="panel-patroli" class="panel">
@@ -882,27 +872,35 @@
         </section>
       </div>
 
-      <!-- AREA TENGAH OPERATOR: RINGKASAN HASIL, DIAGRAM PERBANDINGAN & TREN -->
+      <!-- AREA TENGAH OPERATOR: RINGKASAN & GRAFIK (BISA DI-MINIMIZE) -->
       <div id="monitoringCard" class="card operator-only hidden">
-        <div id="alertSummaryBox" class="alert-card"></div>
-        <div class="kpis" id="kpiBox"></div>
-
-        <div class="charts-grid">
-          <div class="chart-box"><canvas id="chartTemuanCompare"></canvas></div>
-          <div class="chart-box"><canvas id="chartPct"></canvas></div>
-          <div class="chart-box"><canvas id="chartMain"></canvas></div>
-          <div class="chart-box wide"><canvas id="chartTrend"></canvas></div>
+        <div class="section-head">
+          <h2>Ringkasan & Grafik Monitoring</h2>
+          <button class="btn btn-outline btn-sm" id="btnMinCharts" type="button" onclick="toggleSectionMinimize('charts')">Minimize</button>
+        </div>
+        <div id="chartsBody">
+          <div id="alertSummaryBox" class="alert-card"></div>
+          <div class="kpis" id="kpiBox"></div>
+          <div class="charts-grid">
+            <div class="chart-box"><canvas id="chartTemuanCompare"></canvas></div>
+            <div class="chart-box"><canvas id="chartPct"></canvas></div>
+            <div class="chart-box"><canvas id="chartMain"></canvas></div>
+            <div class="chart-box wide"><canvas id="chartTrend"></canvas></div>
+          </div>
         </div>
       </div>
 
-      <!-- AREA TENGAH OPERATOR: TABEL HASIL LAPORAN -->
+      <!-- AREA TENGAH OPERATOR: TABEL REKAP (BISA DI-MINIMIZE) -->
       <div id="rekapCard" class="card operator-only hidden">
-        <div class="toolbar">
+        <div class="section-head">
           <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
-            <h3 id="rekapTableTitle" style="margin:0;">Rekap Data Tersimpan</h3>
+            <h3 id="rekapTableTitle">Rekap Data Tersimpan</h3>
             <span class="op-msg" id="rekapDeleteMsg"></span>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn-outline btn-sm" id="btnMinRekap" type="button" onclick="toggleSectionMinimize('rekap')">Minimize</button>
+        </div>
+        <div id="rekapBody">
+          <div class="toolbar">
             <input type="search" id="searchKeyword" oninput="refreshView()" placeholder="Cari petugas / catatan / tujuan..." style="width:220px;" />
             <select id="filterFlag" onchange="refreshView()" style="width:auto;">
               <option value="all">Semua Status</option>
@@ -910,101 +908,113 @@
               <option value="normal">Hanya Normal / Aman</option>
             </select>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table id="rekapTable"></table>
+          <div class="table-wrap">
+            <table id="rekapTable"></table>
+          </div>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- MODAL KONTROL OPERATOR (PERSETUJUAN AKUN BARU, EMAIL ANGGOTA, CLOUD & CADANGAN) -->
+<!-- MODAL KONTROL OPERATOR (MENU MINIMIZE PER BAGIAN) -->
 <div id="operatorModal" class="modal-backdrop hidden" onclick="closeOperatorModal(event)">
   <div class="modal-card op-card" style="max-width:860px;" onclick="event.stopPropagation()">
     <div class="toolbar">
-      <h2 id="opModalTitle" style="margin:0;color:var(--primary-dark);">Kelola Operator</h2>
+      <div>
+        <h2 style="margin:0;color:var(--primary-dark);">Panel Menu Operator</h2>
+        <div style="font-size:0.76rem;color:var(--muted);">Klik <b>Buka / Minimize</b> pada tiap menu agar tampilan ringkas.</div>
+      </div>
       <button class="btn btn-danger btn-sm" type="button" onclick="closeOperatorModal()">Tutup</button>
-    </div>
-
-    <div class="op-nav-tabs">
-      <button class="op-sub-btn active" id="opTab-approvals" type="button" onclick="switchOperatorSubTab('approvals')">
-        Persetujuan Akun Baru <span id="opModalPendingCount"></span>
-      </button>
-      <button class="op-sub-btn" id="opTab-members" type="button" onclick="switchOperatorSubTab('members')">
-        Tambah & Kelola Email Anggota
-      </button>
-      <button class="op-sub-btn" id="opTab-cloud" type="button" onclick="switchOperatorSubTab('cloud')">
-        Cloud & Cadangan JSON
-      </button>
     </div>
 
     <div style="min-height:18px;margin-bottom:8px;"><span class="op-msg" id="opStatusMsg" style="margin-left:0;"></span></div>
 
-    <!-- SUB-TAB 1: PERSETUJUAN AKUN BARU -->
-    <div id="opSec-approvals">
-      <div class="pending-box">
-        <div style="font-weight:700;color:#92400e;margin-bottom:4px;">Notifikasi Pendaftaran Akun Menunggu Persetujuan</div>
-        <div style="font-size:0.79rem;color:#78350f;">Periksa pendaftar baru di bawah ini. Tekan <b>Setujui Akun</b> agar pengguna bisa masuk ke sistem.</div>
-      </div>
-      <div class="table-wrap" style="max-height:290px;">
-        <table id="pendingMembersTable"></table>
-      </div>
-    </div>
-
-    <!-- SUB-TAB 2: KELOLA EMAIL ANGGOTA -->
-    <div id="opSec-members" class="hidden">
-      <form id="form-member" onsubmit="saveMemberAccount(event)" style="margin-bottom:12px;">
-        <div class="form-grid">
-          <label>Nama Anggota
-            <input type="text" name="member_name" required placeholder="Contoh: Johan" />
-          </label>
-          <label>Email Anggota Baru
-            <input type="email" name="member_email" required placeholder="contoh: anggota@gmail.com" />
-          </label>
-          <label>Sandi Anggota
-            <input type="text" name="member_pass" value="arsy123" required />
-          </label>
-          <label>Unit Tugas
-            <select name="member_unit">
-              <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
-              <option value="parkir">Unit Parkir</option>
-              <option value="driver">Unit Driver</option>
-            </select>
-          </label>
-          <label>Status Email
-            <select name="member_active">
-              <option value="true">Aktif (Disetujui)</option>
-              <option value="false">Nonaktif</option>
-            </select>
-          </label>
+    <!-- MENU 1: PERSETUJUAN AKUN BARU -->
+    <div class="op-module-card">
+      <div class="section-head" style="margin-bottom:0;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <b>1. Persetujuan Akun Baru</b>
+          <span class="nav-pill-count hidden" id="opModalPendingBadge">0</span>
         </div>
-        <div style="margin-top:10px;">
-          <button class="btn btn-primary" type="submit">Simpan / Tambah Email Anggota</button>
+        <button class="btn btn-outline btn-sm" id="btnMin-approvals" type="button" onclick="toggleOpSection('approvals')">Buka</button>
+      </div>
+      <div id="opSec-approvals" class="hidden" style="margin-top:10px;">
+        <div class="pending-box">
+          <div style="font-weight:700;color:#92400e;">Notifikasi Pendaftaran Akun Menunggu Persetujuan</div>
+          <div style="font-size:0.78rem;color:#78350f;">Tekan <b>Setujui Akun</b> agar pendaftar bisa masuk ke sistem.</div>
         </div>
-      </form>
-
-      <div class="table-wrap" style="max-height:240px;">
-        <table id="membersTable"></table>
+        <div class="table-wrap" style="max-height:260px;">
+          <table id="pendingMembersTable"></table>
+        </div>
       </div>
     </div>
 
-    <!-- SUB-TAB 3: CLOUD & CADANGAN JSON -->
-    <div id="opSec-cloud" class="hidden">
-      <div class="cloud-box">
-        <div style="font-weight:700;color:var(--primary-dark);margin-bottom:6px;">
-          Sinkronisasi Cloud Google Sheets
+    <!-- MENU 2: TAMBAH & KELOLA EMAIL ANGGOTA -->
+    <div class="op-module-card">
+      <div class="section-head" style="margin-bottom:0;">
+        <b>2. Tambah & Kelola Email Anggota</b>
+        <button class="btn btn-outline btn-sm" id="btnMin-members" type="button" onclick="toggleOpSection('members')">Buka</button>
+      </div>
+      <div id="opSec-members" class="hidden" style="margin-top:10px;">
+        <form id="form-member" onsubmit="saveMemberAccount(event)" style="margin-bottom:12px;">
+          <div class="form-grid">
+            <label>Nama Anggota
+              <input type="text" name="member_name" required placeholder="Contoh: Johan" />
+            </label>
+            <label>Email Anggota Baru
+              <input type="email" name="member_email" required placeholder="contoh: anggota@gmail.com" />
+            </label>
+            <label>Sandi Anggota
+              <input type="text" name="member_pass" value="arsy123" required />
+            </label>
+            <label>Unit Tugas
+              <select name="member_unit">
+                <option value="keamanan">Keamanan (Patroli, Harian Satpam, Adzan Subuh)</option>
+                <option value="parkir">Unit Parkir</option>
+                <option value="driver">Unit Driver</option>
+              </select>
+            </label>
+            <label>Status Email
+              <select name="member_active">
+                <option value="true">Aktif (Disetujui)</option>
+                <option value="false">Nonaktif</option>
+              </select>
+            </label>
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn btn-primary" type="submit">Simpan / Tambah Email Anggota</button>
+          </div>
+        </form>
+
+        <div class="table-wrap" style="max-height:220px;">
+          <table id="membersTable"></table>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-          <input type="url" id="cloudUrlInput" placeholder="Tempel URL Web App Google Apps Script (https://script.google.com/macros/s/.../exec)" style="flex:1;min-width:240px;" />
-          <button class="btn btn-primary btn-sm" type="button" onclick="saveCloudUrl()">Simpan & Hubungkan Cloud</button>
-          <button class="btn btn-outline btn-sm" type="button" onclick="exportBackupJson()">Cadangkan JSON</button>
-          <label class="btn btn-outline btn-sm" style="flex-direction:row;align-items:center;gap:4px;cursor:pointer;margin:0;">
-            Pulihkan JSON
-            <input type="file" accept=".json,application/json" onchange="importBackupJson(event)" style="display:none;" />
-          </label>
+      </div>
+    </div>
+
+    <!-- MENU 3: CLOUD & CADANGAN JSON -->
+    <div class="op-module-card" style="margin-bottom:0;">
+      <div class="section-head" style="margin-bottom:0;">
+        <b>3. Cloud Google Sheets & Cadangan JSON</b>
+        <button class="btn btn-outline btn-sm" id="btnMin-cloud" type="button" onclick="toggleOpSection('cloud')">Buka</button>
+      </div>
+      <div id="opSec-cloud" class="hidden" style="margin-top:10px;">
+        <div class="cloud-box">
+          <div style="font-weight:700;color:var(--primary-dark);margin-bottom:6px;">
+            Sinkronisasi Cloud Google Sheets (Agar Pendaftaran & Laporan dari HP Masuk ke Operator)
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <input type="url" id="cloudUrlInput" placeholder="Tempel URL Web App Google Apps Script (https://script.google.com/macros/s/.../exec)" style="flex:1;min-width:240px;" />
+            <button class="btn btn-primary btn-sm" type="button" onclick="saveCloudUrl()">Simpan & Hubungkan Cloud</button>
+            <button class="btn btn-outline btn-sm" type="button" onclick="exportBackupJson()">Cadangkan JSON</button>
+            <label class="btn btn-outline btn-sm" style="flex-direction:row;align-items:center;gap:4px;cursor:pointer;margin:0;">
+              Pulihkan JSON
+              <input type="file" accept=".json,application/json" onchange="importBackupJson(event)" style="display:none;" />
+            </label>
+          </div>
+          <div id="cloudConnInfo" style="margin-top:6px;color:#0f766e;font-weight:600;"></div>
         </div>
-        <div id="cloudConnInfo" style="margin-top:6px;color:#0f766e;font-weight:600;"></div>
       </div>
     </div>
   </div>
@@ -1022,9 +1032,9 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V15';
-const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V15';
-const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V15';
+const STORAGE_KEY = 'SIM_KPK_RS_ARSY_V16';
+const USERS_KEY = 'SIM_KPK_RS_ARSY_USERS_V16';
+const SESSION_KEY = 'SIM_KPK_RS_ARSY_SESSION_V16';
 const CLOUD_URL_KEY = 'SIM_KPK_RS_ARSY_CLOUD_URL';
 
 const DEFAULT_CLOUD_URL = '';
@@ -1047,6 +1057,8 @@ const HOURS = [
 let currentSession = null;
 let currentTab = 'patroli';
 let formOpen = false;
+let chartsMinimized = false;
+let rekapMinimized = false;
 let pendingReset = { email: '', code: '', expires: 0 };
 let chartTemuanCompare = null, chartTrend = null, chartMain = null, chartPct = null;
 let appInitialized = false;
@@ -1098,10 +1110,13 @@ if (typeof Chart !== 'undefined') {
 /* AUTH: LOGIN, DAFTAR (MENUNGGU PERSETUJUAN OPERATOR), LUPA KATA SANDI */
 function toggleAuthMode(mode) {
   ['loginBox', 'registerBox', 'forgotBox'].forEach(id => document.getElementById(id).classList.add('hidden'));
-  ['loginErr', 'regErr', 'regOk', 'forgotErr1', 'forgotErr2', 'forgotOk'].forEach(id => {
+  ['loginErr', 'regErr', 'forgotErr1', 'forgotErr2', 'forgotOk'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = '';
   });
+  const pendingBanner = document.getElementById('regPendingBanner');
+  if (pendingBanner) pendingBanner.classList.add('hidden');
+
   if (mode === 'register') document.getElementById('registerBox').classList.remove('hidden');
   else if (mode === 'forgot') {
     resetForgotFlow();
@@ -1118,9 +1133,9 @@ async function handleRegister(e) {
   const unit = document.getElementById('regUnit').value || 'keamanan';
   const password = document.getElementById('regPassword').value.trim();
   const errEl = document.getElementById('regErr');
-  const okEl = document.getElementById('regOk');
+  const pendingBanner = document.getElementById('regPendingBanner');
   errEl.textContent = '';
-  okEl.textContent = '';
+  pendingBanner.classList.add('hidden');
 
   if (!name || !email || !password) {
     errEl.textContent = 'Semua kolom pendaftaran wajib diisi.';
@@ -1135,9 +1150,12 @@ async function handleRegister(e) {
   const members = loadMembers();
   const exists = members.find(m => (m.email || '').trim().toLowerCase() === email);
   if (exists) {
-    errEl.textContent = exists.status === 'pending'
-      ? 'Pengajuan akun dengan email ini sedang menunggu persetujuan operator.'
-      : 'Email tersebut sudah terdaftar. Silakan masuk atau gunakan menu Lupa Kata Sandi.';
+    if (exists.status === 'pending') {
+      pendingBanner.textContent = 'Permintaan Anda sedang diproses, harap tunggu persetujuan operator.';
+      pendingBanner.classList.remove('hidden');
+    } else {
+      errEl.textContent = 'Email tersebut sudah terdaftar. Silakan masuk atau gunakan menu Lupa Kata Sandi.';
+    }
     return;
   }
 
@@ -1151,7 +1169,8 @@ async function handleRegister(e) {
     requestedAt: new Date().toISOString().slice(0, 10)
   });
   saveMembers(members, true);
-  okEl.textContent = 'Pengajuan akun terkirim. Menunggu persetujuan operator sebelum pendaftaran aktif.';
+  pendingBanner.textContent = 'Permintaan Anda sedang diproses, harap tunggu persetujuan operator.';
+  pendingBanner.classList.remove('hidden');
   document.getElementById('formRegister').reset();
 }
 
@@ -1185,7 +1204,7 @@ async function sendResetVerification() {
     return;
   }
   if (found.status === 'pending') {
-    errEl.textContent = 'Akun email ini masih menunggu persetujuan operator.';
+    errEl.textContent = 'Permintaan Anda sedang diproses, harap tunggu persetujuan operator.';
     return;
   }
 
@@ -1245,7 +1264,7 @@ function completePasswordReset(e) {
   }, 1000);
 }
 
-/* SIDEBAR, TOPBAR & MODAL OPERATOR */
+/* SIDEBAR, TOPBAR & MINIMIZE */
 function toggleSidebar(forceState) {
   const sb = document.getElementById('sidebar');
   const bd = document.getElementById('mobileBackdrop');
@@ -1275,32 +1294,47 @@ function toggleFormPanel(forceState) {
   if (formOpen && currentSession) prefillAuthorFields(currentSession);
 }
 
-function openOperatorModal(subTab = 'approvals') {
+function toggleSectionMinimize(section) {
+  if (section === 'charts') {
+    chartsMinimized = !chartsMinimized;
+    document.getElementById('chartsBody').classList.toggle('hidden', chartsMinimized);
+    document.getElementById('btnMinCharts').textContent = chartsMinimized ? 'Buka' : 'Minimize';
+    if (!chartsMinimized) refreshView();
+  } else if (section === 'rekap') {
+    rekapMinimized = !rekapMinimized;
+    document.getElementById('rekapBody').classList.toggle('hidden', rekapMinimized);
+    document.getElementById('btnMinRekap').textContent = rekapMinimized ? 'Buka' : 'Minimize';
+  }
+}
+
+function toggleOpSection(key) {
+  const body = document.getElementById(`opSec-${key}`);
+  const btn = document.getElementById(`btnMin-${key}`);
+  const willOpen = body.classList.contains('hidden');
+  body.classList.toggle('hidden', !willOpen);
+  btn.textContent = willOpen ? 'Minimize' : 'Buka';
+}
+
+function openOperatorModal(expandKey = 'approvals') {
   if (!isOperatorUser()) return;
   toggleSidebar(false);
   updateCloudIndicator();
+  updatePendingBadge();
   renderPendingMembersTable();
   renderMembersTable();
-  switchOperatorSubTab(subTab);
+
+  ['approvals', 'members', 'cloud'].forEach(k => {
+    const shouldOpen = k === expandKey;
+    document.getElementById(`opSec-${k}`).classList.toggle('hidden', !shouldOpen);
+    document.getElementById(`btnMin-${k}`).textContent = shouldOpen ? 'Minimize' : 'Buka';
+  });
+
   document.getElementById('operatorModal').classList.remove('hidden');
 }
 
 function closeOperatorModal(e) {
   if (e && e.target && e.target.id !== 'operatorModal') return;
   document.getElementById('operatorModal').classList.add('hidden');
-}
-
-function switchOperatorSubTab(subTab) {
-  ['approvals', 'members', 'cloud'].forEach(k => {
-    document.getElementById(`opSec-${k}`).classList.toggle('hidden', k !== subTab);
-    document.getElementById(`opTab-${k}`).classList.toggle('active', k === subTab);
-  });
-  const titles = {
-    approvals: 'Persetujuan Akun Baru',
-    members: 'Tambah & Kelola Email Anggota',
-    cloud: 'Cloud & Cadangan JSON'
-  };
-  document.getElementById('opModalTitle').textContent = titles[subTab] || 'Kelola Operator';
 }
 
 /* CLOUD & STORAGE */
@@ -1318,7 +1352,10 @@ function saveCloudUrl() {
   const val = (input.value || '').trim();
   localStorage.setItem(CLOUD_URL_KEY, val);
   updateCloudIndicator();
-  if (val) pushAllToCloud();
+  if (val) {
+    pushAllToCloud();
+    setOperatorMsg('URL Cloud disimpan dan data dikirim ke Cloud.');
+  }
 }
 
 function updateCloudIndicator() {
@@ -1329,8 +1366,8 @@ function updateCloudIndicator() {
 
   if (infoEl) {
     infoEl.textContent = url
-      ? 'Terhubung ke Cloud: Semua HP yang membuka aplikasi akan menyinkronkan akun & laporan.'
-      : 'Belum ada URL Cloud. Isi URL Apps Script di atas agar semua HP sinkron otomatis.';
+      ? 'Terhubung ke Cloud: Pendaftaran & laporan dari HP akan menyinkronkan data.'
+      : 'Belum ada URL Cloud. Jika pendaftar mengisi di HP lain tanpa URL Cloud, gunakan Cadangkan/Pulihkan JSON atau sambungkan URL Cloud.';
   }
 }
 
@@ -1346,13 +1383,11 @@ async function syncFromCloud(showAlert = false) {
     if (data && data.ok) {
       if (Array.isArray(data.members) && data.members.length > 0) saveMembers(data.members, false);
       if (data.db && typeof data.db === 'object') saveDB(data.db, false);
-      if (currentSession) {
-        if (isOperatorUser()) {
-          updatePendingBadge();
-          renderPendingMembersTable();
-          renderMembersTable();
-          refreshView();
-        }
+      if (currentSession && isOperatorUser()) {
+        updatePendingBadge();
+        renderPendingMembersTable();
+        renderMembersTable();
+        refreshView();
       }
       if (showAlert) setOperatorMsg('Sinkronisasi data dari Cloud berhasil.');
       return true;
@@ -1500,7 +1535,7 @@ async function handleLogin(e) {
     return;
   }
   if (found.status === 'pending') {
-    errEl.textContent = 'Pendaftaran akun masih menunggu persetujuan operator.';
+    errEl.textContent = 'Permintaan Anda sedang diproses, harap tunggu persetujuan operator.';
     return;
   }
   if (!found.active || found.status === 'inactive') {
@@ -1628,13 +1663,14 @@ function setOperatorMsg(msg) {
 function updatePendingBadge() {
   const pendingCount = loadMembers().filter(m => m.status === 'pending').length;
   const navBadge = document.getElementById('pendingNavBadge');
-  const modalCount = document.getElementById('opModalPendingCount');
+  const modalBadge = document.getElementById('opModalPendingBadge');
   if (navBadge) {
     navBadge.textContent = String(pendingCount);
     navBadge.classList.toggle('hidden', pendingCount === 0);
   }
-  if (modalCount) {
-    modalCount.textContent = pendingCount > 0 ? `(${pendingCount})` : '';
+  if (modalBadge) {
+    modalBadge.textContent = String(pendingCount);
+    modalBadge.classList.toggle('hidden', pendingCount === 0);
   }
 }
 
@@ -1878,9 +1914,7 @@ function setAreaChoice(btn, fieldName) {
   const card = btn.closest('.area-q-card');
   const hidden = card.querySelector(`input[type="hidden"][name="${fieldName}"]`);
   if (hidden) hidden.value = btn.dataset.val;
-  card.querySelectorAll('.mini-ab-btn').forEach(b => {
-    b.classList.remove('active', 'active-warn');
-  });
+  card.querySelectorAll('.mini-ab-btn').forEach(b => b.classList.remove('active', 'active-warn'));
   if (btn.dataset.val === 'Aman') btn.classList.add('active');
   else btn.classList.add('active-warn');
 }
@@ -2201,7 +2235,7 @@ function pct(part, total) {
 }
 
 function renderMonitoringCharts(rows, compareCfg, mainCfg) {
-  if (typeof Chart === 'undefined') return;
+  if (typeof Chart === 'undefined' || chartsMinimized) return;
   if (chartTemuanCompare) chartTemuanCompare.destroy();
   if (chartPct) chartPct.destroy();
   if (chartMain) chartMain.destroy();
